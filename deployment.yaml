@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      runon: fargate
+  template:
+    metadata:
+      labels:
+        runon: fargate
+    spec:
+      containers:
+      - name: java-microservice-container
+        image: 483285841698.dkr.ecr.us-east-2.amazonaws.com/se-demo:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 4567

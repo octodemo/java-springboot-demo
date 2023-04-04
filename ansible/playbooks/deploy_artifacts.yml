@@ -1,0 +1,19 @@
+---
+- name: Deploy Artifacts
+  hosts: webserver
+  tasks:
+    # - name: copy assets
+    #   copy:
+    #     src: "{{ item }}"
+    #     dest: ~/server
+    #   with_fileglob:
+    #     "~/project/target/SalesManager-*-SNAPSHOT.jar"
+    - name: execute app
+      shell: |
+        echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+        #Check for running container & stop it before starting a new one
+        docker stop app-test || true && docker rm app-test || true
+        aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin {{ ECR_IMAGE }}
+        docker run -t -d -p 80:8086  --name app-test {{ ECR_IMAGE }}:{{ VERSION }}
+      register: shell_output
+    - debug: var=shell_output

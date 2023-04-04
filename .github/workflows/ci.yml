@@ -1,0 +1,245 @@
+# name of the workflow. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#name
+name: CI
+# running on push to main and develop branches or on pull reuqests or on manual trigger
+on: 
+  # manual trigger
+  workflow_dispatch:
+#   # runnnig on push to main and develop branches
+#   push:
+#     branches:
+#       - main
+#       - develop
+#   # running on pull requests to main and develop branches
+#   pull_request:
+#     branches:
+#       - main
+#       - develop
+
+# defining global environment variables for all jobs
+env:
+  # define runner indexes for tests splitting and parallel execution
+  total-runners: 5
+  # defining GitHub registry for docker images
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+# build job definition with 7 steps:
+# 1. Checkout repository
+# 2. Cache Maven packages
+# 3. Running Liquibase Quality Checks link - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
+# 4. Initialize CodeQL
+# 5. Build with Maven
+# 6. Perform CodeQL Analysis link - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
+# 7. Upload artifact
+jobs:
+  build:
+    # build job will run on ubuntu-latest github-hosted runner
+    runs-on: ubuntu-latest
+    # defining permissions for the job - read contents, write packages, write id-token. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idpermissions
+    # security-events permission is required for CodeQL analysis
+    # enforcing policy for the job - only users with write access to the repository can trigger the job. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idenforce_admins
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+      id-token: write
+      security-events: write
+    # defining strategy for the job - matrix strategy for codeQL analysis
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Use only 'java' to analyze code written in Java, Kotlin or both
+        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+    
+    # defining steps for the job as explained above 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      - name: Cache Maven packages
+        uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+        with:
+          path: /root/.m2 # path to the directory where maven packages are stored - /root/.m2 in the container
+          key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-build-
+      # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
+      # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
+      # Using the Liquibase Maven plugin, you can run Liquibase Quality Checks on your changelogs. 
+      # The plugin is available in the Maven Central repository. Link to Maven Central - https://search.maven.org/artifact/org.liquibase/liquibase-maven-plugin
+      - name: Running Liquibase Quality Checks to ensure that the database changelogs are well-formed and follow best practices
+        run: |
+          mvn process-resources liquibase:checks.run
+      # runnning code scanning with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
+      # first step is to initialize CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
+          # debug: true # uncomment this line to enable debugging for CodeQL analysis step
+        # If you wish to specify custom queries, you can do so here or in a config file.
+        # By default, queries listed here will override any specified in a config file.
+        # Prefix the list here with "+" to use these queries and those in the config file.
+
+        # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
+        # queries: security-extended,security-and-quality
+
+      # autobuild with codeql
+      # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
+      # If this step fails, then you should remove it and run the build manually (see below)
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      
+      # performing Code Quality Analysis with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
+      - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
+        with:   
+          name: jar-artifact # naming the artifact jar file/s path
+          path: target/ # actual relative path to the artifact in the container - target/
+  
+  uat-parallel-tests:
+    # uat-parallel-tests job will run on ubuntu-latest github-hosted runner
+    name: UAT
+    runs-on: ubuntu-latest
+    needs: # needs build job and runner-indexes job to be completed before running the uat-parallel-tests job
+      - build
+      - runner-indexes
+    container:
+      image: mrkostin/maven:3.6.0-alpine-git-curl-jq # ruinning the job in a container - mrkostin/maven:3.6.0-alpine-git-curl-jq
+    services:
+      # oracle service container
+      oracle: # service name - oracle. This name is used to access the service container from the job container as the host name.
+        image: gvenzl/oracle-xe # running the job in a container gvenzl/oracle-xe - Oracle XE 11gR2 container image. Link to dockerhub - https://hub.docker.com/r/gvenzl/oracle-xe
+        env:
+          ORACLE_PASSWORD: oracle
+        # exposing the port 1521 externally and internally to the container - 1521:1521
+        ports:
+          - 1521:1521
+    #  defining the job permissions
+    permissions:
+      contents: read # read access to the repository contents
+      packages: write # write access to the repository packages
+      id-token: write # write access to the repository id token
+    strategy: # defining the job to run in parallel with the matrix strategy and runner-indexes job output
+      fail-fast: true # cancels all in-progress jobs if any matrix job fails link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+      matrix: # defining the matrix strategy to run the job in parallel using x number of github-hosted runners defined in the env total_runners above
+        runner-index: ${{ fromjson(needs.runner-indexes.outputs.json) }} # using the runner-indexes job output to define the matrix strategy
+    steps:
+      - name: Checkout repository # checkout the repository
+        uses: actions/checkout@v3.0.2
+      # caching the maven packages to speed up the build process. 
+      # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      - name: Cache Maven packages
+        uses: actions/cache@v3 # using the actions/cache@v3 action to cache the maven packages
+        with:
+          path: /root/.m2 # path to cache
+          key: ${{ runner.os }}-uat-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
+          restore-keys: ${{ runner.os }}-uat- # key for restoring the cache if no exact match is found
+      # In this step, we are downloading the latest artifact from the build job and storing it in the container
+      - run: |
+          # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
+          curl \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/tsviz/springboot_demo/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name == "Test Results") | .id' > artifacts_list.txt
+
+          LATEST_ARTIFACT_NUMBER=$(cut -d: -f 2 artifacts_list.txt | sort -n | tail -n 1)
+          
+          curl \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -L -o my_artifact.zip \
+              https://api.github.com/repos/tsviz/springboot_demo/actions/artifacts/"${LATEST_ARTIFACT_NUMBER}"/zip
+
+          mkdir test_results
+          unzip my_artifact.zip -d test_results
+      # split-tests action - splits the tests into x number of groups 
+      # based on the total number of github-hosted runners and junit previous test results by time and line count. 
+      # Link to the action - https://github.com/marketplace/actions/split-tests
+      - uses: chaosaffe/split-tests@v1-alpha.1
+        id: split-tests
+        name: Split tests
+        with:
+          glob: src/test/**/**/**.java # glob pattern to match the test files
+          split-total: ${{ env.total-runners }} # total number of github-hosted runners
+          split-index: ${{ matrix.runner-index }} # current runner index
+          junit-path: test_results/*xml # path to the junit test results with wildcards to match all the files
+          line-count: true # split the tests based on the junit test results by line count
+      # run the tests in parallel looping through the test-suite output from the split-tests action
+      - run: 'echo "This runner will execute the following tests: ${{ steps.split-tests.outputs.test-suite }}"'
+      - run: |
+          LIST="${{ steps.split-tests.outputs.test-suite }}"
+          for file in $LIST
+          do
+          # sleep for 20 seconds to avoid the ORA-12514: TNS:listener does not currently know of service requested in connect descriptor error
+            sleep 20
+            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.2.oracle.sql -Dserver.port=8086 -Duser.timezone=CST
+          done
+      
+      - uses: actions/upload-artifact@v3 # upload the test results as an artifact
+        with:
+          name: Test Results
+          path: ./target/surefire-reports # path to the test results
+          retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
+
+  build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
+    runs-on: ubuntu-18.04 # running the job on ubuntu-18.04 github-hosted runner
+    needs: [build, uat-parallel-tests] # this job needs build and uat-parallel-tests jobs as a requirement to run
+    # permissions for write acces to the packages and id-token
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    # steps to run the uat-parallel-tests job are as follows:
+    # 1. checkout the repository
+    # 2. download the jar artifact from the build job
+    # 3. use the docker layer caching action to speed up the docker image build process
+    # 4. build the docker image
+    # 5. log in to the GitHub Container Registry
+    # 6. push the docker image to the GitHub Container Registry
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v1
+        with:
+          name: jar-artifact
+          path: target/
+      
+      # caching the docker layers to speed up the build process.
+      - name: Docker Layer Caching # using the docker layer caching action from the github marketplace - https://github.com/marketplace/actions/docker-layer-caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+      
+      # build the docker image using the Dockerfile in the root of the repository 
+      # and tag it with the current run number from the github action workflow run
+      - name: Docker build
+        run: |
+          docker build . -t ghcr.io/tsviz/${{ github.repository }}:${{ github.run_number }}
+      - name: Log in to the GH Container Registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # using the docker login action from the github marketplace - github.com/marketplace/actions/docker-login
+        with:
+          registry: ${{ env.REGISTRY }} # using the registry environment variable
+          username: ${{ github.actor }} # using the github.actor context
+          password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
+      - name: Docker push # push the docker image to the GitHub Container Registry
+        run: |
+          docker push ghcr.io/tsviz/${{ github.repository }}:${{ github.run_number }}
+  
+  runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
+    runs-on: ubuntu-latest
+    name: Generate runner indexes
+    outputs:
+      json: ${{ steps.generate-index-list.outputs.json }} # output the json with the runner indexes
+    steps:
+      - id: generate-index-list # generate the runner indexes and save them to the json file
+        run: |
+          MAX_INDEX=$((${{ env.total-runners }}-1)) # calculate the max index
+          INDEX_LIST=$(seq 0 ${MAX_INDEX}) # generate the list of indexes
+          INDEX_JSON=$(jq --null-input --compact-output '. |= [inputs]' <<< ${INDEX_LIST}) # convert the list to the json
+          echo "json=${INDEX_JSON}" >> $GITHUB_OUTPUT # save the json to the GITHUB_OUTPUT environment variable

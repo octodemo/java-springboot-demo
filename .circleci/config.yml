@@ -1,0 +1,200 @@
+version: 2.1
+orbs:
+  inspect_app_code_linter: circleci/github-super-linter@1.0.1
+  inspect_app_code_shell: circleci/shellcheck@3.1.2
+  aws-ecr: circleci/aws-ecr@8.1.3
+  aws-cli: circleci/aws-cli@3.1
+
+jobs:
+  inspect_db_code:
+    docker:
+      - image: liquibase/liquibase:4.17
+
+    steps:
+      - checkout
+      - run:
+          name: "Run Liquibase version"
+          command: "liquibase --version"
+
+      - run: 
+          name: "Run Liquibase Quality Checks"
+          command: "liquibase --changeLogFile=src/main/resources/db/changelog/changelog_version-3.2.oracle.sql checks run"
+  build:
+    resource_class: large
+    docker:
+      # Primary container image where all commands run
+      - image: cimg/openjdk:18.0.2  
+      # Service container image for the test database
+      - image: oracleinanutshell/oracle-xe-11g:1.0.0
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
+      AWS_ROLE_ARN: arn:aws:iam::483285841698:role/szandany
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+          # when lock file changes, use increasingly general patterns to restore cache
+          - maven-repo-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
+          - maven-repo-v1-{{ .Branch }}-
+          - maven-repo-v1-
+    - run:
+        name: "Setting Docker tag version and images name"
+        command: |
+          echo 'export TAG_VERSION=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+          curl --request POST \
+              --url https://circleci.com/api/v2/project/gh/szandany/springboot_demo/envvar \
+              --header "Circle-Token: ${API_TOKEN}" \
+              --header 'content-type: application/json' \
+              --data '{"name":"TAG_VERSION","value":"'"0.1.${CIRCLE_BUILD_NUM}"'"}'
+    - run:
+        name: "Build app changes"
+        command: |
+          mvn clean package -Dspring.datasource.url=jdbc:oracle:thin:@127.0.0.1:1521/xe -Dspring.datasource.username=system -Dspring.datasource.password=oracle -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.2.oracle.sql -Dserver.port=8086 -Duser.timezone=CST
+          cp ./target/SalesManager-*-SNAPSHOT.jar /tmp
+    - save_cache:
+        paths:
+          - ~/.m2
+        key: maven-repo-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
+    - persist_to_workspace:
+         root: ./
+         paths:
+           - target/
+    - store_artifacts:
+        path: /tmp
+        destination: artifact-file
+    - aws-ecr/build-and-push-image:
+        setup-remote-docker: true
+        remote-docker-layer-caching: true
+        assume-web-identity: true
+        region: us-east-2
+        registry-id: REG_ID
+        role-arn: $AWS_ROLE_ARN
+        session-duration: '900'
+        repo: se-demo
+        tag: $TAG_VERSION
+  acceptance_testing_1:
+    docker:
+      - image: cimg/openjdk:18.0.2
+    steps:
+      - checkout
+      - run: java --version
+  acceptance_testing_2:
+    docker:
+      - image: cimg/openjdk:18.0.2
+    steps:
+      - checkout
+      - run: java --version
+  sys_integration_testing_1:
+    docker:
+      - image: cimg/openjdk:18.0.2
+    steps:
+      - checkout
+      - run: java --version
+  sys_integration_testing_2:
+    docker:
+      - image: cimg/openjdk:18.0.2
+    steps:
+      - checkout
+      - run: java --version
+  unit_testing:
+    parallelism: 4 # parallel containers to split the tests among separate instances
+    resource_class: medium
+    # Primary container image where all commands run
+    docker:
+      - image: cimg/openjdk:18.0.2
+      # Service container image
+      - image: oracleinanutshell/oracle-xe-11g:1.0.0
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+          # when lock file changes, use increasingly general patterns to restore cache
+          - maven-repo-v2-{{ .Branch }}-{{ checksum "pom.xml" }}
+          - maven-repo-v2-{{ .Branch }}-
+          - maven-repo-v2-
+    - run: |
+        mvn -Dspring.datasource.url=$TESTDB_URL -Dspring.datasource.username=$TESTDB_USERNAME -Dspring.datasource.password=$TESTDB_PASSWORD -Dserver.port=8086 -Duser.timezone=CST \
+        -Dtest=$(for file in $(circleci tests glob "src/test/**/**/**.java" \
+        | circleci tests split --split-by=timings); \
+        do basename $file \
+        | sed -e "s/.java/,/"; \
+        done | tr -d '\r\n') \
+        -e test
+    - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+    - store_test_results:
+        path: ~/test-results
+    - save_cache:
+        paths:
+          - ~/.m2
+        key: maven-repo-v2-{{ .Branch }}-{{ checksum "pom.xml" }}
+  deploy:
+    resource_class: large
+    docker:
+      - image: cimg/deploy:2022.08
+    steps:
+    - checkout
+    - aws-cli/setup:
+        role-arn: '$ROLE_ARN'
+        role-session-name: "CircleCI-${CIRCLE_WORKFLOW_ID}-${CIRCLE_JOB}"
+    - run:
+        name: "Deploying to EKS Fargate Cluster using OpenID Connect Protocol"
+        command: |
+          aws eks update-kubeconfig --name sz-cluster
+          kubectl apply -f deployment.yaml
+workflows:
+  ci_workflow:
+    jobs:
+      - inspect_app_code_linter/lint:
+          scan-dir: src/main/resources/files
+      - inspect_app_code_shell/check:
+          dir: ./src
+          exclude: SC2148
+      - inspect_db_code
+      - build:
+          context: 
+            - tsvi-secrets
+          requires:
+            - inspect_db_code
+            - inspect_app_code_shell/check
+            - inspect_app_code_linter/lint
+      - unit_testing:
+          requires:
+            - build
+      - acceptance_testing_1:
+          requires:
+            - build
+      - acceptance_testing_2:
+          requires:
+            - build
+      - sys_integration_testing_1:
+          requires:
+            - build
+      - sys_integration_testing_2:
+          requires:
+            - build   
+      - hold-deployment-for-approval:
+          requires:
+            - unit_testing
+            - acceptance_testing_1
+            - acceptance_testing_2
+            - sys_integration_testing_1
+            - sys_integration_testing_2
+          filters:
+                  branches:
+                    only:
+                      - main
+          type: approval
+      - deploy:
+          context: 
+            - tsvi-secrets
+          requires:
+            - hold-deployment-for-approval
+          filters:
+                  branches:
+                    only:
+                      - main
