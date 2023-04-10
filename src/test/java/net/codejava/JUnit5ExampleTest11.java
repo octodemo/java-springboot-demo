@@ -27,32 +27,4 @@ public class JUnit5ExampleTest11 {
       salesDAO.delete(listSale.get(listSale.size()-1).getId());
       System.out.println("\n\nTest11-1 Successful!\n\n");
     }
-
-    // write a test to update the record
-    // @Test
-    // void testUpdate() {
-    //   Sale sale = new Sale("test item", 1, 1.0f);
-    //   salesDAO.save(sale);
-    //   List<Sale> listSale = salesDAO.list();
-    //   assertEquals("test item", listSale.get(0).getItem());
-    //   sale = listSale.get(0);
-    //   sale.setItem("test item 2");
-    //   salesDAO.update(sale);
-    //   listSale = salesDAO.list();
-    //   assertEquals("test item 2", listSale.get(0).getItem());
-    // }
-
-    // // write a test to list all the records
-    // @Test
-    // void testList() {
-    //   Sale sale = new Sale("test item", 1, 1.0f);
-    //   salesDAO.save(sale);
-    //   List<Sale> listSale = salesDAO.list();
-    //   assertEquals("test item", listSale.get(0).getItem());
-    //   sale = listSale.get(0);
-    //   sale.setItem("test item 2");
-    //   salesDAO.update(sale);
-    //   listSale = salesDAO.list();
-    //   assertEquals("test item 2", listSale.get(0).getItem());
-    // }
 }
