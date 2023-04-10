@@ -159,7 +159,7 @@ jobs:
               https://api.github.com/repos/tsviz/springboot_demo/actions/artifacts/"${LATEST_ARTIFACT_NUMBER}"/zip
 
           mkdir test_results
-          unzip my_artifact.zip -d test_results
+          unzip my_artifact.zip -d test_results 2> /dev/null || true
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
