@@ -156,7 +156,7 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
               -L -o my_artifact.zip \
-              https://api.github.com/repos/tsviz/springboot_demo/actions/artifacts/"${LATEST_ARTIFACT_NUMBER}"/zip
+              https://api.github.com/repos/octodemo/java-springboot-demo/actions/artifacts/"${LATEST_ARTIFACT_NUMBER}"/zip
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
@@ -221,7 +221,7 @@ jobs:
       # and tag it with the current run number from the github action workflow run
       - name: Docker build
         run: |
-          docker build . -t ghcr.io/tsviz/${{ github.repository }}:${{ github.run_number }}
+          docker build . -t ghcr.io/octodemo/${{ github.repository }}:${{ github.run_number }}
       - name: Log in to the GH Container Registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # using the docker login action from the github marketplace - github.com/marketplace/actions/docker-login
         with:
@@ -230,7 +230,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
       - name: Docker push # push the docker image to the GitHub Container Registry
         run: |
-          docker push ghcr.io/tsviz/${{ github.repository }}:${{ github.run_number }}
+          docker push ghcr.io/octodemo/${{ github.repository }}:${{ github.run_number }}
   
   runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
     runs-on: ubuntu-latest
