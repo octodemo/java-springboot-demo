@@ -192,11 +192,12 @@ jobs:
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
     needs: [build, uat-parallel-tests] # this job needs build and uat-parallel-tests jobs as a requirement to run
-    # permissions for write acces to the packages and id-token
+    # permissions for write acces to the packages and id-token and push access to the repository to create the container registry token
     permissions:
-      contents: read
       packages: write
       id-token: write
+      contents: write
+
     # steps to run the uat-parallel-tests job are as follows:
     # 1. checkout the repository
     # 2. download the jar artifact from the build job
