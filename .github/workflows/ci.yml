@@ -190,7 +190,7 @@ jobs:
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
-    runs-on: ubuntu-18.04 # running the job on ubuntu-18.04 github-hosted runner
+    runs-on: ubuntu-latest # using the latest ubuntu runner
     needs: [build, uat-parallel-tests] # this job needs build and uat-parallel-tests jobs as a requirement to run
     # permissions for write acces to the packages and id-token
     permissions:
