@@ -10,7 +10,7 @@
 
 	<groupId>net.codejava</groupId>
 	<artifactId>SalesManager</artifactId>
-	<version>0.0.9-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -19,7 +19,7 @@
 		<liquibase.propertyFile>local.liquibase.properties</liquibase.propertyFile>
 	</properties>
 
-	<!-- <distributionManagement>
+	<distributionManagement>
 		<repository>
 			<id>central</id>
 			<url>https://tsviz.jfrog.io/artifactory/tsvi_test</url>
@@ -30,11 +30,11 @@
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>mothership-sandbox-snapshots</name>
-			<url>https://tsviz.jfrog.io/artifactory/libs-release-local</url>
+			<url>https://tsviz.jfrog.io/artifactory/tsvi_test</url>
 		</snapshotRepository>
-	</distributionManagement> -->
+	</distributionManagement>
 
-	<distributionManagement>
+	<!-- <distributionManagement>
 		<snapshotRepository>
 			<snapshots>
 				<enabled>true</enabled>
@@ -43,7 +43,7 @@
 			<name>my-repo</name>
 			<url>https://tsviz.jfrog.io/artifactory/libs-release-local</url>
 		</snapshotRepository>
-    </distributionManagement>
+    </distributionManagement> -->
 
 	<!-- <repositories>
 		<repository>
