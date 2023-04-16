@@ -166,6 +166,8 @@ jobs:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-uat-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-uat- # key for restoring the cache if no exact match is found
+      - name: Install jq
+        uses: dcarbone/install-jq-action@v1.0.1
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - run: |
           # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
