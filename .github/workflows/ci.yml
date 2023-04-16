@@ -59,6 +59,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      
+      - name: Set up our custom Artifactory instance
+        uses: actions/setup-java@v1
+        with: # running setup-java again overwrites the settings.xml
+          java-version: 1.8
+          server-id: artifactory # value of repository/id field of the pom.xml
+          server-username: ARTIFACTORY_USERNAME_REF  # env variable name for username of Artifactory server; value can be anything as it is a transient user
+          server-password: ARTIFACTORY_TOKEN_REF # env variable name for Artifactory access token
+          # after running this action, the <username> tag contains ${env.ARTIFACTORY_USERNAME_REF} and <password> contains ${env.ARTIFACTORY_TOKEN_REF}
+
       - name: Cache Maven packages
         uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
@@ -90,15 +100,6 @@ jobs:
       # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
       # https://www.schakko.de/2020/05/24/how-to-use-a-private-maven-repository-in-artifactory-with-github-actions/
-      - name: Set up our custom Artifactory instance
-        uses: actions/setup-java@v1
-        with: # running setup-java again overwrites the settings.xml
-          java-version: 1.8
-          server-id: artifactory # value of repository/id field of the pom.xml
-          server-username: ARTIFACTORY_USERNAME_REF  # env variable name for username of Artifactory server; value can be anything as it is a transient user
-          server-password: ARTIFACTORY_TOKEN_REF # env variable name for Artifactory access token
-          # after running this action, the <username> tag contains ${env.ARTIFACTORY_USERNAME_REF} and <password> contains ${env.ARTIFACTORY_TOKEN_REF}
-
       - name: Build with Maven
         run: mvn -B package
         env:
