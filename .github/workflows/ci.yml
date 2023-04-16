@@ -126,7 +126,7 @@ jobs:
       - build
       - runner-indexes
     container:
-      image: mrkostin/maven:3.6.0-alpine-git-curl-jq # ruinning the job in a container - mrkostin/maven:3.6.0-alpine-git-curl-jq
+      image: bitnami/java:latest
     services:
       # oracle service container
       oracle: # service name - oracle. This name is used to access the service container from the job container as the host name.
