@@ -59,6 +59,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      
+      - name: Set up our custom Artifactory instance
+        uses: actions/setup-java@v1.4.4
+        with: # running setup-java again overwrites the settings.xml
+          java-version: 1.8
+          server-id: artifactory # value of repository/id field of the pom.xml
+          server-username: ARTIFACTORY_USERNAME_REF  # env variable name for username of Artifactory server; value can be anything as it is a transient user
+          server-password: ARTIFACTORY_TOKEN_REF # env variable name for Artifactory access token
+          # after running this action, the <username> tag contains ${env.ARTIFACTORY_USERNAME_REF} and <password> contains ${env.ARTIFACTORY_TOKEN_REF}
 
       - name: Cache Maven packages
         uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
@@ -86,6 +95,11 @@ jobs:
       # https://www.schakko.de/2020/05/24/how-to-use-a-private-maven-repository-in-artifactory-with-github-actions/
       - name: Build with Maven
         run: mvn -B package
+        env:
+          # assign the environment variable env.ARTIFACTORY_TOKEN_REF with the previously configured ARTIFACTORY_TOKEN
+          ARTIFACTORY_TOKEN_REF: ${{ secrets.ARTIFACTORY_TOKEN }}
+          # assign the environment variable env.ARTIFACTORY_USERNAME_REF with the previously configured ARTIFACTORY_USERNAME
+          ARTIFACTORY_USERNAME_REF: ${{ secrets.ARTIFACTORY_USERNAME }}
       
       # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
       # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
@@ -134,15 +148,7 @@ jobs:
     steps:
       - name: Checkout repository # checkout the repository
         uses: actions/checkout@v3.0.2
-      
-      - name: Set up our custom Artifactory instance
-        uses: actions/setup-java@v1.4.4
-        with: # running setup-java again overwrites the settings.xml
-          server-id: artifactory # value of repository/id field of the pom.xml
-          server-username: ARTIFACTORY_USERNAME_REF  # env variable name for username of Artifactory server; value can be anything as it is a transient user
-          server-password: ARTIFACTORY_TOKEN_REF # env variable name for Artifactory access token
-          # after running this action, the <username> tag contains ${env.ARTIFACTORY_USERNAME_REF} and <password> contains ${env.ARTIFACTORY_TOKEN_REF}
-      
+
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
@@ -193,11 +199,6 @@ jobs:
             sleep 20
             mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.2.oracle.sql -Dserver.port=8086 -Duser.timezone=CST
           done
-        env:
-            # assign the environment variable env.ARTIFACTORY_TOKEN_REF with the previously configured ARTIFACTORY_TOKEN
-            ARTIFACTORY_TOKEN_REF: ${{ secrets.ARTIFACTORY_TOKEN }}
-            # assign the environment variable env.ARTIFACTORY_USERNAME_REF with the previously configured ARTIFACTORY_USERNAME
-            ARTIFACTORY_USERNAME_REF: ${{ secrets.ARTIFACTORY_USERNAME }}
 
       - uses: actions/upload-artifact@v3 # upload the test results as an artifact
         with:
