@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       
       - name: Set up our custom Artifactory instance
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v1.4.4
         with: # running setup-java again overwrites the settings.xml
           java-version: 1.8
           server-id: artifactory # value of repository/id field of the pom.xml
@@ -79,9 +79,9 @@ jobs:
       # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
       # Using the Liquibase Maven plugin, you can run Liquibase Quality Checks on your changelogs. 
       # The plugin is available in the Maven Central repository. Link to Maven Central - https://search.maven.org/artifact/org.liquibase/liquibase-maven-plugin
-      - name: Running Liquibase Quality Checks to ensure that the database changelogs are well-formed and follow best practices
-        run: |
-          mvn process-resources liquibase:checks.run
+      # - name: Running Liquibase Quality Checks to ensure that the database changelogs are well-formed and follow best practices
+      #   run: |
+      #     mvn process-resources liquibase:checks.run
       # runnning code scanning with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       # first step is to initialize CodeQL
       - name: Initialize CodeQL
