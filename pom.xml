@@ -45,18 +45,21 @@
 		</snapshotRepository>
     </distributionManagement> -->
 
-	<!-- <repositories>
+	<repositories>
 		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 			<id>artifactory</id>
 			<name>my-repo</name>
-			<url>https://tsviz.jfrog.io/artifactory/libs-release-local</url>
+			<url>https://tsviz.jfrog.io/artifactory/tsvi_test</url>
 		</repository>
-    </repositories> -->
+    </repositories>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>net.codejava</groupId>
+			<artifactId>SalesManager</artifactId>
+			<version>0.0.9-20230414.200941-1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
