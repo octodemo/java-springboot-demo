@@ -75,13 +75,6 @@ jobs:
           path: /root/.m2 # path to the directory where maven packages are stored - /root/.m2 in the container
           key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-build-
-      # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
-      # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
-      # Using the Liquibase Maven plugin, you can run Liquibase Quality Checks on your changelogs. 
-      # The plugin is available in the Maven Central repository. Link to Maven Central - https://search.maven.org/artifact/org.liquibase/liquibase-maven-plugin
-      # - name: Running Liquibase Quality Checks to ensure that the database changelogs are well-formed and follow best practices
-      #   run: |
-      #     mvn process-resources liquibase:checks.run
       # runnning code scanning with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       # first step is to initialize CodeQL
       - name: Initialize CodeQL
@@ -108,6 +101,13 @@ jobs:
           # assign the environment variable env.ARTIFACTORY_USERNAME_REF with the previously configured ARTIFACTORY_USERNAME
           ARTIFACTORY_USERNAME_REF: ${{ secrets.ARTIFACTORY_USERNAME }}
       
+      # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
+      # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
+      # Using the Liquibase Maven plugin, you can run Liquibase Quality Checks on your changelogs. 
+      # The plugin is available in the Maven Central repository. Link to Maven Central - https://search.maven.org/artifact/org.liquibase/liquibase-maven-plugin
+      - name: Running Liquibase Quality Checks to ensure that the database changelogs are well-formed and follow best practices
+        run: |
+          mvn process-resources liquibase:checks.run
       # performing Code Quality Analysis with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
