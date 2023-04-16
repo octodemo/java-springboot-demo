@@ -152,7 +152,6 @@ jobs:
       - name: Set up our custom Artifactory instance
         uses: actions/setup-java@v1.4.4
         with: # running setup-java again overwrites the settings.xml
-          java-version: 1.8
           server-id: artifactory # value of repository/id field of the pom.xml
           server-username: ARTIFACTORY_USERNAME_REF  # env variable name for username of Artifactory server; value can be anything as it is a transient user
           server-password: ARTIFACTORY_TOKEN_REF # env variable name for Artifactory access token
@@ -186,7 +185,6 @@ jobs:
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
-          which java
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
