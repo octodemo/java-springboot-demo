@@ -188,6 +188,12 @@ jobs:
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
+      
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.8.2
+      
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
