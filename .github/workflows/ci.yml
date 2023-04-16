@@ -125,8 +125,6 @@ jobs:
     needs: # needs build job and runner-indexes job to be completed before running the uat-parallel-tests job
       - build
       - runner-indexes
-    container:
-      image: bitnami/java:latest
     services:
       # oracle service container
       oracle: # service name - oracle. This name is used to access the service container from the job container as the host name.
@@ -166,8 +164,6 @@ jobs:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-uat-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-uat- # key for restoring the cache if no exact match is found
-      - name: Install jq
-        uses: dcarbone/install-jq-action@v1.0.1
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - run: |
           # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
@@ -188,11 +184,6 @@ jobs:
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
-      
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.8.2
       
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
