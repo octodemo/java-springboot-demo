@@ -9,11 +9,12 @@ on:
     branches:
       - main
       - develop
-  # running on pull requests to main and develop branches
-  pull_request:
-    branches:
-      - main
-      - develop
+      - jfrog_test
+  # # running on pull requests to main and develop branches
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - develop
 
 # defining global environment variables for all jobs
 env:
