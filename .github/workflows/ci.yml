@@ -103,6 +103,7 @@ jobs:
           echo "here are the contents of the settings.xml file: "
           cat ~/.m2/settings.xml
           echo $TET_VAR
+          echo $ARTIFACTORY_TOKEN_USER
           mvn -B package
         env:
           # assign the environment variable env.ARTIFACTORY_TOKEN_REF with the previously configured ARTIFACTORY_TOKEN
