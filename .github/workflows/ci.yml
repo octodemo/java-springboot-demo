@@ -102,12 +102,14 @@ jobs:
         run: |
           echo "here are the contents of the settings.xml file: "
           cat ~/.m2/settings.xml
+          echo $TET_VAR
           mvn -B package
         env:
           # assign the environment variable env.ARTIFACTORY_TOKEN_REF with the previously configured ARTIFACTORY_TOKEN
           ARTIFACTORY_TOKEN_REF: ${{ secrets.ARTIFACTORY_TOKEN }}
           # assign the environment variable env.ARTIFACTORY_USERNAME_REF with the previously configured ARTIFACTORY_USERNAME
           ARTIFACTORY_USERNAME_REF: ${{ secrets.ARTIFACTORY_USERNAME }}
+          TET_VAR: "This is a test variable"
       
       # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
       # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
