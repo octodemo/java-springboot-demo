@@ -200,6 +200,9 @@ jobs:
       # run the tests in parallel looping through the test-suite output from the split-tests action
       - run: 'echo "This runner will execute the following tests: ${{ steps.split-tests.outputs.test-suite }}"'
       - run: |
+          echo "here are the contents of the settings.xml file: "
+          cat ~/.m2/settings.xml
+      - run: |
           LIST="${{ steps.split-tests.outputs.test-suite }}"
           for file in $LIST
           do
