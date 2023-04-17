@@ -37,10 +37,6 @@ jobs:
   build:
     # build job will run on ubuntu-latest github-hosted runner
     runs-on: ubuntu-latest
-    # run in a container that has java, maven and jq installed
-    container: 
-      image: maven:3.6.3-jdk-8
-      options: --user root
     # defining permissions for the job - read contents, write packages, write id-token. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idpermissions
     # security-events permission is required for CodeQL analysis
     # enforcing policy for the job - only users with write access to the repository can trigger the job. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idenforce_admins
@@ -99,18 +95,12 @@ jobs:
       # If this step fails, then you should remove it and run the build manually (see below)
       # https://www.schakko.de/2020/05/24/how-to-use-a-private-maven-repository-in-artifactory-with-github-actions/
       - name: Build with Maven
-        run: |
-          echo "here are the contents of the settings.xml file: "
-          cat ~/.m2/settings.xml
-          echo "here are the value of TET_VAR: $TET_VAR"
-          echo "here are the value of ARTIFACTORY_USERNAME_REF: $ARTIFACTORY_USERNAME_REF"
-          mvn -B package
+        run: mvn -B package
         env:
           # assign the environment variable env.ARTIFACTORY_TOKEN_REF with the previously configured ARTIFACTORY_TOKEN
           ARTIFACTORY_TOKEN_REF: ${{ secrets.ARTIFACTORY_TOKEN }}
           # assign the environment variable env.ARTIFACTORY_USERNAME_REF with the previously configured ARTIFACTORY_USERNAME
           ARTIFACTORY_USERNAME_REF: ${{ secrets.ARTIFACTORY_USERNAME }}
-          TET_VAR: "This is a test variable"
       
       # running liquibase quality checks step to ensure that the database changelogs are well-formed and follow best practices.
       # Link to the documentation - https://docs.liquibase.com/tools-integrations/liquibase-quality-checks/overview.html
