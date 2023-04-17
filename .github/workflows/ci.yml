@@ -37,6 +37,10 @@ jobs:
   build:
     # build job will run on ubuntu-latest github-hosted runner
     runs-on: ubuntu-latest
+    # run in a container that has java, maven and jq installed
+    container: 
+      image: maven:3.6.3-jdk-8
+      options: --user root
     # defining permissions for the job - read contents, write packages, write id-token. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idpermissions
     # security-events permission is required for CodeQL analysis
     # enforcing policy for the job - only users with write access to the repository can trigger the job. Link to the documentation - https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idenforce_admins
