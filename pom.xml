@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>net.codejava</groupId>
-	<artifactId>SalesManager</artifactId>
+	<artifactId>salesmanager</artifactId>
 	<version>0.0.8-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
@@ -20,18 +20,26 @@
 	</properties>
 
 	<distributionManagement>
-		<repository>
+		<!-- <repository>
 			<id>central</id>
 			<url>https://tsviz.jfrog.io/artifactory/tsvi_test</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository> -->
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/octodemo/java-springboot-demo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
-		<snapshotRepository>
+		<!-- <snapshotRepository>
 			<id>snapshots</id>
 			<name>mothership-sandbox-snapshots</name>
 			<url>https://tsviz.jfrog.io/artifactory/tsvi_test</url>
-		</snapshotRepository>
+		</snapshotRepository> -->
 	</distributionManagement>
 
 	<!-- <distributionManagement>
@@ -55,11 +63,11 @@
 
 	<dependencies>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>net.codejava</groupId>
 			<artifactId>SalesManager</artifactId>
 			<version>0.0.9-20230414.200941-1</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
