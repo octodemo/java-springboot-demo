@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>net.codejava</groupId>
-	<artifactId>SalesManager</artifactId>
+	<artifactId>salesmanager</artifactId>
 	<version>0.0.6-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
@@ -18,6 +18,17 @@
 		<java.version>1.8</java.version>
 		<liquibase.propertyFile>local.liquibase.properties</liquibase.propertyFile>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/octodemo/java-springboot-demo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</distributionManagement>
 
 	<dependencies>
 
