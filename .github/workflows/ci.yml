@@ -5,11 +5,11 @@ on:
   # manual trigger
   workflow_dispatch:
   # runnnig on push to main and develop branches
-  push:
-    branches:
-      - main
-      - develop
-      - jfrog_test
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #     - jfrog_test
   # # running on pull requests to main and develop branches
   # pull_request:
   #   branches:
