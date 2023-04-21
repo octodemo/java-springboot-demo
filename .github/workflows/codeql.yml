@@ -75,10 +75,9 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
         
-    - name: CSV export
-      uses: some-natalie/ghas-to-csv@v2
-      env:
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}  # you need to set a PAT
+    - uses : son7211/GetCodeScanning_result-to-csv@master
+      with :
+        github_token: ${{ secrets.GITHUB_TOKEN }}
           
     - name: Upload CSV
       uses: actions/upload-artifact@v3
