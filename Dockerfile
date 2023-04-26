@@ -1,4 +1,4 @@
-FROM cimg/openjdk:18.0.2
+FROM openjdk:21-slim-buster
 RUN mkdir workspace
 WORKDIR /workspace/
 COPY target/SalesManager-*-SNAPSHOT.jar .
