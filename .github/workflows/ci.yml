@@ -192,6 +192,7 @@ jobs:
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
     needs: [build, uat-parallel-tests] # this job needs build and uat-parallel-tests jobs as a requirement to run
+    if: github.ref == 'refs/heads/main' # run this job only when the branch is main branch and not on pull requests or other branches - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
     # permissions for write acces to the packages and id-token and push access to the repository to create the container registry token
     permissions:
       packages: write
@@ -228,9 +229,12 @@ jobs:
           registry: ${{ env.REGISTRY }} # using the registry environment variable
           username: ${{ github.actor }} # using the github.actor context
           password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
-      - name: Docker push # push the docker image to the GitHub Container Registry
-        run: |
-          docker push ghcr.io/octodemo/${{ github.repository }}:${{ github.run_number }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with: 
+          context: . # using the current directory as the context
+          push: true # push the docker image to the registry
+          tags: ghcr.io/octodemo/${{ github.repository }}:${{ github.run_number }} # tag the docker image with the current run number from the github action workflow run
   
   runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
     runs-on: ubuntu-latest
