@@ -234,7 +234,7 @@ jobs:
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry
-          tags: ghcr.io/octodemo/${{ github.repository }}:${{ github.run_number }} # tag the docker image with the current run number from the github action workflow run
+          tags: ghcr.io/${{ github.repository }}:${{ github.run_number }} # tag the docker image with the current run number from the github action workflow run
   
   runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
     runs-on: ubuntu-latest
