@@ -3,3 +3,4 @@ target/
 nohup.out
 .vscode/
 split_tests.sh
+*.db
