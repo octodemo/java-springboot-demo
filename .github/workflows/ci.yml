@@ -223,7 +223,7 @@ jobs:
           username: ${{ github.actor }} # using the github.actor context
           password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
       - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v4 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry
