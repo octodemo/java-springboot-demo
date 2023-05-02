@@ -28,24 +28,18 @@ stateDiagram
     state Continuous-Integration {
         state GitHub-Advanced-Security {
         Build --> PR: Feedback of failed tests - back to dev
-        Build --> JunitTests
-        JunitTests --> Publish
-        note left of Build: Security Scans, Build & Unit Test Suit
+        Build --> JunitTests: Security Scans, Build & Unit Test Suite
+        JunitTests --> Publish: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
         state Parallel-Testing {
-        JunitTests --> JunitTest1
+        JunitTests --> JunitTest1: Each test runs in \na containerized environment
         JunitTests --> JunitTest2
         JunitTests --> JunitTest3
         JunitTests --> JunitTest4
         JunitTests --> JunitTest5
         JunitTests --> JunitTest..N
-        note left of JunitTests : Each test runs in \na containerized environment
-        note left of JunitTests : Optionally tests can run \nwith a service container\n to test backend\n database changes
-        note right of JunitTests: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
         }
       }
     }
-    
-
 
     state Continuous-Delivery {
     Publish --> PreProdTests: Pulling Image from GHDR
