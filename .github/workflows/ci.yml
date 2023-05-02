@@ -102,11 +102,11 @@ jobs:
           name: jar-artifact # naming the artifact jar file/s path
           path: target/ # actual relative path to the artifact in the container - target/
   
-  uat-parallel-tests:
-    # uat-parallel-tests job will run on ubuntu-latest github-hosted runner
-    name: UAT
+  unit-parallel-tests:
+    # unit-parallel-tests job will run on ubuntu-latest github-hosted runner
+    name: UNIT-PARALLEL-TESTS
     runs-on: ubuntu-latest
-    needs: # needs build job and runner-indexes job to be completed before running the uat-parallel-tests job
+    needs: # needs build job and runner-indexes job to be completed before running the unit-parallel-tests job
       - build
       - runner-indexes
     container:
@@ -191,7 +191,7 @@ jobs:
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
-    needs: [build, uat-parallel-tests] # this job needs build and uat-parallel-tests jobs as a requirement to run
+    needs: [build, unit-parallel-tests] # this job needs build and unit-parallel-tests jobs as a requirement to run
     if: github.ref == 'refs/heads/main' # run this job only when the branch is main branch and not on pull requests or other branches - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
     # permissions for write acces to the packages and id-token and push access to the repository to create the container registry token
     permissions:
@@ -199,7 +199,7 @@ jobs:
       id-token: write
       contents: write
 
-    # steps to run the uat-parallel-tests job are as follows:
+    # steps to run the unit-parallel-tests job are as follows:
     # 1. checkout the repository
     # 2. download the jar artifact from the build job
     # 3. use the docker layer caching action to speed up the docker image build process
@@ -232,7 +232,7 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
           cache-to: type=inline
 
-  runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
+  runner-indexes: # job to generate the runner indexes for the unit-parallel-tests job
     runs-on: ubuntu-latest
     name: Generate runner indexes
     outputs:
