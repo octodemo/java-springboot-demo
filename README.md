@@ -38,8 +38,8 @@ stateDiagram
         JunitTests --> JunitTest4
         JunitTests --> JunitTest5
         JunitTests --> JunitTest..N
-        note left of JunitTest1 : Each test runs in \na containerized environment
-        note left of JunitTest1 : Optionally tests can run \nwith a service container\n to test backend\n database changes
+        note left of JunitTests : Each test runs in \na containerized environment
+        note left of JunitTests : Optionally tests can run \nwith a service container\n to test backend\n database changes
         note right of JunitTests: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
         }
       }
