@@ -214,10 +214,6 @@ jobs:
           name: jar-artifact
           path: target/
       
-      # caching the docker layers to speed up the build process.
-      - name: Docker Layer Caching # using the docker layer caching action from the github marketplace - https://github.com/marketplace/actions/docker-layer-caching
-        uses: satackey/action-docker-layer-caching@v0.0.11
-      
       # build the docker image using the Dockerfile in the root of the repository 
       # and tag it with the current run number from the github action workflow run
       - name: Log in to the GH Container Registry
@@ -232,7 +228,9 @@ jobs:
           context: . # using the current directory as the context
           push: true # push the docker image to the registry
           tags: ghcr.io/${{ github.repository }}:${{ github.run_number }} # tag the docker image with the current run number from the github action workflow run
-  
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
     runs-on: ubuntu-latest
     name: Generate runner indexes
