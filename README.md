@@ -68,7 +68,7 @@ Repository Secrets
 `LIQUIBASE_COMMAND_USERNAME`
 `LIQUIBASE_COMMAND_PASSWORD`
 
-If you are going to use the same service containers in the CI job for dev, then the default values should be: </br>
+If you are going to use the same [dockerised service container](https://hub.docker.com/r/gvenzl/oracle-xe) in the CI job for dev, then the default values should be: </br>
 `LIQUIBASE_COMMAND_URL` = `jdbc:oracle:thin:@oracle:1521/xe` </br>
 `LIQUIBASE_COMMAND_USERNAME` = `SYSTEM` </br>
 `LIQUIBASE_COMMAND_PASSWORD` = `ORACLE`
