@@ -178,8 +178,8 @@ jobs:
           LIST="${{ steps.split-tests.outputs.test-suite }}"
           for file in $LIST
           do
-          # sleep for 20 seconds to avoid the ORA-12514: TNS:listener does not currently know of service requested in connect descriptor error
-            sleep 20
+          # sleep for 10 seconds to avoid the ORA-12514: TNS:listener does not currently know of service requested in connect descriptor error
+            sleep 10
             mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.2.oracle.sql -Dserver.port=8086 -Duser.timezone=CST
           done
       
@@ -220,9 +220,6 @@ jobs:
       
       # build the docker image using the Dockerfile in the root of the repository 
       # and tag it with the current run number from the github action workflow run
-      - name: Docker build
-        run: |
-          docker build . -t ghcr.io/${{ github.repository }}:${{ github.run_number }}
       - name: Log in to the GH Container Registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # using the docker login action from the github marketplace - github.com/marketplace/actions/docker-login
         with:
