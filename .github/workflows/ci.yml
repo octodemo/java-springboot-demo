@@ -222,13 +222,14 @@ jobs:
           registry: ${{ env.REGISTRY }} # using the registry environment variable
           username: ${{ github.actor }} # using the github.actor context
           password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
+      
       - name: Build and push Docker image
         uses: docker/build-push-action@v4 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry
-          tags: ghcr.io/${{ github.repository }}:${{ github.run_number }} # tag the docker image with the current run number from the github action workflow run
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:$((${{ github.run_number }}-1)) 
+          tags: ghcr.io/${{ github.repository }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
           cache-to: type=inline
 
   runner-indexes: # job to generate the runner indexes for the uat-parallel-tests job
