@@ -61,7 +61,7 @@ You can run the `./build_and_run_app.sh` helper shell script and interact with t
 
 Running the CI workflow
 1. In order to run the workflow, you will need to [fork](https://docs.github.com/en/enterprise-cloud@latest/get-started/quickstart/fork-a-repo) this repo. </br>
-2. Then, make sure to save the following environment variables in your repository secrets so you can successfully run the Database schema mirgations scripts (using [Liquibase](https://www.liquibase.com/) as the schema migration tool) on application startup. </br>
+2. Then, make sure to save the following environment variables in your repository secrets so you can successfully run the Database schema mirgations scripts (using [Liquibase](https://www.liquibase.com/) as the schema migration tool) on application startup and when running the tests. </br>
 
 Repository Secrets
 `LIQUIBASE_COMMAND_URL`
