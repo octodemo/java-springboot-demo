@@ -22,13 +22,13 @@ Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` for more
 stateDiagram
     state Developer-Workflow {
     Commits --> PR: Developers Commit new changes in a Pull Request
-    PR --> Build: Security Scans, Build & Unit Test Suit
+    PR --> Build: Security Scans, Build & Unit Test Suite
     }
     
     state Continuous-Integration {
         state GitHub-Advanced-Security {
         Build --> PR: Feedback of failed tests - back to dev
-        Build --> JunitTests: Security Scans, Build & Unit Test Suite
+        Build --> JunitTests: Storing Artifacts
         JunitTests --> Publish: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
         state Parallel-Testing {
         JunitTests --> JunitTest1: Each test runs in \na containerized environment
