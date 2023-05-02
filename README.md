@@ -20,20 +20,33 @@ Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` for more
 # CI/CD Diagram
 ```mermaid
 stateDiagram
-    state Continuous-Integration {
+    state Developer-Workflow {
     Commits --> PR: Developers Commit new changes in a Pull Request
-    PR --> CI: Security Scans, Build & Unit Test Suit
-    CI --> PR: Feedback of failed tests - back to dev
-    CI --> Publish: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GHCR
+    PR --> Build: Security Scans, Build & Unit Test Suit
     }
     
-    state Parallel-Testing {
-        CI --> JunitTest1
-        CI --> JunitTest2
-        CI --> JunitTest3
-        CI --> JunitTest..N
+    state Continuous-Integration {
+        state GitHub-Advanced-Security {
+        Build --> PR: Feedback of failed tests - back to dev
+        Build --> JunitTests
+        JunitTests --> Publish
+        note left of Build: Security Scans, Build & Unit Test Suit
+        state Parallel-Testing {
+        JunitTests --> JunitTest1
+        JunitTests --> JunitTest2
+        JunitTests --> JunitTest3
+        JunitTests --> JunitTest4
+        JunitTests --> JunitTest5
+        JunitTests --> JunitTest..N
+        note left of JunitTest1 : Each test runs in \na containerized environment
+        note left of JunitTest1 : Optionally tests can run \nwith a service container\n to test backend\n database changes
+        note right of JunitTests: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
+        }
+      }
     }
     
+
+
     state Continuous-Delivery {
     Publish --> PreProdTests: Pulling Image from GHDR
     PreProdTests --> Deploy: Deploy the app to K8s
