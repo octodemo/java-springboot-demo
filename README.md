@@ -47,6 +47,32 @@ stateDiagram
     }
 ```
 
+*Building and Testing*
+ - [Maven](https://maven.apache.org/) as the project management for Building and Testing the application.
+The user input data from the app's view is stored in an Oracle (PDB) Database.
+
+
+# How to Demo
+For easy demos, an H2 database (Oracle Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
+You can easily use a [GitHub codespaces](https://docs.github.com/en/enterprise-cloud@latest/codespaces) with this repository. </br>
+To set up your codespace, simply go to this repo [main page](https://github.com/octodemo/java-springboot-demo) --> Click **Code** --> Codespaces '+'. </br>
+You can run the `./build_and_run_app.sh` helper shell script and interact with the web app on `localhost:8086`.
+
+
+Running the CI workflow
+1. In order to run the workflow, you will need to [fork](https://docs.github.com/en/enterprise-cloud@latest/get-started/quickstart/fork-a-repo) this repo. </br>
+2. Then, make sure to save the following environment variables in your repository secrets so you can successfully run the Database schema mirgations scripts (using [Liquibase](https://www.liquibase.com/) as the schema migration tool) on application startup. </br>
+
+Repository Secrets
+`LIQUIBASE_COMMAND_URL`
+`LIQUIBASE_COMMAND_USERNAME`
+`LIQUIBASE_COMMAND_PASSWORD`
+
+If you are going to use the same service containers in the CI job for dev, then the default values should be: </br>
+`LIQUIBASE_COMMAND_URL` = `jdbc:oracle:thin:@oracle:1521/xe` </br>
+`LIQUIBASE_COMMAND_USERNAME` = `SYSTEM` </br>
+`LIQUIBASE_COMMAND_PASSWORD` = `ORACLE`
+
 # Gitgraph Diagram - Developer Workflow
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'showBranches': true}} }%%
@@ -94,11 +120,3 @@ stateDiagram
         merge release
 ```
 
- *Building and Testing*
- - [Maven](https://maven.apache.org/) as the project management for Building and Testing the application.
-
-
-User input data is stored in an Oracle (PDB) Database.
-
-
-For easy demos, an H2 database (Oracle Mode) is setup by default in the `src/main/resources/application.properties` file.
