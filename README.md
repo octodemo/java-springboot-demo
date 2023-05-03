@@ -52,7 +52,7 @@ stateDiagram
     }
 ```
 
-*Building and Testing*
+## Building and Testing
 [Maven](https://maven.apache.org/) is used as the project management for Building and Testing the application.
 To build the application, you can run:
 ```
