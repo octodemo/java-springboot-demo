@@ -47,9 +47,11 @@ stateDiagram
     }
 
     state Continuous-Delivery {
-    Publish --> PreProdTests: Pulling Image from GHDR
-    PreProdTests --> Deploy: Deploy the app to K8s
+    Publish --> SystemTesting: Pulling Image from GHDR
+    SystemTesting --> IntegrationTesting
+    IntegrationTesting --> AccepetanceTesting
     }
+    AccepetanceTesting --> Deploy: Login with OpenID Connect and \nDeploy the app to K8s
 ```
 
 ## Building and Testing
