@@ -12,10 +12,11 @@ This demo repo is designed to help understand some of **CI/CD** (Continuous Inte
  
  *CI/CD Pipeline*
  [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions) as the main CI/CD pipeline orchestrator
-Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` for more detailed configuration).
 
+**Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` for more detailed configuration).**
  - [Caching Dependencies to Speed Up Workflows](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
- - [Using the Metrix Strategy to Run Unit Tests In Parallel](https://docs.github.com/en/enterprise-cloud@latest/actions/using-jobs/using-a-matrix-for-your-jobs)
+ - Reusing Docker Layer Caching from pervious docker builds with [action-docker-layer-caching](https://github.com/satackey/action-docker-layer-caching) or [build-push-action](https://github.com/docker/build-push-action) actions.
+ - Using the [Metrix Strategy] to Run Unit Tests In Parallel(https://docs.github.com/en/enterprise-cloud@latest/actions/using-jobs/using-a-matrix-for-your-jobs) to scale-out resources and reduce significant testing time.
               
 # CI/CD Diagram
 ```mermaid
