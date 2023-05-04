@@ -52,8 +52,8 @@ stateDiagram
     IntegrationTesting --> AccepetanceTesting: [staging]
     }
     AccepetanceTesting --> Deploy: Login with OpenID Connect and \nDeploy the app to K8s
-    Deploy --> [Production1]: Blue
-    Deploy --> [Production2]: Green
+    Deploy --> [ProdInstance1]: Blue
+    Deploy --> [ProdInstance2]: Green
 ```
 
 ## Building and Testing
