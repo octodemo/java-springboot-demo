@@ -141,7 +141,7 @@ jobs:
       - name: Cache Maven packages
         uses: actions/cache@v3 # using the actions/cache@v3 action to cache the maven packages
         with:
-          path: ~/.m2 # path to cache
+          path: /root/.m2 # path to cache
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
