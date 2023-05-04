@@ -9,11 +9,15 @@ on:
     branches:
       - main
       - develop
+    paths-ignore:
+      - '**/README.md'
   # running on pull requests to main and develop branches
   pull_request:
     branches:
       - main
       - develop
+    paths-ignore:
+      - '**/README.md'
 
 # defining global environment variables for all jobs
 env:
