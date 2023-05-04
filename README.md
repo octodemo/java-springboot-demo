@@ -48,10 +48,12 @@ stateDiagram
 
     state Continuous-Delivery {
     Publish --> SystemTesting: Pulling Image from GHDR
-    SystemTesting --> IntegrationTesting
-    IntegrationTesting --> AccepetanceTesting
+    SystemTesting --> IntegrationTesting: [staging]
+    IntegrationTesting --> AccepetanceTesting: [staging]
     }
     AccepetanceTesting --> Deploy: Login with OpenID Connect and \nDeploy the app to K8s
+    Deploy --> [Production1]: Blue
+    Deploy --> [Production2]: Green
 ```
 
 ## Building and Testing
