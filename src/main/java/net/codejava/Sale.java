@@ -51,6 +51,4 @@ public class Sale {
 	public String toString() {
 		return "Sale [id=" + id + ", item=" + item + ", quantity=" + quantity + ", amount=" + amount + "]";
 	}
-
-	
 }
