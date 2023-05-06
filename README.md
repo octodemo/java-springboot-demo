@@ -86,7 +86,7 @@ You can run the `./build_and_run_app.sh` helper shell script and interact with t
 ### If you are going to use the same [dockerised service container](https://hub.docker.com/r/gvenzl/oracle-xe) in the CI job for dev, then the default values should be: </br>
 `LIQUIBASE_COMMAND_URL` = `jdbc:oracle:thin:@oracle:1521/xe` </br>
 `LIQUIBASE_COMMAND_USERNAME` = `SYSTEM` </br>
-`LIQUIBASE_COMMAND_PASSWORD` = `ORACLE`
+`LIQUIBASE_COMMAND_PASSWORD` = `oracle`
 
 # Gitgraph Diagram - Developer Workflow
 ```mermaid
