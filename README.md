@@ -69,7 +69,7 @@ java -jar target/salesmanager-0.0.6-SNAPSHOT.jar
 ```
 
 # How to Demo
-For easy demos without the need to stand up an Oracle database, an lightweight local [H2 database](https://www.h2database.com/html/main.html) (Oracle Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
+For easy demos without the need to stand up an Oracle database, a lightweight local [H2 database](https://www.h2database.com/html/main.html) (Oracle Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
 You can run the `./build_and_run_app.sh` helper shell script and interact with the web app on `localhost:8086`.
 > You can easily use a [GitHub codespaces](https://docs.github.com/en/enterprise-cloud@latest/codespaces) with this repository. To set up your codespace, simply go to this repo [main page](https://github.com/octodemo/java-springboot-demo) --> Click **Code** --> Codespaces '+'. </br>
 
