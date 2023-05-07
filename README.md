@@ -47,7 +47,7 @@ stateDiagram
     }
 
     state Continuous-Delivery {
-    Publish --> SystemTesting: Pulling Image from GHDR
+    Publish --> SystemTesting: Pulling Image from GHCR
     SystemTesting --> IntegrationTesting: [staging]
     IntegrationTesting --> AccepetanceTesting: [staging]
     }
