@@ -20,8 +20,8 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
         with:
-          base-ref: dependency_review_without_pr
-          head-ref: main
+          base-ref: main
+          head-ref: dependency_review_without_pr
 
            
 
