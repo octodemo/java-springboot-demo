@@ -6,7 +6,6 @@
 # Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
 name: 'Dependency Review'
 
-# trigger on base-ref branch changes and head-ref branch changes (pull requests)
 on: [push]
 
 permissions:
@@ -21,5 +20,9 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
         with:
+          # base-ref and head-ref
           base-ref: ${{ github.base_ref }}
           head-ref: ${{ github.head_ref }}
+
+           
+
