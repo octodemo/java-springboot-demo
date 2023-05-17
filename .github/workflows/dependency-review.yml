@@ -8,10 +8,6 @@ name: 'Dependency Review'
 
 on: [push]
 
-env:
-  base-branch: ${{ github.base_ref }}
-  head-branch: ${{ github.head_ref }}
-
 permissions:
   contents: read
 
@@ -24,8 +20,8 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
         with:
-          base-ref: ${{ env.base-branch }}
-          head-ref: ${{ env.head-branch }}
+          base-ref: dependency_review_without_pr
+          head-ref: main
 
            
 
