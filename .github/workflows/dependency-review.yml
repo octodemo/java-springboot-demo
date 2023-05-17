@@ -17,14 +17,8 @@ jobs:
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
-      - name: echo-default-env-variables
-        run: |
-          echo $GITHUB_BASE_REF
-          echo $GITHUB_HEAD_REF
-          echo $GITHUB_REF_NAME
-          echo $GITHUB_HEAD_REF_NAME
-      # - name: 'Dependency Review'
-      #   uses: actions/dependency-review-action@v2
-      #   with:
-      #     base-ref: ${{ vars.GITHUB_BASE_REF }}
-      #     head-ref: ${{ vars.GITHUB_HEAD_REF }}
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v2
+        with:
+          base-ref: ${{ vars.GITHUB_BASE_REF_NAME }}
+          head-ref: ${{ vars.GITHUB_HEAD_REF_NAME }}
