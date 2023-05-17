@@ -21,8 +21,8 @@ jobs:
         uses: actions/dependency-review-action@v2
         with:
           # base-ref and head-ref
-          base-ref: ${{ github.base_ref }}
-          head-ref: ${{ github.head_ref }}
+          base-ref: dependency_review_without_pr
+          head-ref: main
 
            
 
