@@ -22,7 +22,8 @@ jobs:
         with:
           # base-ref and head-ref
           base-ref: dependency_review_without_pr
-          head-ref: main
+          # head-ref as a variable
+          head-ref: ${{ github.head_ref }}
 
            
 
