@@ -21,4 +21,4 @@ jobs:
         uses: actions/dependency-review-action@v2
         with:
           base-ref: main
-          head-ref: ${{ GITHUB_REF_NAME }}
+          head-ref: ${{ github.ref.name }}
