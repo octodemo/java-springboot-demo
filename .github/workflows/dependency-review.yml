@@ -7,7 +7,7 @@
 name: 'Dependency Review'
 
 # trigger on base-ref branch changes and head-ref branch changes (pull requests)
-on: [push, pull_request]
+on: [push]
 
 permissions:
   contents: read
