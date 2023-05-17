@@ -83,6 +83,12 @@
 			<version>7.6.1</version>
 			<scope>test</scope>
 		</dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.7.0</version>
+		</dependency>
 		
 	</dependencies>
 	
