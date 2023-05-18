@@ -17,8 +17,10 @@ jobs:
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
-      - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v2
         with:
-          base-ref: main
-          head-ref: ${{ github.ref }}
+          fetch-depth: 2
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v3
+        with:
+          base-ref: refs/heads/main~1
+          head-ref: refs/heads/main
