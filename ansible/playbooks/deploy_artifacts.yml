@@ -14,6 +14,6 @@
         #Check for running container & stop it before starting a new one
         docker stop app-test || true && docker rm app-test || true
         aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin {{ ECR_IMAGE }}
-        docker run -t -d -p 80:8086  --name app-test {{ ECR_IMAGE }}:{{ VERSION }}
+        docker run -e HOST_IP={{ HOST_IP }} -t -d -p 80:8086  --name app-test {{ ECR_IMAGE }}:{{ VERSION }}
       register: shell_output
     - debug: var=shell_output
