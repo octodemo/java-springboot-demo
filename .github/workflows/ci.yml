@@ -11,6 +11,7 @@ on:
       - develop
     paths-ignore:
       - '**/README.md'
+      - '.devcontainer/**'
   # running on pull requests to main and develop branches
   pull_request:
     branches:
