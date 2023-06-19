@@ -1,0 +1,54 @@
+version: '3.8'
+networks:
+  tsvi_network:
+    driver: bridge
+
+services:
+  database:
+    networks:
+      - tsvi_network
+    container_name: oracle_database_container
+    image: oracleinanutshell/oracle-xe-11g:latest
+    restart: on-failure
+    ports:
+      - "49161:1521"
+#     healthcheck:
+#       test: ["CMD", "sqlplus", "-L", "sys/SYSTEM@//localhost:1521/xe as sysdba", "as", "sysdba", "SELECT 1 FROM DUAL;"]
+#       interval: 1m30s
+#       timeout: 10s
+#       retries: 3
+    environment:
+      # - ORACLE_SID=xe
+      # - ORACLE_USER=system
+      # - ORACLE_PWD=oracle
+      # - ORACLE_PDB=ORCLPDB1
+      - ORACLE_PASSWORD=oracle
+    volumes:
+      - oracle-volume:/opt/oracle/oradata
+
+  app:
+    networks:
+      - tsvi_network
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    # volumes:
+    #   - .:/usr/src/mymaven
+    # working_dir: /usr/src/mymaven
+    ports:
+      - "80:8086"
+    container_name: spring_app_container
+    depends_on:
+      - database
+    restart: on-failure
+    environment: 
+      - ORACLE_SID=xe
+      - ORACLE_USER=system
+      - DB_URL=jdbc:oracle:thin:@database:1521/xe
+      - PASSWORD=oracle
+      - CHANGELOG_VERSION=changelog_version-3.2.oracle.sql
+
+volumes:
+  oracle-volume:
+    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward oracle locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
