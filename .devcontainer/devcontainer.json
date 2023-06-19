@@ -8,6 +8,9 @@
     "settings": {
         "java.home": "/usr/lib/jvm/java-11-openjdk-amd64"
     },
+    "forwardPorts": [
+		80
+	],
     "features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"version": "latest",
