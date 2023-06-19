@@ -1,19 +1,26 @@
 {
     "name": "Java",
-    "image": "mcr.microsoft.com/devcontainers/java:0-17",  // Any generic, debian-based image.
-    
+    "image": "mcr.microsoft.com/devcontainers/java:0-17",
+    "extensions": [
+        "vscjava.vscode-java-pack"
+    ],
+    "postCreateCommand": "mvn clean package; docker-compose up -d",
+    "settings": {
+        "java.home": "/usr/lib/jvm/java-11-openjdk-amd64"
+    },
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:1": {
-            "version": "latest",
-            "moby": true
-        },
-        "ghcr.io/devcontainers/features/java:1": {
-			"version": "none",
-			"installMaven": "true",
-			"mavenVersion": "3.8.6",
-			"installGradle": "false"
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"version": "latest",
+			"autoForwardPorts": true,
+			"moby": true
 		},
-	"ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {
-	}
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "none",
+            "installMaven": "true",
+            "mavenVersion": "3.8.6",
+            "installGradle": "false"
+        },
+        "ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {
+        }
     }
 }
