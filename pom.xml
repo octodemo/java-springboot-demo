@@ -10,7 +10,7 @@
 
 	<groupId>net.codejava</groupId>
 	<artifactId>salesmanager</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -29,6 +29,14 @@
 			</snapshots>
 		</repository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<name>my-repo</name>
+			<url>https://maven.pkg.github.com/octodemo/java-springboot-demo</url>
+		</repository>
+    </repositories>
 
 	<dependencies>
 
