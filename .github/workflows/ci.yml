@@ -5,20 +5,20 @@ on:
   # manual trigger
   workflow_dispatch:
   # runnnig on push to main and develop branches
-  push:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**/README.md'
-      - '.devcontainer/**'
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+    # paths-ignore:
+    #   - '**/README.md'
+    #   - '.devcontainer/**'
   # running on pull requests to main and develop branches
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**/README.md'
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - develop
+  #   paths-ignore:
+  #     - '**/README.md'
 
 # defining global environment variables for all jobs
 env:
