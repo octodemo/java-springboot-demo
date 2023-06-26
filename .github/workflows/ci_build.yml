@@ -40,7 +40,7 @@ jobs:
           # server-username: GITHUB_USERNAME_REF  # env variable name for username of GitHub server; value can be anything as it is a transient user
           # server-password: GITHUB_TOKEN_REF # env variable name for GitHub access token
           # # after running this action, the <username> tag contains ${env.GITHUB_USERNAME_REF} and <password> contains ${env.GITHUB_TOKEN_REF}
-          settings-path: ${{ github.workspace }}/ci_settings.xml # location of the settings.xml
+          # settings-path: ${{ github.workspace }}/ci_settings.xml # location of the settings.xml
 
       - name: Cache Maven packages
         uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
@@ -50,7 +50,7 @@ jobs:
           restore-keys: ${{ runner.os }}-build-
       
       - name: Build with Maven
-        run: mvn -B package
+        run: mvn -B package -s ci_settings.xml # build step - building the project with maven. Link to the documentation - https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
         env:
           # assign the environment variable env.GITHUB_USERNAME_REF with the previously configured GITHUB_USERNAME
           GITHUB_USERNAME_REF: ${{ secrets.ACTIONS_USER }}
