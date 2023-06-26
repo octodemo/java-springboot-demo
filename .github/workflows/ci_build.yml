@@ -36,12 +36,12 @@ jobs:
         uses: actions/setup-java@v1.4.4
         with: # running setup-java again overwrites the settings.xml
           java-version: 1.8
-          overwrite-settings: false # setting this to false will not overwrite the settings.xml file
           # server-id: github # value of repository/id field of the pom.xml
           # server-username: GITHUB_USERNAME_REF  # env variable name for username of GitHub server; value can be anything as it is a transient user
           # server-password: GITHUB_TOKEN_REF # env variable name for GitHub access token
           # # after running this action, the <username> tag contains ${env.GITHUB_USERNAME_REF} and <password> contains ${env.GITHUB_TOKEN_REF}
-          settings-path: ${{ github.workspace }}/ci_settings.xml # path to the settings.xml file. Link to the documentation - https://docs.github.com/en/actions/guides/publishing-java-packages-with-maven#using-a-custom-settingsxml-file
+          settings-path: ${{ github.workspace }}/ci_settings.xml # path to the settings.xml file. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow
+          overwrite: true # overwrite the settings.xml file if it already exists
 
       - name: Cache Maven packages
         uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
