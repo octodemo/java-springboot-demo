@@ -4,14 +4,12 @@ name: CI_Build
 on: 
   # manual trigger
   workflow_dispatch:
-  # runnnig on push to main and develop branches
-  # push:
-  #   branches:
-  #     - main
-  #     - develop
-    # paths-ignore:
-    #   - '**/README.md'
-    #   - '.devcontainer/**'
+  push:
+    branches:
+      - build_with_gh_packages_test
+    paths-ignore:
+      - '**/README.md'
+      - '.devcontainer/**'
   # running on pull requests to main and develop branches
   # pull_request:
   #   branches:
