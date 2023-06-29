@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-db
+  template:
+    metadata:
+      labels:
+        app: oracle-db
+    spec:
+      containers:
+      - name: oracle-db-container
+        image: oracleinanutshell/oracle-xe-11g:latest
+        ports:
+        - containerPort: 1521
+        env:
+        - name: ORACLE_ALLOW_REMOTE
+          value: "true"
+        - name: ORACLE_PASSWORD
+          value: oracle
+        volumeMounts:
+        - name: oracle-db-storage
+          mountPath: /u01/app/oracle/oradata
+      volumes:
+      - name: oracle-db-storage
+        persistentVolumeClaim:
+          claimName: oracle-db-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oracle-db-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-app
+  template:
+    metadata:
+      labels:
+        app: spring-app
+    spec:
+      containers:
+      - name: spring-app-container
+        image: ghcr.io/octodemo/java-springboot-demo:latest
+        ports:
+        - containerPort: 8086
+          hostPort: 80
+        env:
+        - name: DB_URL
+          value: jdbc:oracle:thin:@oracle-db:1521/xe
+        - name: USER_NAME
+          value: system
+        - name: PASSWORD
+          value: oracle
+        - name: CHANGELOG_VERSION
+          value: changelog_version-3.2.oracle.sql
+      imagePullSecrets:
+      - name: your-image-pull-secret
+
+      # restart container if it fails
+      restartPolicy: Always

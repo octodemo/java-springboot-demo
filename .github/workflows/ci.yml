@@ -233,7 +233,9 @@ jobs:
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.run_number }}
+            ghcr.io/${{ github.repository }}:latest
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
           cache-to: type=inline
 
