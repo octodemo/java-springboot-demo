@@ -63,4 +63,11 @@ public class AppController {
 	    dao.delete(id);
 	    return "redirect:/";       
 	}	
+
+	// method to clear the amount column in the database given an id
+	@RequestMapping("/clear/{id}")
+	public String clearAmount(@PathVariable(name = "id") int id) {
+		dao.clearAmount(id);
+		return "redirect:/";
+	}
 }

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-app
+  template:
+    metadata:
+      labels:
+        app: spring-app
+    spec:
+      containers:
+        - name: spring-app-container
+          image: ghcr.io/octodemo/java-springboot-demo:78
+          ports:
+            - containerPort: 8086
+          env:
+            - name: DB_URL
+              value: jdbc:oracle:thin:@oracle-database-service:1521:xe
+            - name: ORACLE_USER
+              value: system
+            - name: PASSWORD
+              value: oracle
+            - name: CHANGELOG_VERSION
+              value: changelog_version-3.2.oracle.sql
+      imagePullSecrets:
+        - name: your-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-app-service
+spec:
+  selector:
+    app: spring-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8086
+  type: LoadBalancer

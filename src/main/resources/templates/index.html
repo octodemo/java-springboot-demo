@@ -30,6 +30,9 @@
                     <a th:href="@{'/edit/' + ${sale.id}}">Edit</a>
                     &nbsp;&nbsp;&nbsp;
                     <a th:href="@{'/delete/' + ${sale.id}}">Delete</a>
+                    <!--  add a clear button to clear the amount given by id -->
+                    &nbsp;&nbsp;&nbsp;
+                    <a th:href="@{'/clear/' + ${sale.id}}">Clear</a>
                 </td>
             </tr>
         </tbody>
