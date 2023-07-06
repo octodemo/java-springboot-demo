@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  deploy_staging:
+  staging:
     runs-on: ubuntu-latest
     environment: STAGE
     steps:
@@ -20,12 +20,12 @@ jobs:
         uses: actions/checkout@v3
       - name: Deploy to Kubernetes
         run: |
-          echo "kubectl apply -f deployments/"
+          echo "kubectl apply -f deployments/ tags: ${{ github.event.inputs.tags }}"
   
-  deploy_production:
+  production:
     runs-on: ubuntu-latest
     environment: PROD
-    needs: [deploy_staging]
+    needs: [staging]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
