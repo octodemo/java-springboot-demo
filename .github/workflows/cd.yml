@@ -13,17 +13,17 @@ on:
 
 jobs:
   deploy_staging:
-    runs-on: tsviz-deployment-server
+    runs-on: ubuntu-latest
     environment: STAGE
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f deployments/
+          echo "kubectl apply -f deployments/"
   
   deploy_production:
-    runs-on: tsviz-deployment-server
+    runs-on: ubuntu-latest
     environment: PROD
     needs: [deploy_staging]
     steps:
@@ -31,4 +31,4 @@ jobs:
         uses: actions/checkout@v3
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f deployments/
+          echo "kubectl apply -f deployments/""
