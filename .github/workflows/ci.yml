@@ -251,3 +251,12 @@ jobs:
           INDEX_LIST=$(seq 0 ${MAX_INDEX}) # generate the list of indexes
           INDEX_JSON=$(jq --null-input --compact-output '. |= [inputs]' <<< ${INDEX_LIST}) # convert the list to the json
           echo "json=${INDEX_JSON}" >> $GITHUB_OUTPUT # save the json to the GITHUB_OUTPUT environment variable
+
+  # create a job that calls the cd.yml workflow
+  trigger-cd-workflow:
+    needs: [build-and-publish-docker-image]
+    # uses the cd.yml workflow from the same repository include variables for the repository path from the prganization root
+    uses: ./.github/workflows/cd.yml@main
+    with:
+      tags: ${{ needs.build-and-publish-docker-image.outputs.tags }}
+    

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-app-deployment
+  name: spring-app-deployment-v1
 spec:
   replicas: 3
   selector:
@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: spring-app
+        version: v1
     spec:
       containers:
         - name: spring-app-container
@@ -28,16 +29,3 @@ spec:
               value: changelog_version-3.2.oracle.sql
       imagePullSecrets:
         - name: your-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: spring-app-service
-spec:
-  selector:
-    app: spring-app
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8086
-  type: LoadBalancer

@@ -1,0 +1,28 @@
+name: Deployment
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'PROD'
+
+jobs:
+  deploy:
+    runs-on: deployment_server
+    environment: PROD
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      # - name: Set up kubectl
+      #   uses: azure/setup-kubectl@v1
+      #   with:
+      #     version: 'latest'
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f deployments/
