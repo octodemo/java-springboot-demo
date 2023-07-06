@@ -1,4 +1,4 @@
-name: Deployment
+name: CD
 
 concurrency:
   group: production
@@ -21,6 +21,7 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           echo "kubectl apply -f deployments/ tags: ${{ github.event.inputs.tags }}"
+      # print out the tags from the CI workflow
   
   production:
     runs-on: ubuntu-latest
