@@ -196,6 +196,8 @@ jobs:
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
+    outputs:
+      image_tag: ghcr.io/${{ github.repository }}:${{ github.run_number }} # output the image tag to be used in the build-and-publish-docker-image job
     needs: [build, unit-parallel-tests] # this job needs build and unit-parallel-tests jobs as a requirement to run
     if: github.ref == 'refs/heads/main' # run this job only when the branch is main branch and not on pull requests or other branches - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
     # permissions for write acces to the packages and id-token and push access to the repository to create the container registry token
@@ -229,6 +231,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }} # using the GITHUB_TOKEN secret
       
       - name: Build and push Docker image
+        id: build_image
         uses: docker/build-push-action@v4 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
         with: 
           context: . # using the current directory as the context
@@ -238,9 +241,6 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
           cache-to: type=inline
-      - name: Set output tags
-        id: output_tags
-        run: echo "::set-output name=tags::${GITHUB_REF#refs/tags/}"
 
   runner-indexes: # job to generate the runner indexes for the unit-parallel-tests job
     runs-on: ubuntu-latest
@@ -255,11 +255,14 @@ jobs:
           INDEX_JSON=$(jq --null-input --compact-output '. |= [inputs]' <<< ${INDEX_LIST}) # convert the list to the json
           echo "json=${INDEX_JSON}" >> $GITHUB_OUTPUT # save the json to the GITHUB_OUTPUT environment variable
 
-  # create a job that calls the cd.yml workflow
-  deployment:
+  deploy:
     needs: [build-and-publish-docker-image]
-    # uses the cd.yml workflow from the same repository include variables for the repository path from the prganization root
-    uses: ./.github/workflows/cd.yml
-    with:
-      tags: ${{ needs.build-and-publish-docker-image.outputs.output_tags }}
-    
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Deploy to production
+        uses: ./.github/workflows/cd.yml
+        with:
+          # with tag from the build-and-publish-docker-image job in the output_tags step
+          image_tag: "${{ needs.build-and-publish-docker-image.outputs.image_tag }}"
