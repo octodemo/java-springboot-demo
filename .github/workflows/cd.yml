@@ -12,16 +12,29 @@ on:
         type: string
 
 jobs:
-  deploy:
+  deploy_staging:
     runs-on: deployment_server
-    environment: PROD
+    environment: STAGE
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      # - name: Set up kubectl
-      #   uses: azure/setup-kubectl@v1
-      #   with:
-      #     version: 'latest'
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f deployments/
+    strategy:
+      matrix:
+        runner: [ARM64]
+  
+  deploy_production:
+    runs-on: deployment_server
+    environment: PROD
+    needs: [deploy_staging]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f deployments/
+    strategy:
+      matrix:
+        runner: [ARM64]
