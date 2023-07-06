@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy_staging:
-    runs-on: deployment_server
+    runs-on: tsviz-deployment-server
     environment: STAGE
     steps:
       - name: Checkout repository
@@ -21,12 +21,9 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f deployments/
-    strategy:
-      matrix:
-        runner: [ARM64]
   
   deploy_production:
-    runs-on: deployment_server
+    runs-on: tsviz-deployment-server
     environment: PROD
     needs: [deploy_staging]
     steps:
@@ -35,6 +32,3 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f deployments/
-    strategy:
-      matrix:
-        runner: [ARM64]
