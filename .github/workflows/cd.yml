@@ -5,12 +5,11 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      environment:
-        description: 'Environment to deploy to'
+      tags:
         required: true
-        default: 'PROD'
+        type: string
 
 jobs:
   deploy:
