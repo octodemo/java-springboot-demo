@@ -50,7 +50,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+      - name: Install Azure CLI
+        uses: pietrobolcato/install-azure-cli-action@main
       - name: 'Az CLI Login via OIDC'
         uses: azure/login@v1
         with:
