@@ -86,5 +86,5 @@ jobs:
         run: |
           kubectl apply -f deployments/
           sleep 30
-          kubeclt get pods
-          kubeclt get all
+          kubectl get pods
+          kubectl get all
