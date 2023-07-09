@@ -85,3 +85,6 @@ jobs:
       - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
         run: |
           kubectl apply -f deployments/
+          sleep 30
+          kubeclt get pods
+          kubeclt get all
