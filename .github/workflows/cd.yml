@@ -5,6 +5,12 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        required: true
+        type: string
+
   workflow_call:
     inputs:
       image_tag:
