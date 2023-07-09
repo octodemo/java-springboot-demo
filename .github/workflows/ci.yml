@@ -261,3 +261,4 @@ jobs:
     with:
       # with tag from the build-and-publish-docker-image job in the output_tags step
       image_tag: "${{ needs.build-and-publish-docker-image.outputs.image_tag }}"
+    secrets: inherit
