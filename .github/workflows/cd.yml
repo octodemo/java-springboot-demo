@@ -11,14 +11,14 @@ on:
         required: true
         type: string
 env:
-  AZURE_CONTAINER_REGISTRY: "your-azure-container-registry"
-  CONTAINER_NAME: "your-container-name"
+  # AZURE_CONTAINER_REGISTRY: "your-azure-container-registry"
+  # CONTAINER_NAME: "your-container-name"
   RESOURCE_GROUP: "tsvi-rg"
   CLUSTER_NAME: "tsvi-aks"
   DEPLOYMENT_MANIFEST_PATH: "./deployments"
 
 jobs:
-  staging:
+  staging-end2end-tests:
     permissions:
       actions: read
       id-token: write # This is required for requesting the JWT
@@ -54,7 +54,7 @@ jobs:
     
     runs-on: ubuntu-latest
     environment: PROD
-    needs: [staging]
+    needs: [staging-end2end-tests]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -66,6 +66,22 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       
-      # - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
-      #   run: |
-      #     kubectl apply -f deployments/
+      # Use kubelogin to configure your kubeconfig for Azure auth
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      # Deploys application based on given manifest file
+      - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
+        run: |
+          kubectl apply -f deployments/
