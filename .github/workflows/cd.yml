@@ -10,10 +10,17 @@ on:
       image_tag:
         required: true
         type: string
+env:
+  AZURE_CONTAINER_REGISTRY: "your-azure-container-registry"
+  CONTAINER_NAME: "your-container-name"
+  RESOURCE_GROUP: "tsvi-rg"
+  CLUSTER_NAME: "tsv-aks"
+  DEPLOYMENT_MANIFEST_PATH: "./deployments"
 
 jobs:
   staging:
     permissions:
+      actions: read
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
     
@@ -41,6 +48,7 @@ jobs:
   
   production:
     permissions:
+      actions: read
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
     
@@ -50,10 +58,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install Azure CLI
-        uses: pietrobolcato/install-azure-cli-action@main
       - name: 'Az CLI Login via OIDC'
-        uses: azure/login@v1
+        uses: azure/login@v1.4.6
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
