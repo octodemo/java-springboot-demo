@@ -239,8 +239,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.run_number }}
             ghcr.io/${{ github.repository }}:latest
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
-          cache-to: type=inline
+          # cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest # use the docker layer caching to speed up the docker image build process
+          # cache-to: type=inline
 
   runner-indexes: # job to generate the runner indexes for the unit-parallel-tests job
     runs-on: ubuntu-latest
