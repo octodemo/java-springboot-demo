@@ -64,11 +64,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>com.oracle.ojdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<version>19.3.0.0</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -112,10 +112,11 @@
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 				</configuration>
 				<dependencies>
+					<!--  postgresql driver -->
 					<dependency>
-						<groupId>com.oracle.ojdbc</groupId>
-						<artifactId>ojdbc8</artifactId>
-						<version>19.3.0.0</version>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.2.8</version>
 					</dependency>
 				</dependencies>
 			</plugin>
