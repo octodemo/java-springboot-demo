@@ -10,7 +10,7 @@
 
 	<groupId>net.codejava</groupId>
 	<artifactId>salesmanager</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -65,10 +65,11 @@
 			</exclusions>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>42.5.4</scope>
+			<version>42.6.0</version>
 		</dependency>
 
 		<dependency>
@@ -113,11 +114,12 @@
 				</configuration>
 				<dependencies>
 					<!--  postgresql driver - avoid volunerable version -->
-					<dependency>
-						<groupId>org.postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-						<version>42.5.4</version>
-					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+				<dependency>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+					<version>42.6.0</version>
+				</dependency>
 				</dependencies>
 			</plugin>
 		</plugins>

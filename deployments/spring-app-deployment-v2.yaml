@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: spring-app-deployment-v2
 spec:
-  replicas: 6
+  replicas: 3
   selector:
     matchLabels:
       app: spring-app
@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
         - name: spring-app-container
-          image: ghcr.io/octodemo/java-springboot-demo:108
+          image: ghcr.io/octodemo/java-springboot-demo:1000
           ports:
             - containerPort: 8086
           env:
             - name: DB_URL
-              value: jdbc:postgresql://database:5432/postgres
-            - name: POSTGRES_USER
-              value: postgres
+              value: jdbc:postgresql://postgres-database-service:5432/postgres
+            - name: USER_NAME
+              value: postgresadmin
             - name: PASSWORD
-              value: postgres
+              value: admin123
             - name: CHANGELOG_VERSION
               value: changelog_version-3.3.xml
       imagePullSecrets:
