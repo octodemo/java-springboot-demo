@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<scope>42.5.4</scope>
 		</dependency>
 
 		<dependency>
@@ -112,11 +112,11 @@
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 				</configuration>
 				<dependencies>
-					<!--  postgresql driver -->
+					<!--  postgresql driver - avoid volunerable version -->
 					<dependency>
 						<groupId>org.postgresql</groupId>
 						<artifactId>postgresql</artifactId>
-						<version>runtime</version>
+						<version>42.5.4</version>
 					</dependency>
 				</dependencies>
 			</plugin>
