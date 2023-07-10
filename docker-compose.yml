@@ -14,7 +14,7 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Password123
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
@@ -33,7 +33,7 @@ services:
     environment: 
       - USER_NAME=postgres
       - DB_URL=jdbc:postgresql://database:5432/postgres
-      - PASSWORD=Password123
+      - PASSWORD=postgres
       - CHANGELOG_VERSION=changelog_version-3.3.xml
 
 volumes:

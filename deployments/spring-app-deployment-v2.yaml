@@ -20,12 +20,12 @@ spec:
             - containerPort: 8086
           env:
             - name: DB_URL
-              value: jdbc:oracle:thin:@oracle-database-service:1521:xe
-            - name: ORACLE_USER
-              value: system
+              value: jdbc:postgresql://database:5432/postgres
+            - name: POSTGRES_USER
+              value: postgres
             - name: PASSWORD
-              value: oracle
+              value: postgres
             - name: CHANGELOG_VERSION
-              value: changelog_version-3.2.oracle.sql
+              value: changelog_version-3.3.xml
       imagePullSecrets:
         - name: your-registry-secret
