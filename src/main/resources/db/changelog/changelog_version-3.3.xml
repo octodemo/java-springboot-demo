@@ -36,6 +36,12 @@
             <column name="quantity" value="10" />
             <column name="date" value="2020-01-03" />
          </insert>
+         <!--  create a rollbacks delete by item Laptop, Desktop, Printer. -->
+         <rollback>
+            <delete tableName="sales">
+               <where>item in ('Laptop', 'Desktop', 'Printer')</where>
+            </delete>
+         </rollback>
       </changeSet>
 
 </databaseChangeLog>

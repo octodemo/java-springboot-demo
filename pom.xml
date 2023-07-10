@@ -10,7 +10,7 @@
 
 	<groupId>net.codejava</groupId>
 	<artifactId>salesmanager</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -64,11 +64,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>com.oracle.ojdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<version>19.3.0.0</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>42.5.4</scope>
 		</dependency>
 
 		<dependency>
@@ -107,15 +107,16 @@
 				<configuration>
 					<checksSettingsFile>src/main/resources/liquibase.checks-settings.conf</checksSettingsFile>
 					<propertyFile>${liquibase.propertyFile}</propertyFile>
-					<!-- changeLogFile>db/changelog/changelog_version-3.2.oracle.sql</changeLogFile -->
+					<!-- changeLogFile>db/changelog/changelog_version-3.3.xml</changeLogFile -->
 					<outputChangeLogFile>dbchangelog.xml</outputChangeLogFile>
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 				</configuration>
 				<dependencies>
+					<!--  postgresql driver - avoid volunerable version -->
 					<dependency>
-						<groupId>com.oracle.ojdbc</groupId>
-						<artifactId>ojdbc8</artifactId>
-						<version>19.3.0.0</version>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.5.4</version>
 					</dependency>
 				</dependencies>
 			</plugin>

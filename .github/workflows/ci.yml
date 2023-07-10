@@ -117,14 +117,14 @@ jobs:
     container:
       image: mrkostin/maven:3.6.0-alpine-git-curl-jq # ruinning the job in a container - mrkostin/maven:3.6.0-alpine-git-curl-jq
     services:
-      # oracle service container
-      oracle: # service name - oracle. This name is used to access the service container from the job container as the host name.
-        image: gvenzl/oracle-xe # running the job in a container gvenzl/oracle-xe - Oracle XE 11gR2 container image. Link to dockerhub - https://hub.docker.com/r/gvenzl/oracle-xe
+      # postgres service container
+      postgres: # service name - postgres. This name is used to access the service container from the job container as the host name.
+        image: postgres # running the job in a container - postgres link to the docker hub - https://hub.docker.com/_/postgres
         env:
-          ORACLE_PASSWORD: oracle
-        # exposing the port 1521 externally and internally to the container - 1521:1521
+          POSTGRES_PASSWORD: postgres # setting the password for the postgres database
+        # exposing the port 5432 of the postgres service container to the host machine
         ports:
-          - 1521:1521
+          - 5432:5432
     #  defining the job permissions
     permissions:
       contents: read # read access to the repository contents
@@ -183,9 +183,9 @@ jobs:
           LIST="${{ steps.split-tests.outputs.test-suite }}"
           for file in $LIST
           do
-          # sleep for 10 seconds to avoid the ORA-12514: TNS:listener does not currently know of service requested in connect descriptor error
+          # sleep for 10 seconds to avoid timeout errors
             sleep 10
-            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.2.oracle.sql -Dserver.port=8086 -Duser.timezone=CST
+            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086
           done
       
       - uses: actions/upload-artifact@v3 # upload the test results as an artifact
