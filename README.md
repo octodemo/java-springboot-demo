@@ -9,18 +9,25 @@ This demo repo is designed to help understand some of **CI/CD** ([Continuous Int
 ## The Setting
 
 **Java** (Spring Boot framework) with **MVC** (Model View Controller) and **OOP** (Object Oriented Programming) design patterns.
-Backend Database is Oracle XE 11g PDB (but can be used with other versions).
+Backend Database is [PostreSQL 10.4](https://www.postgresql.org/docs/10/release-10-4.html)  (but can be used with other versions).
  
  *CI/CD Pipeline*
  [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions) as the main CI/CD pipeline orchestrator
 
-**Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` for more detailed configuration).**
+**Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` `.github/workflows/cd.yml` for more detailed configuration).**
+
+*CI - Continuous Integration*
  - [Caching Dependencies to Speed Up Workflows](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
  - Reusing **Docker Layer Caching** from pervious docker builds with [action-docker-layer-caching](https://github.com/satackey/action-docker-layer-caching) or [build-push-action](https://github.com/docker/build-push-action) actions.
  - Using the [Metrix Strategy](https://docs.github.com/en/enterprise-cloud@latest/actions/using-jobs/using-a-matrix-for-your-jobs) to run unit tests in parallel to scale-out resources and reduce significant testing time.
  - Using the [Split Test Action](https://github.com/marketplace/actions/split-tests) to help splitting tests by previous testing time runs or line count (or other strategies) across multiple runners.
  - [GitHub Advanced Security](https://docs.github.com/en/enterprise-cloud@latest/get-started/learning-about-github/about-github-advanced-security) - Code Scanning using the [CodeQL analysis](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-the-codeql-workflow-for-compiled-languages) to scan for vulnerabilities.
  - [Liquibase Quality Checks](https://www.liquibase.com/quality-checks) - To help enforce Database schema changes best practices set by your DBA team, including naming conventions, grants & revokes, rollback scripts and security risks.
+
+*CD - Continuous Delivery/Deployment*
+ - Using [Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) with an [approval step review](https://docs.github.com/en/actions/managing-workflow-runs/reviewing-deployments) prior to [deployments](https://docs.github.com/en/actions/deployment/about-deployments)
+ - Using the [azure/login action](https://github.com/marketplace/actions/azure-login) to leverage the [OIDC (OpenID Connect)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) functionality for the benefit of to exchange short-lived tokens directly with [Azure cloud provider](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux) prior to deployment
+ - Running a [Canary or Blue-Green deployments](https://github.com/Azure-Samples/aks-bluegreen-canary) in an AKS (Azure Kubernetes) Cluster.
               
 # CI/CD Diagram
 ```mermaid
@@ -69,7 +76,7 @@ java -jar target/salesmanager-0.0.6-SNAPSHOT.jar
 ```
 
 # How to Demo
-For easy demos without the need to stand up an Oracle database, a lightweight local [H2 database](https://www.h2database.com/html/main.html) (Oracle Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
+For easy demos without the need to stand up a Postgres database, a lightweight local [H2 database](https://www.h2database.com/html/main.html) (PostgreSQL Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
 You can run the `./build_and_run_app.sh` helper shell script and interact with the web app on `localhost:8086`.
 > You can easily use a [GitHub codespaces](https://docs.github.com/en/enterprise-cloud@latest/codespaces) with this repository. To set up your codespace, simply go to this repo [main page](https://github.com/octodemo/java-springboot-demo) --> Click **Code** --> Codespaces '+'. </br>
 
@@ -83,10 +90,10 @@ You can run the `./build_and_run_app.sh` helper shell script and interact with t
 `LIQUIBASE_COMMAND_USERNAME`
 `LIQUIBASE_COMMAND_PASSWORD`
 
-### If you are going to use the same [dockerised service container](https://hub.docker.com/r/gvenzl/oracle-xe) in the CI job for dev, then the default values should be: </br>
-`LIQUIBASE_COMMAND_URL` = `jdbc:oracle:thin:@oracle:1521/xe` </br>
-`LIQUIBASE_COMMAND_USERNAME` = `SYSTEM` </br>
-`LIQUIBASE_COMMAND_PASSWORD` = `oracle`
+### If you are going to use the same [dockerised service container](https://hub.docker.com/_/postgres) in the CI job for dev, then the default values should be: </br>
+`LIQUIBASE_COMMAND_URL` = `jdbc:postgresql://postgres:5432/postgres` </br>
+`LIQUIBASE_COMMAND_USERNAME` = `postgres` </br>
+`LIQUIBASE_COMMAND_PASSWORD` = `postgres`
 
 # Gitgraph Diagram - Developer Workflow
 ```mermaid
