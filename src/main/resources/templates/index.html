@@ -4,13 +4,59 @@
 <head>
 <meta charset="utf-8"/>
 <title>Sales Manager Application</title>
+<style>
+    body {
+        background-color: rgb(200, 222, 230);
+        font-family: Arial, sans-serif;
+    }
+    h1 {
+        color: green;
+        text-shadow: 2px 2px #ccc;
+    }
+    table {
+        border-collapse: collapse;
+        border: 1px solid rgb(239, 239, 198);
+        box-shadow: 2px 2px 5px #ccc;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid rgb(17, 255, 0);
+    }
+    th {
+        background-color: green;
+        color: yellow;
+    }
+    tr:nth-child(even) {
+        background-color: rgb(214, 226, 194);
+    }
+    tr:nth-child(odd) {
+        background-color: rgb(237, 241, 203);
+    }
+    tr:hover {
+        background-color: rgb(114, 150, 100);
+    }
+    a {
+        color: yellow;
+        text-decoration: none;
+        border: 1px solid yellow;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: green;
+        box-shadow: 2px 2px 5px #ccc;
+    }
+    a:hover {
+        background-color: yellow;
+        color: green;
+    }
+</style>
 </head>
 <body>
 <div align="center">
     <h1>Sales Records</h1>
     <a href="/new">Enter New Sale</a>
     <br/><br/>
-    <table border="1" cellpadding="10">
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
