@@ -1,76 +1,21 @@
-item;amount;quantity;date
-Laptop;1000;5;2020-01-01
-Desktop;800;3;2020-01-02
-Printer;500;10;2020-01-03
-Keyboard;50;20;2020-01-04
-Mouse;20;50;2020-01-05
-Monitor;300;2;2020-01-06
-Headphones;80;10;2020-01-07
-Speakers;150;5;2020-01-08
-Tablet;600;4;2020-01-09
-Smartphone;800;3;2020-01-10
-Camera;400;6;2020-01-11
-Printer Ink;30;50;2020-01-12
-External Hard Drive;120;8;2020-01-13
-USB Flash Drive;20;100;2020-01-14
-Ethernet Cable;10;50;2020-01-15
-HDMI Cable;15;30;2020-01-16
-VGA Cable;10;30;2020-01-17
-Power Strip;25;20;2020-01-18
-Extension Cord;15;20;2020-01-19
-Wireless Router;80;5;2020-01-20
-Modem;100;3;2020-01-21
-Ethernet Switch;50;5;2020-01-22
-Wireless Access Point;70;3;2020-01-23
-Network Cable Tester;50;1;2020-01-24
-Server Rack;500;1;2020-01-25
-Server;1000;1;2020-01-26
-Desktop Computer;800;3;2020-01-27
-Laptop Computer;1000;5;2020-01-28
-Tablet Computer;600;4;2020-01-29
-Smartphone;800;3;2020-01-30
-Printer;500;10;2020-01-31
-Scanner;200;5;2020-02-01
-Fax Machine;150;2;2020-02-02
-Copier;500;1;2020-02-03
-Paper;10;500;2020-02-04
-Ink Cartridge;30;50;2020-02-05
-Toner Cartridge;80;20;2020-02-06
-Stapler;5;10;2020-02-07
-Staples;2;1000;2020-02-08
-Paper Clips;1;500;2020-02-09
-Binder Clips;2;100;2020-02-10
-Rubber Bands;1;1000;2020-02-11
-Whiteboard;100;1;2020-02-12
-Dry Erase Markers;5;10;2020-02-13
-Chalkboard;80;1;2020-02-14
-Chalk;2;100;2020-02-15
-Easel;50;1;2020-02-16
-Paint;10;10;2020-02-17
-Brushes;5;20;2020-02-18
-Canvas;20;5;2020-02-19
-Acrylic Paint;15;10;2020-02-20
-Oil Paint;20;10;2020-02-21
-Watercolor Paint;10;10;2020-02-22
-Sketchbook;5;20;2020-02-23
-Drawing Pencils;2;50;2020-02-24
-Erasers;1;100;2020-02-25
-Sharpies;2;20;2020-02-26
-Highlighters;1;50;2020-02-27
-Pens;1;100;2020-02-28
-Markers;2;20;2020-02-29
-Ruler;1;20;2020-03-01
-Scissors;5;10;2020-03-02
-Glue;2;10;2020-03-03
-Tape;1;20;2020-03-04
-Sticky Notes;1;100;2020-03-05
-Notebooks;2;50;2020-03-06
-Folders;1;50;2020-03-07
-Binders;5;10;2020-03-08
-Dividers;1;20;2020-03-09
-Calculator;10;5;2020-03-10
-Staple Remover;1;10;2020-03-11
-Whiteout;2;10;2020-03-12
-Correction Tape;3;10;2020-03-13
-Rubber Stamps;5;5;2020-03-14
-Ink Pad;2;10;2020-03-15
+item;amount:double;quantity;date
+Laptop;1000.00;5;2020-01-01
+Desktop;800.00;3;2020-01-02
+Printer;500.00;10;2020-01-03
+Keyboard;50.00;20;2020-01-04
+Mouse;20.00;50;2020-01-05
+Monitor;300.00;2;2020-01-06
+Headphones;80.00;10;2020-01-07
+Speakers;150.00;5;2020-01-08
+Tablet;600.00;4;2020-01-09
+Smartphone;800.00;3;2020-01-10
+Camera;400.00;6;2020-01-11
+Printer Ink;30.00;50;2020-01-12
+External Hard Drive;120.00;8;2020-01-13
+USB Flash Drive;20.00;100;2020-01-14
+Ethernet Cable;10.00;50;2020-01-15
+HDMI Cable;15.00;30;2020-01-16
+VGA Cable;10.00;30;2020-01-17
+Power Strip;25.00;20;2020-01-18
+Extension Cord;15.00;20;2020-01-19
+Wireless Router;80.00;5;2020-01-20
