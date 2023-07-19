@@ -1,4 +1,4 @@
-item;amount:double;quantity;date
+item;amount;quantity;date
 Laptop;1000.00;5;2020-01-01
 Desktop;800.00;3;2020-01-02
 Printer;500.00;10;2020-01-03
