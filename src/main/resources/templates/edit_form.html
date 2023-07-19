@@ -2,60 +2,58 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8" />
-<title>Edit Sale</title>
-<style>
-    body {
-        background-color: lightblue;
-        font-family: Arial, sans-serif;
-    }
-    h1 {
-        color: green;
-        text-shadow: 2px 2px #ccc;
-    }
-    table {
-        border-collapse: collapse;
-        border: 1px solid yellow;
-        box-shadow: 2px 2px 5px #ccc;
-    }
-    td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid yellow;
-    }
-    input[type="text"] {
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid yellow;
-        background-color: green;
-        color: yellow;
-    }
-    input[type="text"]:read-only {
-        background-color: yellow;
-        color: green;
-    }
-    button[type="submit"] {
-        padding: 5px 10px;
-        border-radius: 5px;
-        border: 1px solid yellow;
-        background-color: green;
-        color: yellow;
-        box-shadow: 2px 2px 5px #ccc;
-    }
-    button[type="submit"]:hover {
-        background-color: yellow;
-        color: green;
-    }
-</style>
+    <meta charset="utf-8" />
+    <title>Edit Sale</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #008CBA;
+            text-shadow: 2px 2px #ccc;
+            text-align: center;
+            margin-top: 50px;
+        }
+        table {
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 5px #ccc;
+            margin: 50px auto;
+        }
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+        input[type="text"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f2f2f2;
+            color: #008CBA;
+            width: 100%;
+        }
+        button[type="submit"] {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #008CBA;
+            color: #fff;
+            box-shadow: 2px 2px 5px #ccc;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button[type="submit"]:hover {
+            background-color: #005580;
+        }
+    </style>
 </head>
 <body>
+    <h1>Edit Sale</h1>
     <div align="center">
-        <h1>Edit Sale</h1>
-        <br />
-        <form action="#" th:action="@{/update}" th:object="${sale}"
-            method="post">
- 
-            <table border="0" cellpadding="10">
+        <form action="#" th:action="@{/update}" th:object="${sale}" method="post">
+            <table>
                 <tr>
                     <td>ID:</td>
                     <td><input type="text" th:field="*{id}" readonly="readonly" /></td>

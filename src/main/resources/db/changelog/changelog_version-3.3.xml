@@ -15,8 +15,7 @@
                <column name="date" type="date" />
          </createTable>
       </changeSet>
-
-      <!-- insert some data into the sales table. -->
+<!-- 
       <changeSet id="2" author="jim">
          <insert tableName="sales">
             <column name="item" value="Laptop" />
@@ -36,12 +35,25 @@
             <column name="quantity" value="10" />
             <column name="date" value="2020-01-03" />
          </insert>
-         <!--  create a rollbacks delete by item Laptop, Desktop, Printer. -->
          <rollback>
             <delete tableName="sales">
                <where>item in ('Laptop', 'Desktop', 'Printer')</where>
             </delete>
          </rollback>
-      </changeSet>
+      </changeSet> -->
 
+      <!--  create a changeset that loads a csv file. -->
+      <changeSet id="3" author="TsviZ">
+         <!--  load csv from relative path -->
+         <loadData encoding="UTF-8"
+                         file="data/sales.csv"
+                         separator=";"
+                         tableName="sales" relativeToChangelogFile="true">
+            <column name="id" type="numeric" />
+            <column name="item" type="varchar(100)" />
+            <column name="amount" type="double" />
+            <column name="quantity" type="int" />
+            <column name="date" type="date" />
+         </loadData>
+      </changeSet>
 </databaseChangeLog>
