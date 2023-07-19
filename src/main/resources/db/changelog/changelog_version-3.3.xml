@@ -15,33 +15,6 @@
                <column name="date" type="date" />
          </createTable>
       </changeSet>
-<!-- 
-      <changeSet id="2" author="jim">
-         <insert tableName="sales">
-            <column name="item" value="Laptop" />
-            <column name="amount" value="1000" />
-            <column name="quantity" value="5" />
-            <column name="date" value="2020-01-01" />
-         </insert>
-         <insert tableName="sales">
-            <column name="item" value="Desktop" />
-            <column name="amount" value="1500" />
-            <column name="quantity" value="2" />
-            <column name="date" value="2020-01-02" />
-         </insert>
-         <insert tableName="sales">
-            <column name="item" value="Printer" />
-            <column name="amount" value="500" />
-            <column name="quantity" value="10" />
-            <column name="date" value="2020-01-03" />
-         </insert>
-         <rollback>
-            <delete tableName="sales">
-               <where>item in ('Laptop', 'Desktop', 'Printer')</where>
-            </delete>
-         </rollback>
-      </changeSet> -->
-
       <!--  create a changeset that loads a csv file. -->
       <changeSet id="3" author="TsviZ">
          <!--  load csv from relative path -->
@@ -50,10 +23,13 @@
                          separator=";"
                          tableName="sales" relativeToChangelogFile="true">
             <column name="id" type="numeric" />
-            <column name="item" type="varchar(100)" />
-            <column name="amount" type="double" />
+            <column name="item" type="varchar(255)" />
+            <column name="amount" type="double percision"/>
             <column name="quantity" type="int" />
             <column name="date" type="date" />
          </loadData>
+         <rollback>
+            <sql>TRUNCATE TABLE sales</sql>
+         </rollback>
       </changeSet>
 </databaseChangeLog>
