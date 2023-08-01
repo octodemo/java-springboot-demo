@@ -70,4 +70,12 @@ public class AppController {
 		dao.clearAmount(id);
 		return "redirect:/";
 	}
+
+	// method getmapping for search functionality
+	@RequestMapping("/search")
+	public String search(@ModelAttribute("q") String query, Model model) {
+		List<Sale> listSale = dao.search(query);
+		model.addAttribute("listSale", listSale);
+		return "search";
+	}
 }

@@ -16,7 +16,7 @@ public class SalesDAO {
 	private JdbcTemplate jdbcTemplate;
 
 	public List<Sale> list() {
-		String sql = "SELECT * FROM SALES";
+		String sql = "SELECT * FROM SALES ORDER BY id ASC";
 
 		List<Sale> listSale = jdbcTemplate.query(sql,
 				BeanPropertyRowMapper.newInstance(Sale.class));
@@ -55,5 +55,11 @@ public class SalesDAO {
 	public void clearAmount(int id) {
 		String sql = "UPDATE SALES SET amount=0 WHERE id=?";
 		jdbcTemplate.update(sql, id);
+	}
+
+	public List<Sale> search(String query) {
+		String sql = "SELECT * FROM sales WHERE LOWER(item) LIKE LOWER(?)";
+		List<Sale> listSale = jdbcTemplate.query(sql, new Object[]{"%" + query.toLowerCase() + "%"}, new BeanPropertyRowMapper<>(Sale.class));
+		return listSale;
 	}
 }

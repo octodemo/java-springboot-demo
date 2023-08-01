@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sales Manager Application - Search Results</title>
+    <style>
+      body {
+          background-color: #f2f2f2;
+          font-family: Arial, sans-serif;
+      }
+      h1 {
+          color: #2196F3; /* Change this line to blue */
+          text-shadow: 2px 2px #ccc;
+          text-align: center;
+          margin-top: 50px;
+      }
+      table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 50px;
+          box-shadow: 2px 2px 5px #ccc;
+      }
+      th, td {
+          text-align: left;
+          padding: 8px;
+          border: 1px solid #ccc;
+      }
+      th {
+          background-color: #2196F3; /* Change this line to blue */
+          color: #fff;
+      }
+      tr:nth-child(even) {
+          background-color: #E3F2FD; /* Change this line to blue */
+      }
+      a {
+          text-decoration: none;
+          color: #2196F3; /* Change this line to blue */
+          padding: 5px 10px;
+          border-radius: 5px;
+          /* blue */ 
+          border: 1px solid #2196F3; /* Change this line to blue */
+      }
+      a:hover {
+          color: #fff;
+          background-color: #3a81e5;
+      }
+      .actions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      .clear {
+          color: #f44336;
+      }
+    </style>
+  </head>  
+  <body>
+    <div align="center">
+      <h1>Sales Records - Search Results</h1>
+      <a href="/">Back to Sales Records</a>
+      <br /><br />
+      <form action="/search" method="get">
+        <label for="search">Search for item:</label>
+        <input type="text" id="search" name="q" />
+        <button type="submit">Search</button>
+      </form>
+      <br />
+      <table style="width: 45%" border="1" cellpadding="10">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="sale : ${listSale}">
+            <td th:text="${sale.id}">ID</td>
+            <td th:text="${sale.item}">Item Name</td>
+            <td th:text="${sale.quantity}">Quantity</td>
+            <td th:text="${sale.amount}">Amount</td>
+            <td>
+              <a th:href="@{'/edit/' + ${sale.id}}">Edit</a>
+              &nbsp;&nbsp;&nbsp;
+              <a th:href="@{'/delete/' + ${sale.id}}">Delete</a>
+              &nbsp;&nbsp;&nbsp;
+              <a th:href="@{'/clear/' + ${sale.id}}">Clear</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

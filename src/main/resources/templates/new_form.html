@@ -10,49 +10,56 @@
             font-family: Arial, sans-serif;
         }
         h1 {
-            color: #2e7d32;
+            color: #2196F3; /* Change this line to blue */
             text-shadow: 2px 2px #ccc;
             text-align: center;
             margin-top: 50px;
         }
         table {
             border-collapse: collapse;
-            border: 1px solid #ccc;
-            box-shadow: 2px 2px 5px #ccc;
-            margin: 50px auto;
-        }
-        td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ccc;
-        }
-        input[type="text"] {
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #f2f2f2;
-            color: #2e7d32;
             width: 100%;
+            margin-top: 50px;
+            box-shadow: 2px 2px 5px #ccc;
         }
-        button[type="submit"] {
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color: #2196F3; /* Change this line to blue */
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #E3F2FD; /* Change this line to blue */
+        }
+        a {
+            text-decoration: none;
+            color: #2196F3; /* Change this line to blue */
             padding: 5px 10px;
             border-radius: 5px;
-            border: none;
-            background-color: #2e7d32;
-            color: #fff;
-            box-shadow: 2px 2px 5px #ccc;
-            cursor: pointer;
-            margin-top: 20px;
+            /* blue */ 
+            border: 1px solid #2196F3; /* Change this line to blue */
         }
-        button[type="submit"]:hover {
-            background-color: #015322;
+        a:hover {
+            color: #fff;
+            background-color: #3a81e5;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .clear {
+            color: #f44336;
         }
     </style>
 </head>
 <body>
     <h1>Enter New Sale</h1>
     <form action="#" th:action="@{/save}" th:object="${sale}" method="post">
-        <table>
+        <div align="center">
+        <table style="width: 35%" border="1" cellpadding="10">
             <tr>
                 <td>Item Name:</td>
                 <td><input type="text" th:field="*{item}" /></td>

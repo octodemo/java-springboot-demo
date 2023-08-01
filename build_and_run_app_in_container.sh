@@ -17,7 +17,7 @@ mvn clean package
 docker build -t myapp-img:v1 .
 docker run -e USER_NAME=postgres -e PASSWORD=Password123 -e CHANGELOG_VERSION=changelog_version-3.3.xml -e DB_URL=jdbc:postgresql://${LOCAL_IP}:5432/postgres -t -d -p 80:8086 --name app-test myapp-img:v1
 docker ps -a
-echo "Waiting for 80 seconds for the app to start"
-sleep 80
+echo "Waiting for 10 seconds for the app to start"
+sleep 10
 # Print the logs of the app from the container
 docker logs app-test

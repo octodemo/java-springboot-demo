@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
         }
         h1 {
-            color: #2e7d32;
+            color: #2196F3; /* Change this line to blue */
             text-shadow: 2px 2px #ccc;
             text-align: center;
             margin-top: 50px;
@@ -26,26 +26,23 @@
             border: 1px solid #ccc;
         }
         th {
-            background-color: #2e7d32;
+            background-color: #2196F3; /* Change this line to blue */
             color: #fff;
         }
         tr:nth-child(even) {
-            background-color: #dcedc8;
+            background-color: #E3F2FD; /* Change this line to blue */
         }
         a {
             text-decoration: none;
-            color: #2e7d32;
+            color: #2196F3; /* Change this line to blue */
             padding: 5px 10px;
             border-radius: 5px;
-            /* green */
-            border: 1px solid #2e7d32;
-            background-color: #fff;
-            box-shadow: 2px 2px 5px #ccc;
-            transition: all 0.3s ease-in-out;
+            /* blue */ 
+            border: 1px solid #2196F3; /* Change this line to blue */
         }
         a:hover {
             color: #fff;
-            background-color: #2e7d32;
+            background-color: #3a81e5;
         }
         .actions {
             display: flex;
@@ -62,7 +59,13 @@
         <h1>Sales Records</h1>
         <a href="/new">Enter New Sale</a>
         <br><br>
-        <table style="width: 35%">
+        <form action="/search" method="get">
+          <label for="search">Search for item:</label>
+          <input type="text" id="search" name="q" />
+          <button type="submit">Search</button>
+        </form>
+        <br />
+        <table style="width: 35%" border="1" cellpadding="10">
             <thead>
                 <tr>
                     <th>ID</th>
