@@ -4,6 +4,13 @@ name: CI
 on: 
   # manual trigger
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+
   # runnnig on push to main and develop branches
   push:
     branches:
@@ -165,6 +172,11 @@ jobs:
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
