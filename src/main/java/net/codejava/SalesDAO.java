@@ -25,13 +25,10 @@ public class SalesDAO {
 	}
 
 	public void save(Sale sale) {
-		SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate);
-		insertActor.withTableName("sales").usingColumns("item", "quantity", "amount");
-		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
-
-		insertActor.execute(param);
+		String sql = "INSERT INTO SALES (item, quantity, amount) VALUES ('" + sale.getItem() + "', " + sale.getQuantity() + ", " + sale.getAmount() + ")";
+		jdbcTemplate.update(sql);
 	}
-
+	
 	public Sale get(int id) {
 		String sql = "SELECT * FROM SALES WHERE id = ?";
 		Object[] args = {id};
