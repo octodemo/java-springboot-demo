@@ -83,7 +83,7 @@
 			<artifactId>spring-security-core</artifactId>
 			<version>5.7.0</version>
 		</dependency>
-		
+
 	</dependencies>
 	
 	<build>
