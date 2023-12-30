@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Sales Records</title>
@@ -7,9 +7,12 @@
         body {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: auto;
         }
         h1 {
-            color: #2196F3; /* Change this line to blue */
+            color: #2196F3;
             text-shadow: 2px 2px #ccc;
             text-align: center;
             margin-top: 50px;
@@ -18,7 +21,9 @@
             border-collapse: collapse;
             width: 100%;
             margin-top: 50px;
-            box-shadow: 2px 2px 5px #ccc;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            overflow: hidden;
         }
         th, td {
             text-align: left;
@@ -26,19 +31,18 @@
             border: 1px solid #ccc;
         }
         th {
-            background-color: #2196F3; /* Change this line to blue */
+            background-color: #2196F3;
             color: #fff;
         }
         tr:nth-child(even) {
-            background-color: #E3F2FD; /* Change this line to blue */
+            background-color: #E3F2FD;
         }
         a {
             text-decoration: none;
-            color: #2196F3; /* Change this line to blue */
+            color: #2196F3;
             padding: 5px 10px;
             border-radius: 5px;
-            /* blue */ 
-            border: 1px solid #2196F3; /* Change this line to blue */
+            border: 1px solid #2196F3;
         }
         a:hover {
             color: #fff;
@@ -53,17 +57,31 @@
             color: #f44336;
         }
     </style>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var enableSearchFeature = /*[[${enableSearchFeature}]]*/ false;
+        /*]]>*/
+    </script>
+    <script>
+        window.onload = function() {
+            if (!enableSearchFeature) {
+                document.getElementById('searchFeature').style.display = 'none';
+            }
+        };
+    </script>
 </head>
 <body>
     <div align="center">
         <h1>Sales Records</h1>
         <a href="/new">Enter New Sale</a>
         <br><br>
-        <form action="/search" method="get">
-          <label for="search">Search for item:</label>
-          <input type="text" id="search" name="q" />
-          <button type="submit">Search</button>
-        </form>
+        <div id="searchFeature">
+            <form action="/search" method="get">
+            <label for="search">Search for item:</label>
+            <input type="text" id="search" name="q" />
+            <button type="submit">Search</button>
+            </form>
+        </div>
         <br />
         <table style="width: 35%" border="1" cellpadding="10">
             <thead>

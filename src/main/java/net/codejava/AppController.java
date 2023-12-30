@@ -3,8 +3,10 @@ package net.codejava;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +22,17 @@ public class AppController {
 	@Autowired
 	private SalesDAO dao;
 	
+	@Value("${enableSearchFeature}")
+    private boolean enableSearchFeature;
+
+	public boolean getEnableSearchFeature() {
+		return this.enableSearchFeature;
+	}
+	
 	@RequestMapping("/")
 	public String viewHomePage(Model model) {
 		List<Sale> listSale = dao.list();
+		model.addAttribute("enableSearchFeature", enableSearchFeature);
 		model.addAttribute("listSale", listSale);
 	    return "index";
 	}
@@ -64,10 +74,9 @@ public class AppController {
 	    return "redirect:/";       
 	}	
 
-	// method to clear the amount column in the database given an id
 	@RequestMapping("/clear/{id}")
-	public String clearAmount(@PathVariable(name = "id") int id) {
-		dao.clearAmount(id);
+	public String clearRecord(@PathVariable(name = "id") int id) {
+		dao.clearRecord(id);
 		return "redirect:/";
 	}
 

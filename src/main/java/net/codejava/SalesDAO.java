@@ -51,9 +51,9 @@ public class SalesDAO {
 		jdbcTemplate.update(sql, id);
 	}
 
-	// method to clear the amount column in the database given an id
-	public void clearAmount(int id) {
-		String sql = "UPDATE SALES SET amount=0 WHERE id=?";
+	public void clearRecord(int id) {
+		// clear the amount and quantity of the record
+		String sql = "UPDATE SALES SET quantity=0, amount=0 WHERE id=?";
 		jdbcTemplate.update(sql, id);
 	}
 

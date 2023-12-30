@@ -10,7 +10,10 @@ public class JUnit5ExampleTest11 {
 
     @Autowired
     // create private instance of SalesDAO
-    private SalesDAO salesDAO = new SalesDAO();;
+    private SalesDAO salesDAO = new SalesDAO();
+    // This field is used to inject an instance of the AppController class.
+    @Autowired
+    private AppController appController;
 
     @Test
     void testInsert() {
@@ -27,4 +30,17 @@ public class JUnit5ExampleTest11 {
       salesDAO.delete(listSale.get(listSale.size()-1).getId());
       System.out.println("\n\nTest11-1 Successful!\n\n");
     }
-}
+
+    // test the variable enableSearchFeature in AppController.java
+    @Test
+    void testEnableSearchFeature() {
+      // print a comment about the value of enableSearchFeature
+      System.out.println("Expected value of enableSearchFeature: true");
+      System.out.println("Actual value of enableSearchFeature: " + appController.getEnableSearchFeature());
+
+      // assert that the value of enableSearchFeature is true
+      assertEquals(true, appController.getEnableSearchFeature());
+
+      System.out.println("\n\nTest11-2 Successful!\n\n");
+    }
+  }
