@@ -3,6 +3,7 @@ ENV DB_URL=jdbcConnectionString
 ENV USER_NAME=postgres
 ENV PASSWORD=password
 ENV CHANGELOG_VERSION=master.xml
+ENV SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=public
 RUN mkdir workspace
 WORKDIR /workspace/
 COPY target/salesmanager-*-SNAPSHOT.jar .

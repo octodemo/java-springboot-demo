@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sales Manager - Login</title>
+    <style>
+        #loginFeature button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #loginFeature button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginFeature">
+        <h1>Welcome, Sales Manager!</h1>
+        <p>You are using the Sales Manager App, a dedicated platform for storing and managing sales records.</p>
+        <p>Please enter your credentials to log in and access your sales records.</p>
+        <div th:if="${error}" th:text="${error}" style="color: red;"></div>
+        <div th:if="${message}" th:text="${message}" style="color: green;"></div>
+        <div th:if="${rememberme}" th:text="${rememberme}" style="color: blue;"></div>
+        <form action="/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required />
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

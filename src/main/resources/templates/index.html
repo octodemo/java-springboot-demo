@@ -71,7 +71,7 @@
     </script>
 </head>
 <body>
-    <div align="center">
+    <div align="center" th:if="${listSale}">
         <h1>Sales Records</h1>
         <a href="/new">Enter New Sale</a>
         <br><br>
@@ -83,6 +83,10 @@
             </form>
         </div>
         <br />
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="submit" value="Logout" />
+        </form>
         <table style="width: 35%" border="1" cellpadding="10">
             <thead>
                 <tr>
