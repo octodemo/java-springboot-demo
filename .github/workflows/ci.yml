@@ -203,7 +203,7 @@ jobs:
           do
           # sleep for 10 seconds to avoid timeout errors
             sleep 10
-            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086 SHOT.jar --spring.redis.host=redis --spring.redis.port=6379 --spring.redis.mode=standalone
+            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086 SHOT.jar -Dspring.redis.host=redis -Dspring.redis.port=6379 -Dspring.redis.mode=standalone
           done
       
       - uses: actions/upload-artifact@v3 # upload the test results as an artifact
