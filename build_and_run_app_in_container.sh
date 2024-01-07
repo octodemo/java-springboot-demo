@@ -15,6 +15,9 @@ cleanup() {
     docker rmi myapp-img:v1
     # Remove volume if exists
     docker volume rm postgresql-data
+    # Stop and remove the redis container if it exists
+    docker stop redis_container
+    docker rm redis_container
 }
 
 # Trap the EXIT signal to perform cleanup
@@ -29,7 +32,9 @@ mvn liquibase:tag -Dliquibase.tag=v3.2 -Dliquibase.url=jdbc:postgresql://${LOCAL
 # Build the app and create a docker image from local dockerfile
 mvn clean package
 docker build -t myapp-img:v1 .
-docker run -d -e USER_NAME=postgres -e PASSWORD=Password123 -e CHANGELOG_VERSION=changelog_version-3.3.xml -e DB_URL=jdbc:postgresql://${LOCAL_IP}:5432/postgres -t -p 80:8086 --name app-test myapp-img:v1
+docker run -d -e USER_NAME=postgres -e PASSWORD=Password123 -e CHANGELOG_VERSION=changelog_version-3.3.xml -e DB_URL=jdbc:postgresql://${LOCAL_IP}:5432/postgres -e REDIS_HOST=$LOCAL_IP -t -p 80:8086 --name app-test myapp-img:v1
+# spin up a Redis container for caching 
+docker run -d -p 6379:6379 --name redis_container redis
 docker ps -a
 echo "Waiting for 10 seconds for the app to start"
 sleep 10

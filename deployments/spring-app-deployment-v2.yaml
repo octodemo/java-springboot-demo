@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-app-container
-          image: ghcr.io/octodemo/java-springboot-demo:143
+          image: ghcr.io/octodemo/java-springboot-demo:144
           ports:
             - containerPort: 8086
           env:
@@ -27,5 +27,7 @@ spec:
               value: admin123
             - name: CHANGELOG_VERSION
               value: changelog_version-3.3.xml
+            - name: REDIS_HOST
+              value: redis-database-service
       imagePullSecrets:
         - name: your-registry-secret

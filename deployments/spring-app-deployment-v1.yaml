@@ -27,5 +27,7 @@ spec:
               value: admin123
             - name: CHANGELOG_VERSION
               value: changelog_version-3.3.xml
+            - name: REDIS_HOST
+              value: redis-database-service
       imagePullSecrets:
         - name: your-registry-secret

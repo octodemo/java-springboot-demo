@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/", true) // This is the URL to redirect to after a successful login
-                .successForwardUrl("/")
                 .failureUrl("/login?error=true")
                 .permitAll()
                 .and()

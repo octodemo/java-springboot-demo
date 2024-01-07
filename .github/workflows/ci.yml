@@ -132,6 +132,12 @@ jobs:
         # exposing the port 5432 of the postgres service container to the host machine
         ports:
           - 5432:5432
+      # redis service container for caching session data
+      redis: # service name - redis. This name is used to access the service container from the job container as the host name.
+        image: redis # running the job in a container - redis link to the docker hub - https://hub.docker.com/_/redis
+        # exposing the port 6379 of the redis service container to the host machine
+        ports:
+          - 6379:6379
     #  defining the job permissions
     permissions:
       contents: read # read access to the repository contents
