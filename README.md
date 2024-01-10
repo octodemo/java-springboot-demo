@@ -65,15 +65,7 @@ stateDiagram
     Deploy --> [ProdInstance2]: Green
 ```
 ## GitFlow Diagram
-<style>
-.mermaid text {
-  stroke: #000;
-  stroke-width: 0.5px;
-  font-weight: bold;
-}
-</style>
-
-<div class="mermaid">
+```mermaid
 graph TB
   A[Local Branch] -->|pull request| B((Main Branch))
   B --> C{GitHub Actions Workflow}
@@ -101,4 +93,4 @@ graph TB
   style K fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
   style L fill:#f6c,stroke:#333,stroke-width:2px
   style M fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
-</div>
+```
