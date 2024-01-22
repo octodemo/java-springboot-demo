@@ -1,21 +1,48 @@
 item;amount;quantity;date
-Laptop;1000.00;5;2020-01-01
-Desktop;800.00;3;2020-01-02
-Printer;500.00;10;2020-01-03
-Keyboard;50.00;20;2020-01-04
-Mouse;20.00;50;2020-01-05
-Monitor;300.00;2;2020-01-06
-Headphones;80.00;10;2020-01-07
-Speakers;150.00;5;2020-01-08
-Tablet;600.00;4;2020-01-09
-Smartphone;800.00;3;2020-01-10
-Camera;400.00;6;2020-01-11
-Printer Ink;30.00;50;2020-01-12
-External Hard Drive;120.00;8;2020-01-13
-USB Flash Drive;20.00;100;2020-01-14
-Ethernet Cable;10.00;50;2020-01-15
-HDMI Cable;15.00;30;2020-01-16
-VGA Cable;10.00;30;2020-01-17
-Power Strip;25.00;20;2020-01-18
-Extension Cord;15.00;20;2020-01-19
-Wireless Router;80.00;5;2020-01-20
+Laptop;1500.00;5;2020-01-01
+Desktop;1200.00;3;2020-01-02
+Printer;300.00;10;2020-01-03
+Keyboard;70.00;20;2020-01-04
+Mouse;30.00;50;2020-01-05
+Monitor;200.00;2;2020-01-06
+Headphones;100.00;10;2020-01-07
+Speakers;120.00;5;2020-01-08
+Tablet;500.00;4;2020-01-09
+Smartphone;700.00;3;2020-01-10
+Camera;500.00;6;2020-01-11
+Printer Ink;40.00;50;2020-01-12
+External Hard Drive;150.00;8;2020-01-13
+USB Flash Drive;25.00;100;2020-01-14
+Ethernet Cable;15.00;50;2020-01-15
+HDMI Cable;20.00;30;2020-01-16
+VGA Cable;15.00;30;2020-01-17
+Power Strip;30.00;20;2020-01-18
+Extension Cord;20.00;20;2020-01-19
+Wireless Router;90.00;5;2020-01-20
+Laptop Charger;60.00;15;2020-01-21
+Smartphone Charger;25.00;30;2020-01-22
+Camera Charger;30.00;20;2020-01-23
+Printer Cable;15.00;40;2020-01-24
+External Hard Drive Case;20.00;25;2020-01-25
+USB Flash Drive Case;10.00;50;2020-01-26
+Ethernet Cable Organizer;15.00;30;2020-01-27
+HDMI Cable Adapter;20.00;20;2020-01-28
+VGA Cable Adapter;15.00;20;2020-01-29
+Power Strip with USB Ports;35.00;10;2020-01-30
+USB-C Cable;17.00;35;2020-01-31
+Wireless Mouse;30.00;25;2020-02-01
+Wireless Keyboard;40.00;20;2020-02-02
+Laptop Stand;50.00;15;2020-02-03
+Monitor Stand;45.00;15;2020-02-04
+Webcam Cover;7.00;50;2020-02-05
+Screen Cleaner Kit;15.00;30;2020-02-06
+Laptop Cooling Pad;30.00;20;2020-02-07
+USB Hub;20.00;20;2020-02-08
+Monitor Light Bar;50.00;10;2020-02-09
+Bluetooth Headset;35.00;20;2020-02-10
+Wireless Earbuds;60.00;15;2020-02-11
+Portable Speaker;45.00;15;2020-02-12
+Smart Watch;80.00;10;2020-02-13
+Fitness Tracker;70.00;15;2020-02-14
+Tablet Stand;25.00;25;2020-02-15
+Phone Holder;15.00;30;2020-02-16

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.PageRequest; // Add this import statement
+import org.springframework.data.domain.Page; // Add this import statement
 
 
 @Controller
@@ -42,13 +46,16 @@ public class AppController {
 	}
 	
 	@RequestMapping("/")
-	public String viewHomePage(Model model , Principal principal) {
-		// if (principal != null) {
-			// User is logged in, add the data to the model
-			List<Sale> listSale = dao.list();
-			model.addAttribute("enableSearchFeature", enableSearchFeature);
-			model.addAttribute("listSale", listSale);
-		// }
+	public String viewHomePage(Model model , Principal principal, @RequestParam(defaultValue = "0") int page) {
+		int pageSize = 20; // number of records per page
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<Sale> salePage = dao.findAll(pageable);
+
+		model.addAttribute("enableSearchFeature", enableSearchFeature);
+		model.addAttribute("listSale", salePage.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", salePage.getTotalPages());
+
 		return "index";
 	}
 	

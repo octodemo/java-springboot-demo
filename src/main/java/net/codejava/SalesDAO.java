@@ -9,6 +9,9 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page; // Import the Page class from the correct package
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable; // Import the Pageable class from the correct package
 
 @Repository
 public class SalesDAO {
@@ -25,7 +28,16 @@ public class SalesDAO {
 	}
 
 	public void save(Sale sale) {
-		SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate);
+		if (sale == null) {
+			throw new IllegalArgumentException("Sale object cannot be null");
+		}
+
+		if (jdbcTemplate == null) {
+			throw new IllegalStateException("JdbcTemplate cannot be null");
+		}
+
+		SimpleJdbcInsert insertActor = 
+			new SimpleJdbcInsert(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
 		insertActor.withTableName("sales").usingColumns("item", "quantity", "amount");
 		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
 
@@ -40,9 +52,19 @@ public class SalesDAO {
 	}
 
 	public void update(Sale sale) {
+		if (sale == null) {
+			throw new IllegalArgumentException("Sale object cannot be null");
+		}
+
 		String sql = "UPDATE SALES SET item=:item, quantity=:quantity, amount=:amount WHERE id=:id";
 		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
-		NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		if (jdbcTemplate == null) {
+			throw new IllegalStateException("JdbcTemplate cannot be null");
+		}
+
+		NamedParameterJdbcTemplate template = 
+			new NamedParameterJdbcTemplate(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
 		template.update(sql, param);
 	}
 
@@ -61,5 +83,18 @@ public class SalesDAO {
 		String sql = "SELECT * FROM sales WHERE LOWER(item) LIKE LOWER(?)";
 		List<Sale> listSale = jdbcTemplate.query(sql, new Object[]{"%" + query.toLowerCase() + "%"}, new BeanPropertyRowMapper<>(Sale.class));
 		return listSale;
+	}
+
+	public Page<Sale> findAll(Pageable pageable) {
+		String countQuery = "SELECT count(*) FROM sales";
+		Integer totalInteger = jdbcTemplate.queryForObject(countQuery, Integer.class);
+
+		// Check if totalInteger is null
+		int total = (totalInteger != null) ? totalInteger : 0;
+
+		String query = "SELECT * FROM sales ORDER BY id ASC LIMIT ? OFFSET ?";
+		List<Sale> sales = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Sale.class), pageable.getPageSize(), pageable.getOffset());
+
+		return new PageImpl<>(sales, pageable, total);
 	}
 }
