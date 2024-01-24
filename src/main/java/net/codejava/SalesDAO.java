@@ -1,5 +1,8 @@
 package net.codejava;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,11 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.data.domain.Page; // Import the Page class from the correct package
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable; // Import the Pageable class from the correct package
+
 
 @Repository
 public class SalesDAO {
@@ -96,5 +101,27 @@ public class SalesDAO {
 		List<Sale> sales = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Sale.class), pageable.getPageSize(), pageable.getOffset());
 
 		return new PageImpl<>(sales, pageable, total);
+	}
+
+	@RequestMapping("/export")
+	public void exportCSV(String query, String filename) throws IOException {
+		// create an instance of FileWriter
+		FileWriter writer = new FileWriter(filename);
+		// create an instance of BufferedWriter
+		BufferedWriter bw = new BufferedWriter(writer);
+		// write the csv header
+		bw.write("id,item,quantity,amount");
+		bw.newLine();
+		// write the csv body
+		List<Sale> listSale = search(query);
+		for (Sale sale : listSale) {
+			bw.write(sale.getId() + "," + sale.getItem() + "," + sale.getQuantity() + "," + sale.getAmount());
+			bw.newLine();
+		}
+		// print a message
+		System.out.println("CSV file was created successfully.");
+		// close the BufferedWriter and FileWriter
+		bw.close();
+		writer.close();
 	}
 }

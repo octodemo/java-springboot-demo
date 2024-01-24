@@ -27,7 +27,7 @@ public class JUnit5ExampleTest11 {
       // assert that the latest item on the list is "test item 123"
       assertEquals("test item 123", listSale.get(listSale.size()-1).getItem());
       // clean up the database
-      salesDAO.delete(listSale.get(listSale.size()-1).getId());
+      salesDAO.delete(listSale.get(listSale.size()-1).getId().intValue());
       System.out.println("\n\nTest11-1 Successful!\n\n");
     }
 

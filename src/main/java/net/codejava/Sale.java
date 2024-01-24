@@ -1,7 +1,14 @@
 package net.codejava;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "sales")
 public class Sale {
-	private int id;
+	@Id
+	private Long id;
 	private String item;
 	private int quantity;
 	private float amount;
@@ -15,11 +22,11 @@ public class Sale {
 		this.amount = amount;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(final int id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 

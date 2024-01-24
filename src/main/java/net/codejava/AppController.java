@@ -1,8 +1,8 @@
 package net.codejava;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+// import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,9 +24,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.PageRequest; // Add this import statement
 import org.springframework.data.domain.Page; // Add this import statement
+// import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-
+@EnableJpaRepositories(basePackages = "net.codejava")
 @Controller
+@Transactional
 public class AppController {
 
 	/**
@@ -38,6 +41,13 @@ public class AppController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	// @Autowired
+	// private final SalesRecordRepository salesRecordRepository;
+
+	// public AppController(SalesRecordRepository salesRecordRepository) {
+    //     this.salesRecordRepository = salesRecordRepository;
+    // }
+
 	@Value("${enableSearchFeature}")
     private boolean enableSearchFeature;
 
@@ -58,13 +68,22 @@ public class AppController {
 
 		return "index";
 	}
-	
+
+	// @GetMapping("/")
+	// public String showPage(Model model, @RequestParam(defaultValue="0") int page) {
+	// 	Pageable pageable = PageRequest.of(page, 5);
+	// 	Page<Sale> data = salesRecordRepository.findAll(pageable);
+	// 	data = data != null ? data : Page.empty(); // Assign an empty Page if data is null
+	// 	model.addAttribute("data", data);
+	// 	return "index";
+	// }
+
 	@RequestMapping("/new")
 	public String showNewForm(Model model) {
-	    Sale sale = new Sale();
-	    model.addAttribute("sale", sale);
-	     
-	    return "new_form";
+		Sale sale = new Sale();
+		model.addAttribute("sale", sale);
+		 
+		return "new_form";
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -132,5 +151,16 @@ public class AppController {
 		List<Sale> listSale = dao.search(query);
 		model.addAttribute("listSale", listSale);
 		return "search";
+	}
+
+	@RequestMapping("/export")
+	public String exportCSV(@ModelAttribute("q") String query, Model model) {
+		try {
+			dao.exportCSV(query, "export.csv");
+			return "redirect:/";
+		} catch (Exception e) {
+			model.addAttribute("error", e.getMessage());
+			return "error";
+		}
 	}
 }
