@@ -11,12 +11,6 @@
             max-width: 1200px;
             margin: auto;
         }
-        h1 {
-            color: #4CAF50; /* Changed from #2196F3 to #4CAF50 for green */
-            text-shadow: 2px 2px #ccc;
-            text-align: center;
-            margin-top: 50px;
-        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -29,24 +23,6 @@
             text-align: left;
             padding: 8px;
         }
-        th {
-            background-color: #4CAF50;
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #fbfde3;
-        }
-        a {
-            text-decoration: none;
-            color: #4CAF50;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #4CAF50;
-        }
-        a:hover {
-            color: #fff;
-            background-color: #4CAF50;
-        }
         .actions {
             display: flex;
             justify-content: space-between;
@@ -58,16 +34,17 @@
     </style>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var enableSearchFeature = /*[[${enableSearchFeature}]]*/ false;
+        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ 'default';
         /*]]>*/
     </script>
     <script>
         window.onload = function() {
-            if (!enableSearchFeature) {
+            if (!window.enableSearchFeature) {
                 document.getElementById('searchFeature').style.display = 'none';
             }
         };
     </script>
+    <script src="js/styles.js"></script>
 </head>
 <body>
     <div align="center" th:if="${listSale}">
@@ -93,7 +70,26 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input type="submit" value="Logout" />
         </form>
-        <table style="width: 35%" border="1" cellpadding="10">
+        <br />
+        <div class="sales-table">
+            <table style="width: 100%" border="1" cellpadding="10">
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sale : ${listSale}">
+                        <td th:text="${sale.item}">Item ID</td>
+                        <td th:text="${'$' + sale.amount * sale.quantity}">Total Sales</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="main-table">
+        <br />
+        <table style="width: 35%" border="1" cellpadding="10" class="main-table">
             <thead>
                 <tr>
                     <th>ID</th>

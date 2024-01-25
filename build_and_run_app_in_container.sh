@@ -6,23 +6,24 @@
 cleanup() {
     echo "Performing cleanup..."
     # Stop and remove the app container if it exists
-    docker stop app-test
-    docker rm app-test
+    docker stop app-test || true
+    docker rm app-test || true
     # Stop and remove the postgresql container if it exists
-    docker stop postgres_container
-    docker rm postgres_container
+    docker stop postgres_container || true
+    docker rm postgres_container || true
     # Remove image if exists
-    docker rmi myapp-img:v1
+    docker rmi myapp-img:v1 || true
     # Remove volume if exists
-    docker volume rm postgresql-data
+    docker volume rm postgresql-data || true
     # Stop and remove the redis container if it exists
-    docker stop redis_container
-    docker rm redis_container
+    docker stop redis_container || true
+    docker rm redis_container || true
 }
 
 # Trap the EXIT signal to perform cleanup
 trap cleanup EXIT
 
+set -e # Exit immediately if a command exits with a non-zero status.
 # Getting local ip address from ifconfig 
 LOCAL_IP=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}')
 # Run a postgresql container with a volume to persist data

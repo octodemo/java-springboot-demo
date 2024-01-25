@@ -8,41 +8,21 @@
         body {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
-        }
-        h1 {
-            color: #4CAF50; /* Changed from #2196F3 to #4CAF50 for green */
-            text-shadow: 2px 2px #ccc;
-            text-align: center;
-            margin-top: 50px;
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: auto;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 50px;
-            box-shadow: 2px 2px 5px #ccc;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            overflow: hidden;
         }
         th, td {
             text-align: left;
             padding: 8px;
-            border: 1px solid #ccc;
-        }
-        th {
-            background-color: #4CAF50; /* Changed from #2196F3 to #4CAF50 for green */
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #C8E6C9; /* Changed from #E3F2FD to #C8E6C9 for green */
-        }
-        a {
-            text-decoration: none;
-            color: #4CAF50; /* Changed from #2196F3 to #4CAF50 for green */
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #4CAF50; /* Changed from #2196F3 to #4CAF50 for green */
-        }
-        a:hover {
-            color: #fff;
-            background-color: #388E3C; /* Changed from #3a81e5 to #388E3C for green */
         }
         .actions {
             display: flex;
@@ -53,6 +33,12 @@
             color: #f44336;
         }
     </style>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ false;
+        /*]]>*/
+    </script>
+    <script src="/js/styles.js"></script>
 </head>
 <body>
     <h1>Edit Sale</h1>

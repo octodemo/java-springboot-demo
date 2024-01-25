@@ -79,11 +79,32 @@ public class AppController {
 	// }
 
 	@RequestMapping("/new")
-	public String showNewForm(Model model) {
+	public ModelAndView showNewForm() {
+		ModelAndView mav = new ModelAndView("new_form");
 		Sale sale = new Sale();
-		model.addAttribute("sale", sale);
-		 
-		return "new_form";
+		mav.addObject("sale", sale);
+		mav.addObject("enableSearchFeature", enableSearchFeature);
+		return mav;
+	}
+
+	@RequestMapping("/edit/{id}")
+	public ModelAndView showEditForm(@PathVariable(name = "id") int id) {
+		ModelAndView mav = new ModelAndView("edit_form");
+		Sale sale = dao.get(id);
+		mav.addObject("sale", sale);
+		mav.addObject("enableSearchFeature", enableSearchFeature);
+		return mav;
+	}
+
+	@RequestMapping("/search")
+	public String search(@ModelAttribute("q") String query, Model model) {
+		List<Sale> listSale = dao.search(query);
+		model.addAttribute("listSale", listSale);
+		
+		boolean enableSearchFeature = true; // or get this value from somewhere else
+		model.addAttribute("enableSearchFeature", enableSearchFeature);
+		
+		return "search";
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -117,15 +138,6 @@ public class AppController {
 		return "redirect:/";
 	}
 	
-	@RequestMapping("/edit/{id}")
-	public ModelAndView showEditForm(@PathVariable(name = "id") int id) {
-	    ModelAndView mav = new ModelAndView("edit_form");
-	    Sale sale = dao.get(id);
-	    mav.addObject("sale", sale);
-	     
-	    return mav;
-	}
-	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("sale") Sale sale) {
 	    dao.update(sale);
@@ -143,14 +155,6 @@ public class AppController {
 	public String clearRecord(@PathVariable(name = "id") int id) {
 		dao.clearRecord(id);
 		return "redirect:/";
-	}
-
-	// method getmapping for search functionality
-	@RequestMapping("/search")
-	public String search(@ModelAttribute("q") String query, Model model) {
-		List<Sale> listSale = dao.search(query);
-		model.addAttribute("listSale", listSale);
-		return "search";
 	}
 
 	@RequestMapping("/export")
