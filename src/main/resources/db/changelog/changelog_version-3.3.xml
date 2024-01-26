@@ -6,13 +6,13 @@
     <!--  create a sales table with id, Item name, amount, quantity, and date. Auto increment id. -->
       <changeSet id="1" author="jim">
          <createTable tableName="sales">
-               <column name="id" type="int" autoIncrement="true">
-                  <constraints primaryKey="true" nullable="false" />
-               </column>
-               <column name="item" type="varchar(100)" />
-               <column name="amount" type="double" />
-               <column name="quantity" type="int" />
-               <column name="date" type="date" defaultValueComputed="CURRENT_DATE" />
+            <column name="serial_number" type="varchar(255)">
+               <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="item" type="varchar(100)" />
+            <column name="amount" type="double" />
+            <column name="quantity" type="int" />
+            <column name="date" type="date" defaultValueComputed="CURRENT_DATE" />
          </createTable>
       </changeSet>
       <!--  create a changeset that loads a csv file. -->

@@ -41,28 +41,32 @@
     <script src="js/styles.js"></script>
 </head>
 <body>
-    <h1>Enter New Sale</h1>
-    <form action="#" th:action="@{/save}" th:object="${sale}" method="post">
-        <div align="center">
-        <table style="width: 35%" border="1" cellpadding="10">
-            <tr>
-                <td>Item Name:</td>
-                <td><input type="text" th:field="*{item}" /></td>
-            </tr>
-            <tr>
-                <td>Quantity:</td>
-                <td><input type="text" th:field="*{quantity}" /></td>
-            </tr>
-            <tr>
-                <td>Amount:</td>
-                <td><input type="text" th:field="*{amount}" /></td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center">
-                    <button type="submit">Save</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <h1>Edit Sale</h1>
+    <div align="center">
+        <form action="#" th:action="@{/update}" th:object="${sale}" method="post">
+            <div align="center">
+            <table style="width: 35%" border="1" cellpadding="10">
+                <tr>
+                    <td>Serial Number:</td>
+                    <td><input type="text" th:field="*{serialNumber}" /></td>
+                </tr>            
+                <tr>
+                    <td>Item Name:</td>
+                    <td><input type="text" th:field="*{item}" /></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="text" th:field="*{quantity}" /></td>
+                </tr>
+                <tr>
+                    <td>Amount (USD):</td>
+                    <td><input type="text" th:field="*{amount}" /></td>
+                </tr>                            
+                <tr>
+                    <td colspan="2"><button type="submit">Save</button> </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 </html>

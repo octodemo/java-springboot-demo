@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Calendar;
 import java.util.List;
 
 @SpringBootTest
@@ -17,7 +18,11 @@ public class JUnit5ExampleTest11 {
 
     @Test
     void testInsert() {
-      Sale sale = new Sale("test item 123", 1, 1);
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(2021, Calendar.FEBRUARY, 1);
+      java.util.Date utilDate = calendar.getTime();
+      java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+      Sale sale = new Sale("123", "test item 123", 1, 1.00f, sqlDate);
       salesDAO.save(sale);
       // list all the records
       List<Sale> listSale = salesDAO.list();
@@ -27,7 +32,7 @@ public class JUnit5ExampleTest11 {
       // assert that the latest item on the list is "test item 123"
       assertEquals("test item 123", listSale.get(listSale.size()-1).getItem());
       // clean up the database
-      salesDAO.delete(listSale.get(listSale.size()-1).getId().intValue());
+      salesDAO.delete(String.valueOf(listSale.get(listSale.size()-1).getSerialNumber().toString()));
       System.out.println("\n\nTest11-1 Successful!\n\n");
     }
 

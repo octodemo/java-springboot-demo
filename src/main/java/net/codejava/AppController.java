@@ -87,10 +87,10 @@ public class AppController {
 		return mav;
 	}
 
-	@RequestMapping("/edit/{id}")
-	public ModelAndView showEditForm(@PathVariable(name = "id") int id) {
+	@RequestMapping("/edit/{serialNumber}")
+	public ModelAndView showEditForm(@PathVariable(name = "serialNumber") String serialNumber) {
 		ModelAndView mav = new ModelAndView("edit_form");
-		Sale sale = dao.get(id);
+		Sale sale = dao.get(serialNumber);
 		mav.addObject("sale", sale);
 		mav.addObject("enableSearchFeature", enableSearchFeature);
 		return mav;
@@ -147,13 +147,13 @@ public class AppController {
 	
 	@RequestMapping("/delete/{id}")
 	public String delete(@PathVariable(name = "id") int id) {
-	    dao.delete(id);
-	    return "redirect:/";       
-	}	
+		dao.delete(String.valueOf(id));
+		return "redirect:/";       
+	}   
 
 	@RequestMapping("/clear/{id}")
 	public String clearRecord(@PathVariable(name = "id") int id) {
-		dao.clearRecord(id);
+		dao.clearRecord(String.valueOf(id));
 		return "redirect:/";
 	}
 

@@ -1,48 +1,48 @@
-item;amount;quantity;date
-Laptop;1500.00;5;2020-01-01
-Desktop;1200.00;3;2020-01-02
-Printer;300.00;10;2020-01-03
-Keyboard;70.00;20;2020-01-04
-Mouse;30.00;50;2020-01-05
-Monitor;200.00;2;2020-01-06
-Headphones;100.00;10;2020-01-07
-Speakers;120.00;5;2020-01-08
-Tablet;500.00;4;2020-01-09
-Smartphone;700.00;3;2020-01-10
-Camera;500.00;6;2020-01-11
-Printer Ink;40.00;50;2020-01-12
-External Hard Drive;150.00;8;2020-01-13
-USB Flash Drive;25.00;100;2020-01-14
-Ethernet Cable;15.00;50;2020-01-15
-HDMI Cable;20.00;30;2020-01-16
-VGA Cable;15.00;30;2020-01-17
-Power Strip;30.00;20;2020-01-18
-Extension Cord;20.00;20;2020-01-19
-Wireless Router;90.00;5;2020-01-20
-Laptop Charger;60.00;15;2020-01-21
-Smartphone Charger;25.00;30;2020-01-22
-Camera Charger;30.00;20;2020-01-23
-Printer Cable;15.00;40;2020-01-24
-External Hard Drive Case;20.00;25;2020-01-25
-USB Flash Drive Case;10.00;50;2020-01-26
-Ethernet Cable Organizer;15.00;30;2020-01-27
-HDMI Cable Adapter;20.00;20;2020-01-28
-VGA Cable Adapter;15.00;20;2020-01-29
-Power Strip with USB Ports;35.00;10;2020-01-30
-USB-C Cable;17.00;35;2020-01-31
-Wireless Mouse;30.00;25;2020-02-01
-Wireless Keyboard;40.00;20;2020-02-02
-Laptop Stand;50.00;15;2020-02-03
-Monitor Stand;45.00;15;2020-02-04
-Webcam Cover;7.00;50;2020-02-05
-Screen Cleaner Kit;15.00;30;2020-02-06
-Laptop Cooling Pad;30.00;20;2020-02-07
-USB Hub;20.00;20;2020-02-08
-Monitor Light Bar;50.00;10;2020-02-09
-Bluetooth Headset;35.00;20;2020-02-10
-Wireless Earbuds;60.00;15;2020-02-11
-Portable Speaker;45.00;15;2020-02-12
-Smart Watch;80.00;10;2020-02-13
-Fitness Tracker;70.00;15;2020-02-14
-Tablet Stand;25.00;25;2020-02-15
-Phone Holder;15.00;30;2020-02-16
+serial_number;item;amount;quantity;date
+A1001;Laptop;1500.00;5;2020-01-01
+B1002;Desktop;1200.00;3;2020-01-02
+C1003;Printer;300.00;10;2020-01-03
+D1004;Keyboard;70.00;20;2020-01-04
+E1005;Mouse;30.00;50;2020-01-05
+F1006;Monitor;200.00;2;2020-01-06
+G1007;Headphones;100.00;10;2020-01-07
+H1008;Speakers;120.00;5;2020-01-08
+I1009;Tablet;500.00;4;2020-01-09
+J1010;Smartphone;700.00;3;2020-01-10
+K1011;Camera;500.00;6;2020-01-11
+L1012;Printer Ink;40.00;50;2020-01-12
+M1013;External Hard Drive;150.00;8;2020-01-13
+N1014;USB Flash Drive;25.00;100;2020-01-14
+O1015;Ethernet Cable;15.00;50;2020-01-15
+P1016;HDMI Cable;20.00;30;2020-01-16
+Q1017;VGA Cable;15.00;30;2020-01-17
+R1018;Power Strip;30.00;20;2020-01-18
+S1019;Extension Cord;20.00;20;2020-01-19
+T1020;Wireless Router;90.00;5;2020-01-20
+U1021;Laptop Charger;60.00;15;2020-01-21
+V1022;Smartphone Charger;25.00;30;2020-01-22
+W1023;Camera Charger;30.00;20;2020-01-23
+X1024;Printer Cable;15.00;40;2020-01-24
+Y1025;External Hard Drive Case;20.00;25;2020-01-25
+Z1026;USB Flash Drive Case;10.00;50;2020-01-26
+A1027;Ethernet Cable Organizer;15.00;30;2020-01-27
+B1028;HDMI Cable Adapter;20.00;20;2020-01-28
+C1029;VGA Cable Adapter;15.00;20;2020-01-29
+D1030;Power Strip with USB Ports;35.00;10;2020-01-30
+E1031;USB-C Cable;17.00;35;2020-01-31
+F1032;Wireless Mouse;30.00;25;2020-02-01
+G1033;Wireless Keyboard;40.00;20;2020-02-02
+H1034;Laptop Stand;50.00;15;2020-02-03
+I1035;Monitor Stand;45.00;15;2020-02-04
+J1036;Webcam Cover;7.00;50;2020-02-05
+K1037;Screen Cleaner Kit;15.00;30;2020-02-06
+L1038;Laptop Cooling Pad;30.00;20;2020-02-07
+M1039;USB Hub;20.00;20;2020-02-08
+N1040;Monitor Light Bar;50.00;10;2020-02-09
+O1041;Bluetooth Headset;35.00;20;2020-02-10
+P1042;Wireless Earbuds;60.00;15;2020-02-11
+Q1043;Portable Speaker;45.00;15;2020-02-12
+R1044;Smart Watch;80.00;10;2020-02-13
+S1045;Fitness Tracker;70.00;15;2020-02-14
+T1046;Tablet Stand;25.00;25;2020-02-15
+U1047;Phone Holder;15.00;30;2020-02-16

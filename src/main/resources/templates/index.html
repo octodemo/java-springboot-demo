@@ -48,8 +48,8 @@
 </head>
 <body>
     <div align="center" th:if="${listSale}">
-        <h1>Sales Records</h1>
-        <a href="/new">Enter New Sale</a>
+        <h1>Inventory Records</h1>
+        <a href="/new">Enter New Product</a>
         <a href="/export">Export to CSV</a>
         <br><br>
         <div id="searchFeature">
@@ -71,48 +71,32 @@
             <input type="submit" value="Logout" />
         </form>
         <br />
-        <div class="sales-table">
-            <table style="width: 100%" border="1" cellpadding="10">
+        <div class="main-table">
+            <table style="width: 35%" border="1" cellpadding="10" class="main-table">
                 <thead>
                     <tr>
-                        <th>Item ID</th>
-                        <th>Total Sales</th>
+                        <th>Serial Number</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="sale : ${listSale}">
-                        <td th:text="${sale.item}">Item ID</td>
-                        <td th:text="${'$' + sale.amount * sale.quantity}">Total Sales</td>
+                        <td th:text="${sale.serialNumber}">serial Number</td>
+                        <td th:text="${sale.item}">Item Name</td>
+                        <td th:text="${sale.quantity}">Quantity</td>
+                        <td th:text="${sale.amount}">Amount</td>
+                        <td class="actions">
+                            <a th:href="@{'/edit/' + ${sale.serialNumber}}">Edit</a>
+                            <a th:href="@{'/delete/' + ${sale.serialNumber}}">Delete</a>
+                            <a th:href="@{'/clear/' + ${sale.serialNumber}}">Clear</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="main-table">
-        <br />
-        <table style="width: 35%" border="1" cellpadding="10" class="main-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="sale : ${listSale}">
-                    <td th:text="${sale.id}">ID</td>
-                    <td th:text="${sale.item}">Item Name</td>
-                    <td th:text="${sale.quantity}">Quantity</td>
-                    <td th:text="${sale.amount}">Amount</td>
-                    <td class="actions">
-                        <a th:href="@{'/edit/' + ${sale.id}}">Edit</a>
-                        <a th:href="@{'/delete/' + ${sale.id}}">Delete</a>
-                        <a th:href="@{'/clear/' + ${sale.id}}">Clear</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>   
+    </div>
 </body>
 </html>

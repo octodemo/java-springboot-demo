@@ -24,7 +24,7 @@ public class SalesDAO {
 	private JdbcTemplate jdbcTemplate;
 
 	public List<Sale> list() {
-		String sql = "SELECT * FROM SALES ORDER BY id ASC";
+		String sql = "SELECT * FROM sales ORDER BY serial_number ASC LIMIT ? OFFSET ?";
 
 		List<Sale> listSale = jdbcTemplate.query(sql,
 				BeanPropertyRowMapper.newInstance(Sale.class));
@@ -43,15 +43,15 @@ public class SalesDAO {
 
 		SimpleJdbcInsert insertActor = 
 			new SimpleJdbcInsert(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
-		insertActor.withTableName("sales").usingColumns("item", "quantity", "amount");
+		insertActor.withTableName("sales").usingColumns("serialNumber", "item", "quantity", "amount");
 		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
 
 		insertActor.execute(param);
 	}
 
-	public Sale get(int id) {
-		String sql = "SELECT * FROM SALES WHERE id = ?";
-		Object[] args = {id};
+	public Sale get(String serialNumber) {
+		String sql = "SELECT * FROM SALES WHERE serial_number = ?";
+		Object[] args = {serialNumber};
 		Sale sale = jdbcTemplate.queryForObject(sql, args, BeanPropertyRowMapper.newInstance(Sale.class));
 		return sale;
 	}
@@ -61,7 +61,7 @@ public class SalesDAO {
 			throw new IllegalArgumentException("Sale object cannot be null");
 		}
 
-		String sql = "UPDATE SALES SET item=:item, quantity=:quantity, amount=:amount WHERE id=:id";
+		String sql = "UPDATE SALES SET item=:item, quantity=:quantity, amount=:amount WHERE serial_number=:serial_number";
 		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
 
 		if (jdbcTemplate == null) {
@@ -73,15 +73,15 @@ public class SalesDAO {
 		template.update(sql, param);
 	}
 
-	public void delete(int id) {
-		String sql = "DELETE FROM SALES WHERE id = ?";
-		jdbcTemplate.update(sql, id);
+	public void delete(String serialNumber) {
+		String sql = "DELETE FROM SALES WHERE serial_number = ?";
+		jdbcTemplate.update(sql, serialNumber);
 	}
 
-	public void clearRecord(int id) {
+	public void clearRecord(String serialNumber) {
 		// clear the amount and quantity of the record
-		String sql = "UPDATE SALES SET quantity=0, amount=0 WHERE id=?";
-		jdbcTemplate.update(sql, id);
+		String sql = "UPDATE SALES SET quantity=0, amount=0 WHERE serial_number=?";
+		jdbcTemplate.update(sql, serialNumber);
 	}
 
 	public List<Sale> search(String query) {
@@ -97,7 +97,7 @@ public class SalesDAO {
 		// Check if totalInteger is null
 		int total = (totalInteger != null) ? totalInteger : 0;
 
-		String query = "SELECT * FROM sales ORDER BY id ASC LIMIT ? OFFSET ?";
+		String query = "SELECT * FROM sales ORDER BY serial_number ASC LIMIT ? OFFSET ?";
 		List<Sale> sales = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Sale.class), pageable.getPageSize(), pageable.getOffset());
 
 		return new PageImpl<>(sales, pageable, total);
@@ -110,12 +110,12 @@ public class SalesDAO {
 		// create an instance of BufferedWriter
 		BufferedWriter bw = new BufferedWriter(writer);
 		// write the csv header
-		bw.write("id,item,quantity,amount");
+		bw.write("serialNumber,item,quantity,amount");
 		bw.newLine();
 		// write the csv body
 		List<Sale> listSale = search(query);
 		for (Sale sale : listSale) {
-			bw.write(sale.getId() + "," + sale.getItem() + "," + sale.getQuantity() + "," + sale.getAmount());
+			bw.write(sale.getSerialNumber() + "," + sale.getItem() + "," + sale.getQuantity() + "," + sale.getAmount());
 			bw.newLine();
 		}
 		// print a message

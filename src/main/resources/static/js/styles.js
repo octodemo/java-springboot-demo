@@ -16,9 +16,10 @@ if (window.enableSearchFeature) {
 document.write('<style>');
 document.write(`
     table {
-        border-collapse: collapse;
-        width: 100%;
-        color: #444; /* Add color to the text in the table */
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
     h1 { 
         color: ${h1Color}; 
@@ -60,8 +61,12 @@ document.write(`
         animation: rowFadeIn 1s ease;
     }
     th, td {
-        border: 1px solid #ddd; // Add a border
         padding: 10px;
+        background-color: rgba(255,255,255,0.3);
+        border-right: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: #333;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.1), 0 0 0 2px #fff inset;
     }
     table {
         border-collapse: collapse; // Collapse the borders
@@ -78,15 +83,23 @@ document.write(`
         overflow-y: auto; // Add a scrollbar if the content exceeds the maximum height
         order: 1; // Make the main table appear first
     }
-
-    .sales-table {
-        width: 40%; // Set the width of the sales table
-        max-height: 6em; // Set a maximum height for the sales table
-        overflow-y: auto; // Add a scrollbar if the content exceeds the maximum height
-        margin-top: 20px; // Add some margin to separate the sales table from the main table
-        order: 2; // Make the sales table appear second
+    th:first-child, td:first-child {
+        border-left: 1px solid rgba(255,255,255,0.1);
     }
-
+    
+    th:last-child, td:last-child {
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    tr:last-child td {
+        border-bottom: none;
+    }
+    
+    tbody tr:hover td {
+        background-color: rgba(255,255,255,0.1);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2) inset;
+    }
+    
     .hide {
         display: none;
     }
