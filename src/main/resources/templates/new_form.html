@@ -3,7 +3,7 @@
     xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
-    <title>New Sale</title>
+    <title>New Item</title>
     <style>
         body {
             background-color: #f2f2f2;
@@ -41,32 +41,43 @@
     <script src="js/styles.js"></script>
 </head>
 <body>
-    <h1>Edit Sale</h1>
+    <h1>Enter Record</h1>
     <div align="center">
-        <form action="#" th:action="@{/update}" th:object="${sale}" method="post">
+        <button onclick="window.location.href='/';">Go back to inventory table</button>
+        <form action="#" th:action="@{/save}" th:object="${sale}" method="post">
             <div align="center">
             <table style="width: 35%" border="1" cellpadding="10">
                 <tr>
                     <td>Serial Number:</td>
-                    <td><input type="text" th:field="*{serialNumber}" /></td>
+                    <td><input type="text" name="serialNumber" required pattern="[A-Z]\d{4}" title="Pattern: 'A0000' where 'A' is any uppercase letter and '0' represents any digit"></td>
                 </tr>            
                 <tr>
                     <td>Item Name:</td>
-                    <td><input type="text" th:field="*{item}" /></td>
+                    <td><input type="text" th:field="*{item}" th:value="${sale != null ? sale.item : ''}" required minlength="3" maxlength="50" title="Item name must be between 2 and 50 characters long." /></td>
                 </tr>
                 <tr>
                     <td>Quantity:</td>
-                    <td><input type="text" th:field="*{quantity}" /></td>
+                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" /></td>
                 </tr>
                 <tr>
                     <td>Amount (USD):</td>
-                    <td><input type="text" th:field="*{amount}" /></td>
-                </tr>                            
+                    <td><input type="text" th:field="*{amount}" th:value="${sale != null ? sale.amount : ''}" /></td>
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    <td><input id="dateInput" type="date" th:field="*{date}" th:value="${currentDate}" required/></td>
+                </tr>                      
                 <tr>
                     <td colspan="2"><button type="submit">Save</button> </td>
                 </tr>
             </table>
         </form>
     </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}" style="color: red;"></p>
+    </div>
+    <script>
+        document.getElementById('dateInput').valueAsDate = new Date();
+    </script>
 </body>
 </html>

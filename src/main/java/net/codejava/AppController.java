@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.security.Principal;
+import java.time.LocalDate;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +30,10 @@ import org.springframework.data.domain.PageRequest; // Add this import statement
 import org.springframework.data.domain.Page; // Add this import statement
 // import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.dao.DuplicateKeyException;
+import java.util.Date;
+// import java.util.logging.Logger;
+// import java.util.logging.Level;
 
 @EnableJpaRepositories(basePackages = "net.codejava")
 @Controller
@@ -41,12 +49,7 @@ public class AppController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	// @Autowired
-	// private final SalesRecordRepository salesRecordRepository;
-
-	// public AppController(SalesRecordRepository salesRecordRepository) {
-    //     this.salesRecordRepository = salesRecordRepository;
-    // }
+	// private static final Logger logger = Logger.getLogger(AppController.class.getName());
 
 	@Value("${enableSearchFeature}")
     private boolean enableSearchFeature;
@@ -65,24 +68,15 @@ public class AppController {
 		model.addAttribute("listSale", salePage.getContent());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", salePage.getTotalPages());
-
 		return "index";
 	}
-
-	// @GetMapping("/")
-	// public String showPage(Model model, @RequestParam(defaultValue="0") int page) {
-	// 	Pageable pageable = PageRequest.of(page, 5);
-	// 	Page<Sale> data = salesRecordRepository.findAll(pageable);
-	// 	data = data != null ? data : Page.empty(); // Assign an empty Page if data is null
-	// 	model.addAttribute("data", data);
-	// 	return "index";
-	// }
 
 	@RequestMapping("/new")
 	public ModelAndView showNewForm() {
 		ModelAndView mav = new ModelAndView("new_form");
 		Sale sale = new Sale();
 		mav.addObject("sale", sale);
+		mav.addObject("currentDate", LocalDate.now());
 		mav.addObject("enableSearchFeature", enableSearchFeature);
 		return mav;
 	}
@@ -101,17 +95,26 @@ public class AppController {
 		List<Sale> listSale = dao.search(query);
 		model.addAttribute("listSale", listSale);
 		
-		boolean enableSearchFeature = true; // or get this value from somewhere else
+		boolean enableSearchFeature = true;
 		model.addAttribute("enableSearchFeature", enableSearchFeature);
 		
 		return "search";
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@ModelAttribute("sale") Sale sale) {
-	    dao.save(sale);
-	     
-	    return "redirect:/";
+	public String save(@ModelAttribute("sale") Sale sale, RedirectAttributes redirectAttributes) {
+
+		try {
+			if (sale.getDate() == null) {
+				sale.setDate(new Date());
+			}
+			dao.save(sale);
+		} catch (DuplicateKeyException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/new";
+		}
+
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -145,15 +148,15 @@ public class AppController {
 	    return "redirect:/";
 	}
 	
-	@RequestMapping("/delete/{id}")
-	public String delete(@PathVariable(name = "id") int id) {
-		dao.delete(String.valueOf(id));
+	@RequestMapping("/delete/{serialNumber}")
+	public String delete(@PathVariable(name = "serialNumber") String serialNumber) {
+		dao.delete(serialNumber);
 		return "redirect:/";       
-	}   
+	}
 
-	@RequestMapping("/clear/{id}")
-	public String clearRecord(@PathVariable(name = "id") int id) {
-		dao.clearRecord(String.valueOf(id));
+	@RequestMapping("/clear/{serialNumber}")
+	public String clearRecord(@PathVariable(name = "serialNumber") String serialNumber) {
+		dao.clearRecord(serialNumber);
 		return "redirect:/";
 	}
 

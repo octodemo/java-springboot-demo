@@ -12,7 +12,7 @@
             <column name="item" type="varchar(100)" />
             <column name="amount" type="double" />
             <column name="quantity" type="int" />
-            <column name="date" type="date" defaultValueComputed="CURRENT_DATE" />
+            <column name="date" type="date" defaultValueComputed="CURRENT_DATE"/>
          </createTable>
       </changeSet>
       <!--  create a changeset that loads a csv file. -->

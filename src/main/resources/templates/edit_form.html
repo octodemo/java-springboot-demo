@@ -41,8 +41,9 @@
     <script src="/js/styles.js"></script>
 </head>
 <body>
-    <h1>Edit Sale</h1>
+    <h1>Edit Record</h1>
     <div align="center">
+        <button onclick="window.location.href='/';">Go back to inventory table</button>
         <form action="#" th:action="@{/update}" th:object="${sale}" method="post">
             <div align="center">
             <table style="width: 35%" border="1" cellpadding="10">
@@ -52,7 +53,7 @@
                 </tr>            
                 <tr>
                     <td>Item Name:</td>
-                    <td><input type="text" th:field="*{item}" /></td>
+                    <td><input type="text" th:field="*{item}" th:value="${sale != null ? sale.item : ''}" required minlength="3" maxlength="50" title="Item name must be between 2 and 50 characters long." /></td>
                 </tr>
                 <tr>
                     <td>Quantity:</td>

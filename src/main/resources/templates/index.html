@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sales Records</title>
     <style>
         body {
             background-color: #f2f2f2;
@@ -90,8 +89,8 @@
                         <td th:text="${sale.amount}">Amount</td>
                         <td class="actions">
                             <a th:href="@{'/edit/' + ${sale.serialNumber}}">Edit</a>
-                            <a th:href="@{'/delete/' + ${sale.serialNumber}}">Delete</a>
-                            <a th:href="@{'/clear/' + ${sale.serialNumber}}">Clear</a>
+                            <a th:href="@{'/delete/' + ${sale.serialNumber}}" onclick="return confirm('Delete: This action is irreversible. Are you sure you want to delete the sale record?')" style="color: red;">Delete</a>
+                            <a th:href="@{'/clear/' + ${sale.serialNumber}}" onclick="return confirm('Clear: This action is irreversible. Are you sure you want to clear the sale record?')" style="color: #ff7f7f;">Clear</a>
                         </td>
                     </tr>
                 </tbody>

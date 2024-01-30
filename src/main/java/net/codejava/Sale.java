@@ -3,6 +3,8 @@ package net.codejava;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 @Entity
@@ -13,6 +15,8 @@ public class Sale {
 	private String item;
 	private int quantity;
 	private float amount;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date;
 	
 	protected Sale() {
@@ -27,7 +31,7 @@ public class Sale {
     }
 
     public String getSerialNumber() {
-        return this.serialNumber;
+        return serialNumber;
     }
 
     public void setSerialNumber(String serialNumber) {

@@ -62,14 +62,14 @@
         </thead>
         <tbody>
           <tr th:each="sale : ${listSale}">
-              <td th:text="${sale.id}">ID</td>
+              <td th:text="${sale.serialNumber}">ID</td>
               <td th:text="${sale.item}">Item Name</td>
               <td th:text="${sale.quantity}">Quantity</td>
               <td th:text="${sale.amount}">Amount</td>
               <td class="actions">
-                  <a th:href="@{'/edit/' + ${sale.id}}">Edit</a>
-                  <a th:href="@{'/delete/' + ${sale.id}}">Delete</a>
-                  <a th:href="@{'/clear/' + ${sale.id}}">Clear</a>
+                  <a th:href="@{'/edit/' + ${sale.serialNumber}}">Edit</a>
+                  <a th:href="@{'/delete/' + ${sale.serialNumber}}">Delete</a>
+                  <a th:href="@{'/clear/' + ${sale.serialNumber}}">Clear</a>
               </td>
           </tr>
       </tbody>
