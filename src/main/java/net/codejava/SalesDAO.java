@@ -23,11 +23,14 @@ public class SalesDAO {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public List<Sale> list() {
+	public List<Sale> list(int limit, int offset) {
 		String sql = "SELECT * FROM sales ORDER BY serial_number ASC LIMIT ? OFFSET ?";
 
-		List<Sale> listSale = jdbcTemplate.query(sql,
-				BeanPropertyRowMapper.newInstance(Sale.class));
+		List<Sale> listSale = jdbcTemplate.query(
+			sql,
+			new Object[] {limit, offset},
+			BeanPropertyRowMapper.newInstance(Sale.class)
+		);
 
 		return listSale;
 	}
