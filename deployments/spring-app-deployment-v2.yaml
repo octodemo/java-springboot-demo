@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-app-container
-          image: ghcr.io/octodemo/java-springboot-demo:166
+          image: ghcr.io/octodemo/java-springboot-demo:168
           ports:
             - containerPort: 8086
           env:
