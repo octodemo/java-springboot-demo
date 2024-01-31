@@ -57,11 +57,11 @@
                 </tr>
                 <tr>
                     <td>Quantity:</td>
-                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" /></td>
+                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" pattern="[0-9]*" title="Please enter an integer" /></td>
                 </tr>
                 <tr>
                     <td>Amount (USD):</td>
-                    <td><input type="text" th:field="*{amount}" th:value="${sale != null ? sale.amount : ''}" /></td>
+                    <td><input type="text" th:field="*{amount}" th:value="${sale != null ? sale.amount : ''}" pattern="^([1-9][0-9]{0,5}|500000)(\.[0-9]{1,2})?$" title="Please enter an amount up to 500,000, including up to two decimal places" /></td>
                 </tr>
                 <tr>
                     <td>Date:</td>
