@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: spring-app-deployment-v2
 spec:
-  replicas: 6
+  replicas: 4
   selector:
     matchLabels:
       app: spring-app
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-app-container
-          image: ghcr.io/octodemo/java-springboot-demo:168
+          image: ghcr.io/octodemo/java-springboot-demo:169
           ports:
             - containerPort: 8086
           env:
