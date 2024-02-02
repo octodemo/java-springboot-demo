@@ -15,6 +15,7 @@ public class Sale {
 	private String item;
 	private int quantity;
 	private float amount;
+	private boolean isEditing;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date;
@@ -69,6 +70,14 @@ public class Sale {
 	public void setDate(final Date date) {
 		this.date = date;
 	}
+
+	public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean isEditing) {
+        this.isEditing = isEditing;
+    }
 
 	@Override
 	public String toString() {
