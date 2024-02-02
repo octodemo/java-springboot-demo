@@ -108,7 +108,7 @@ public class AppController {
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@ModelAttribute("sale") Sale sale, Model model, RedirectAttributes redirectAttributes) {
+	public String save(@ModelAttribute("sale") Sale sale, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 		try {
 			if (sale.getDate() == null) {
 				sale.setDate(new Date());
@@ -118,7 +118,14 @@ public class AppController {
 			sale.setSerialNumber(null); // clear the serial number
 			model.addAttribute("sale", sale); // add the sale object to the model
 			model.addAttribute("errorMessage", e.getMessage());
-			model.addAttribute("enableSearchFeature", true); // set enableSearchFeature to true
+
+			String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+			if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
+				model.addAttribute("enableSearchFeature", true); // set enableSearchFeature to true
+			} else {
+				model.addAttribute("enableSearchFeature", false); // set enableSearchFeature to false
+			}
+
 			return "new_form"; // return the form view
 		}
 
