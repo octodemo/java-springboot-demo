@@ -3,6 +3,7 @@
     xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
     <title>Edit Sale</title>
     <style>
         body {
@@ -57,7 +58,7 @@
                 </tr>
                 <tr>
                     <td>Quantity:</td>
-                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" pattern="[0-9]*" title="Please enter an integer" /></td>
+                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" pattern="[0-9]*" title="Please enter an integer" required /></td>
                 </tr>
                 <tr>
                     <td>Amount (USD):</td>

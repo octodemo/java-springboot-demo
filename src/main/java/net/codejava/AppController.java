@@ -32,6 +32,7 @@ import org.springframework.data.domain.Page; // Add this import statement
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.dao.DuplicateKeyException;
 import java.util.Date;
+import javax.servlet.http.HttpSession;
 // import java.util.logging.Logger;
 // import java.util.logging.Level;
 
@@ -59,7 +60,12 @@ public class AppController {
 	}
 	
 	@RequestMapping("/")
-	public String viewHomePage(Model model , Principal principal, @RequestParam(defaultValue = "0") int page) {
+	public String viewHomePage(Model model , Principal principal, @RequestParam(defaultValue = "0") int page, HttpSession session) {
+		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
+			session.setAttribute("lastSearchQuery", null); // set lastSearchQuery to null
+		}
+		
 		int pageSize = 20; // number of records per page
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Sale> salePage = dao.findAll(pageable);
@@ -91,27 +97,29 @@ public class AppController {
 	}
 
 	@RequestMapping("/search")
-	public String search(@ModelAttribute("q") String query, Model model) {
+	public String search(@ModelAttribute("q") String query, Model model, HttpSession session) {
 		List<Sale> listSale = dao.search(query);
 		model.addAttribute("listSale", listSale);
-		
+
 		boolean enableSearchFeature = true;
 		model.addAttribute("enableSearchFeature", enableSearchFeature);
-		
+		session.setAttribute("lastSearchQuery", query); // save the last search query in the session
 		return "search";
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@ModelAttribute("sale") Sale sale, RedirectAttributes redirectAttributes) {
-
+	public String save(@ModelAttribute("sale") Sale sale, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			if (sale.getDate() == null) {
 				sale.setDate(new Date());
 			}
 			dao.save(sale);
 		} catch (DuplicateKeyException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/new";
+			sale.setSerialNumber(null); // clear the serial number
+			model.addAttribute("sale", sale); // add the sale object to the model
+			model.addAttribute("errorMessage", e.getMessage());
+			model.addAttribute("enableSearchFeature", true); // set enableSearchFeature to true
+			return "new_form"; // return the form view
 		}
 
 		return "redirect:/";
@@ -142,22 +150,42 @@ public class AppController {
 	}
 	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("sale") Sale sale) {
-	    dao.update(sale);
-	     
-	    return "redirect:/";
+	public String update(@ModelAttribute("sale") Sale sale, HttpSession session, RedirectAttributes redirectAttributes) {
+		dao.update(sale);
+		
+		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
+			redirectAttributes.addAttribute("fromSearch", true);
+			return "redirect:/search?q=" + lastSearchQuery;
+		} else {
+			return "redirect:/";
+		}
 	}
 	
 	@RequestMapping("/delete/{serialNumber}")
-	public String delete(@PathVariable(name = "serialNumber") String serialNumber) {
+	public String delete(@PathVariable(name = "serialNumber") String serialNumber, HttpSession session, RedirectAttributes redirectAttributes) {
 		dao.delete(serialNumber);
-		return "redirect:/";       
+		
+		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
+			redirectAttributes.addAttribute("fromSearch", true);
+			return "redirect:/search?q=" + lastSearchQuery;
+		} else {
+			return "redirect:/";
+		}
 	}
 
 	@RequestMapping("/clear/{serialNumber}")
-	public String clearRecord(@PathVariable(name = "serialNumber") String serialNumber) {
+	public String clearRecord(@PathVariable(name = "serialNumber") String serialNumber, HttpSession session, RedirectAttributes redirectAttributes) {
 		dao.clearRecord(serialNumber);
-		return "redirect:/";
+		
+		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
+			redirectAttributes.addAttribute("fromSearch", true);
+			return "redirect:/search?q=" + lastSearchQuery;
+		} else {
+			return "redirect:/";
+		}
 	}
 
 	@RequestMapping("/export")
