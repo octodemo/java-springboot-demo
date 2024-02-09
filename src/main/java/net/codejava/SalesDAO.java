@@ -94,6 +94,7 @@ public class SalesDAO {
 		return new PageImpl<>(sales, pageable, total);
 	}
 
+	
 	@RequestMapping("/export")
 	public void exportCSV(String query, String filename) throws IOException {
 		// create an instance of FileWriter
