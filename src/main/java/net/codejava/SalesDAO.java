@@ -35,38 +35,9 @@ public class SalesDAO {
 		return listSale;
 	}
 
-	public void save(Sale sale) throws DuplicateKeyException {
-		try {
-			System.out.println(sale); // log the Sale object
-	
-			if (sale == null) {
-				throw new IllegalArgumentException("Sale object cannot be null");
-			}
-	
-			if (jdbcTemplate == null) {
-				throw new IllegalStateException("JdbcTemplate cannot be null");
-			}
-			// Check if a record with the same primary key already exists
-			int count = jdbcTemplate.queryForObject(
-				"SELECT COUNT(*) FROM sales WHERE serial_number = ?", Integer.class, sale.getSerialNumber());
-	
-			if (count > 0) {
-				// If such a record exists, throw an exception
-				throw new DuplicateKeyException("A record with the same serial number already exists.");
-			}
-	
-			// If no such record exists, insert the new record
-			SimpleJdbcInsert insertActor = 
-				new SimpleJdbcInsert(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
-			insertActor.withTableName("sales").usingColumns("serial_number", "item", "quantity", "amount", "date");
-			BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
-	
-			insertActor.execute(param);
-		} catch (DuplicateKeyException e) {
-			throw e; // rethrow the exception to be handled by the caller
-		} catch (Exception e) {
-			e.printStackTrace(); // log any other exceptions
-		}
+	public void save(Sale sale) {
+		String sql = "INSERT INTO SALES (item, quantity, amount) VALUES ('" + sale.getItem() + "', " + sale.getQuantity() + ", " + sale.getAmount() + ")";
+		jdbcTemplate.update(sql);
 	}
 
 	public Sale get(String serialNumber) {
