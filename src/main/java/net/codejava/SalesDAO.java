@@ -40,6 +40,7 @@ public class SalesDAO {
 		jdbcTemplate.update(sql);
 	}
 
+	
 	public Sale get(String serialNumber) {
 		String sql = "SELECT * FROM SALES WHERE serial_number = ?";
 		Object[] args = {serialNumber};
