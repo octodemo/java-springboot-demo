@@ -1,27 +1,43 @@
 package net.codejava;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
+@Entity
+@Table(name = "sales")
 public class Sale {
-	private int id;
+	@Id
+	private String serialNumber;
 	private String item;
 	private int quantity;
 	private float amount;
-
+	private boolean isEditing;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date date;
+	
 	protected Sale() {
 	}
 
-	protected Sale(final String item, final int quantity, final float amount) {
-		this.item = item;
-		this.quantity = quantity;
-		this.amount = amount;
-	}
+	protected Sale(final String serialNumber, final String item, final int quantity, final float amount, final Date date) {
+        this.serialNumber = serialNumber;
+        this.item = item;
+        this.quantity = quantity;
+        this.amount = amount;
+        this.date = date;	
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
-	public void setId(final int id) {
-		this.id = id;
-	}
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
 	public String getItem() {
 		return item;
@@ -47,8 +63,24 @@ public class Sale {
 		this.amount = amount;
 	}
 
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(final Date date) {
+		this.date = date;
+	}
+
+	public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean isEditing) {
+        this.isEditing = isEditing;
+    }
+
 	@Override
 	public String toString() {
-		return "Sale [id=" + id + ", item=" + item + ", quantity=" + quantity + ", amount=" + amount + "]";
+		return "Sale [serial_number=" + serialNumber + ", item=" + item + ", quantity=" + quantity + ", amount=" + amount + ", date=" + date + "]";
 	}
 }

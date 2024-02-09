@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: spring-app-deployment-v1
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: spring-app
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-app-container
-          image: ghcr.io/octodemo/java-springboot-demo:121
+          image: ghcr.io/octodemo/java-springboot-demo:168
           ports:
             - containerPort: 8086
           env:
@@ -27,5 +27,7 @@ spec:
               value: admin123
             - name: CHANGELOG_VERSION
               value: changelog_version-3.3.xml
+            - name: REDIS_HOST
+              value: redis-database-service
       imagePullSecrets:
         - name: your-registry-secret

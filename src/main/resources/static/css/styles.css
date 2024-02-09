@@ -1,0 +1,40 @@
+:root {
+    --h1-color: #2196F3;
+    --th-bg-color: #2196F3;
+    --a-color: #2196F3;
+    --tr-bg-color: #c2e0fb;
+}
+
+h1 { 
+    color: var(--h1-color); 
+    /* ... */
+}
+
+th { 
+    background-color: var(--th-bg-color); 
+    /* ... */
+}
+
+a { 
+    color: var(--a-color); 
+    /* ... */
+}
+
+tr:nth-child(even) { 
+    background-color: var(--tr-bg-color); 
+    /* ... */
+}
+
+.button {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #f8f8f8;
+}

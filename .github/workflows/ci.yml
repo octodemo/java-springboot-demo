@@ -132,6 +132,12 @@ jobs:
         # exposing the port 5432 of the postgres service container to the host machine
         ports:
           - 5432:5432
+      # redis service container for caching session data
+      redis: # service name - redis. This name is used to access the service container from the job container as the host name.
+        image: redis # running the job in a container - redis link to the docker hub - https://hub.docker.com/_/redis
+        # exposing the port 6379 of the redis service container to the host machine
+        ports:
+          - 6379:6379
     #  defining the job permissions
     permissions:
       contents: read # read access to the repository contents
@@ -197,7 +203,7 @@ jobs:
           do
           # sleep for 10 seconds to avoid timeout errors
             sleep 10
-            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086
+            mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086 -Dspring.redis.host=redis -Dspring.redis.port=6379 -Dspring.redis.mode=standalone
           done
       
       - uses: actions/upload-artifact@v3 # upload the test results as an artifact

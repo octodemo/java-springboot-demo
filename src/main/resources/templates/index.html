@@ -1,48 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sales Records</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
     <style>
         body {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
-        }
-        h1 {
-            color: #2196F3; /* Change this line to blue */
-            text-shadow: 2px 2px #ccc;
-            text-align: center;
-            margin-top: 50px;
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: auto;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 50px;
-            box-shadow: 2px 2px 5px #ccc;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            overflow: hidden;
         }
         th, td {
             text-align: left;
             padding: 8px;
-            border: 1px solid #ccc;
-        }
-        th {
-            background-color: #2196F3; /* Change this line to blue */
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #E3F2FD; /* Change this line to blue */
-        }
-        a {
-            text-decoration: none;
-            color: #2196F3; /* Change this line to blue */
-            padding: 5px 10px;
-            border-radius: 5px;
-            /* blue */ 
-            border: 1px solid #2196F3; /* Change this line to blue */
-        }
-        a:hover {
-            color: #fff;
-            background-color: #3a81e5;
         }
         .actions {
             display: flex;
@@ -53,42 +32,71 @@
             color: #f44336;
         }
     </style>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ 'default';
+        /*]]>*/
+    </script>
+    <script>
+        window.onload = function() {
+            if (!window.enableSearchFeature) {
+                document.getElementById('searchFeature').style.display = 'none';
+            }
+        };
+    </script>
+    <script src="js/styles.js"></script>
 </head>
 <body>
-    <div align="center">
-        <h1>Sales Records</h1>
-        <a href="/new">Enter New Sale</a>
+    <div align="center" th:if="${listSale}">
+        <h1>Inventory Records</h1>
+        <a href="/new">Enter New Product</a>
+        <a href="/export">Export to CSV</a>
         <br><br>
-        <form action="/search" method="get">
-          <label for="search">Search for item:</label>
-          <input type="text" id="search" name="q" />
-          <button type="submit">Search</button>
+        <div id="searchFeature">
+            <form action="/search" method="get">
+            <label for="search">Search for item:</label>
+            <input type="text" id="search" name="q" />
+            <button type="submit">Search</button>
+            </form>
+        </div>
+        <br />
+        <div>
+            <a th:if="${currentPage > 0}" th:href="@{/?(page=${currentPage - 1})}">Previous</a>
+            <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/?(page=${currentPage + 1})}">Next</a>
+        </div>
+        <br />
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="submit" value="Logout" />
         </form>
         <br />
-        <table style="width: 35%" border="1" cellpadding="10">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="sale : ${listSale}">
-                    <td th:text="${sale.id}">ID</td>
-                    <td th:text="${sale.item}">Item Name</td>
-                    <td th:text="${sale.quantity}">Quantity</td>
-                    <td th:text="${sale.amount}">Amount</td>
-                    <td class="actions">
-                        <a th:href="@{'/edit/' + ${sale.id}}">Edit</a>
-                        <a th:href="@{'/delete/' + ${sale.id}}">Delete</a>
-                        <a th:href="@{'/clear/' + ${sale.id}}">Clear</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>   
+        <div class="main-table">
+            <table style="width: 35%" border="1" cellpadding="10" class="main-table">
+                <thead>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sale : ${listSale}">
+                        <td th:text="${sale.serialNumber}">serial Number</td>
+                        <td th:text="${sale.item}">Item Name</td>
+                        <td th:text="${sale.quantity}">Quantity</td>
+                        <td th:text="${sale.amount}">Amount</td>
+                        <td class="actions">
+                            <a class="button" th:href="@{'/edit/' + ${sale.serialNumber}}">Edit</a>
+                            <a class="button" th:href="@{'/delete/' + ${sale.serialNumber}}" onclick="return confirm('Delete: This action is irreversible. Are you sure you want to delete the sale record?')" style="color: red;">Delete</a>
+                            <a class="button" th:href="@{'/clear/' + ${sale.serialNumber}}" onclick="return confirm('Clear: This action is irreversible. Are you sure you want to clear the sale record?')" style="color: #ff7f7f;">Clear</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

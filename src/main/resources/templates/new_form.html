@@ -3,47 +3,27 @@
     xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
-    <title>New Sale</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <title>New Item</title>
     <style>
         body {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
-        }
-        h1 {
-            color: #2196F3; /* Change this line to blue */
-            text-shadow: 2px 2px #ccc;
-            text-align: center;
-            margin-top: 50px;
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: auto;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 50px;
-            box-shadow: 2px 2px 5px #ccc;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            overflow: hidden;
         }
         th, td {
             text-align: left;
             padding: 8px;
-            border: 1px solid #ccc;
-        }
-        th {
-            background-color: #2196F3; /* Change this line to blue */
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #E3F2FD; /* Change this line to blue */
-        }
-        a {
-            text-decoration: none;
-            color: #2196F3; /* Change this line to blue */
-            padding: 5px 10px;
-            border-radius: 5px;
-            /* blue */ 
-            border: 1px solid #2196F3; /* Change this line to blue */
-        }
-        a:hover {
-            color: #fff;
-            background-color: #3a81e5;
         }
         .actions {
             display: flex;
@@ -54,30 +34,51 @@
             color: #f44336;
         }
     </style>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ false;
+        /*]]>*/
+    </script>
+    <script src="js/styles.js"></script>
 </head>
 <body>
-    <h1>Enter New Sale</h1>
-    <form action="#" th:action="@{/save}" th:object="${sale}" method="post">
-        <div align="center">
-        <table style="width: 35%" border="1" cellpadding="10">
-            <tr>
-                <td>Item Name:</td>
-                <td><input type="text" th:field="*{item}" /></td>
-            </tr>
-            <tr>
-                <td>Quantity:</td>
-                <td><input type="text" th:field="*{quantity}" /></td>
-            </tr>
-            <tr>
-                <td>Amount:</td>
-                <td><input type="text" th:field="*{amount}" /></td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center">
-                    <button type="submit">Save</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <h1>Enter Record</h1>
+    <div align="center">
+        <button onclick="window.location.href='/';">Go back to inventory table</button>
+        <form action="#" th:action="@{/save}" th:object="${sale}" method="post">
+            <div align="center">
+            <table style="width: 35%" border="1" cellpadding="10">
+                <tr>
+                    <td>Serial Number:</td>
+                    <td><input type="text" name="serialNumber" required pattern="[A-Z]\d{4}" title="Pattern: 'A0000' where 'A' is any uppercase letter and '0' represents any digit"></td>
+                </tr>            
+                <tr>
+                    <td>Item Name:</td>
+                    <td><input type="text" th:field="*{item}" th:value="${sale != null ? sale.item : ''}" required minlength="3" maxlength="50" title="Item name must be between 2 and 50 characters long." /></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" pattern="[0-9]*" title="Please enter an integer" required /></td>
+                </tr>
+                <tr>
+                    <td>Amount (USD):</td>
+                    <td><input type="text" th:field="*{amount}" th:value="${sale != null ? sale.amount : ''}" pattern="^([1-9][0-9]{0,5}|500000)(\.[0-9]{1,2})?$" title="Please enter an amount up to 500,000, including up to two decimal places" /></td>
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    <td><input id="dateInput" type="date" th:field="*{date}" th:value="${currentDate}" required/></td>
+                </tr>                      
+                <tr>
+                    <td colspan="2"><button type="submit">Save</button> </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}" style="color: red;"></p>
+    </div>
+    <script>
+        document.getElementById('dateInput').valueAsDate = new Date();
+    </script>
 </body>
 </html>

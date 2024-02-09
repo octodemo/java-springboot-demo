@@ -1,35 +1,37 @@
 # Java Demo App
 
-## The App
+## Overview
 
-This is a simple Sales Manager Java App that stores sales items in a table presented in a web app.
+This is a simple Sales Manager Java App that stores sales items in a table presented in a web app. This demo repo is designed to help understand some of **CI/CD** ([Continuous Integration](https://docs.github.com/en/enterprise-cloud@latest/actions/automating-builds-and-tests/about-continuous-integration)/[Continuous Delivery](https://docs.github.com/en/enterprise-cloud@latest/actions/deployment/about-deployments/about-continuous-deployment)) principles and best practices.
 
-This demo repo is designed to help understand some of **CI/CD** ([Continuous Integration](https://docs.github.com/en/enterprise-cloud@latest/actions/automating-builds-and-tests/about-continuous-integration)/[Continuous Delivery](https://docs.github.com/en/enterprise-cloud@latest/actions/deployment/about-deployments/about-continuous-deployment)) principles and best practices.
+## Technology Stack
 
-## The Setting
+- **Language:** Java (Spring Boot framework)
+- **Design Patterns:** MVC (Model View Controller) and OOP (Object Oriented Programming)
+- **Database:** [PostreSQL 10.4](https://www.postgresql.org/docs/10/release-10-4.html) (compatible with other versions)
+- **CI/CD Pipeline:** [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions)
 
-**Java** (Spring Boot framework) with **MVC** (Model View Controller) and **OOP** (Object Oriented Programming) design patterns.
-Backend Database is [PostreSQL 10.4](https://www.postgresql.org/docs/10/release-10-4.html)  (but can be used with other versions).
- 
- *CI/CD Pipeline*
- [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions) as the main CI/CD pipeline orchestrator
+## CI/CD Pipeline
 
-**Tools used to optimize the pipeline (See the `.github/workflows/ci.yml` `.github/workflows/cd.yml` for more detailed configuration).**
+The pipeline is optimized using various tools. See the `.github/workflows/ci.yml` and `.github/workflows/cd.yml` for more detailed configuration.
 
-*CI - Continuous Integration*
- - [Caching Dependencies to Speed Up Workflows](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
- - Reusing **Docker Layer Caching** from pervious docker builds with [action-docker-layer-caching](https://github.com/satackey/action-docker-layer-caching) or [build-push-action](https://github.com/docker/build-push-action) actions.
- - Using the [Metrix Strategy](https://docs.github.com/en/enterprise-cloud@latest/actions/using-jobs/using-a-matrix-for-your-jobs) to run unit tests in parallel to scale-out resources and reduce significant testing time.
- - Using the [Split Test Action](https://github.com/marketplace/actions/split-tests) to help splitting tests by previous testing time runs or line count (or other strategies) across multiple runners.
- - [GitHub Advanced Security](https://docs.github.com/en/enterprise-cloud@latest/get-started/learning-about-github/about-github-advanced-security) - Code Scanning using the [CodeQL analysis](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-the-codeql-workflow-for-compiled-languages) to scan for vulnerabilities.
- - [Liquibase Quality Checks](https://www.liquibase.com/quality-checks) - To help enforce Database schema changes best practices set by your DBA team, including naming conventions, grants & revokes, rollback scripts and security risks.
+### Continuous Integration
 
-*CD - Continuous Delivery/Deployment*
- - Using [Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) with an [approval step review](https://docs.github.com/en/actions/managing-workflow-runs/reviewing-deployments) prior to [deployments](https://docs.github.com/en/actions/deployment/about-deployments)
- - Using the [azure/login action](https://github.com/marketplace/actions/azure-login) to leverage the [OIDC (OpenID Connect)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) functionality for the benefit of to exchange short-lived tokens directly with [Azure cloud provider](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux) prior to deployment
- - Running a [Canary or Blue-Green deployments](https://github.com/Azure-Samples/aks-bluegreen-canary) in an AKS (Azure Kubernetes) Cluster.
-              
-# CI/CD Diagram
+- [Caching Dependencies to Speed Up Workflows](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
+- Docker Layer Caching with [action-docker-layer-caching](https://github.com/satackey/action-docker-layer-caching) or [build-push-action](https://github.com/docker/build-push-action) actions.
+- [Metrix Strategy](https://docs.github.com/en/enterprise-cloud@latest/actions/using-jobs/using-a-matrix-for-your-jobs) for parallel unit testing.
+- [Split Test Action](https://github.com/marketplace/actions/split-tests) for splitting tests across multiple runners.
+- [GitHub Advanced Security](https://docs.github.com/en/enterprise-cloud@latest/get-started/learning-about-github/about-github-advanced-security) with [CodeQL analysis](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-the-codeql-workflow-for-compiled-languages).
+- [Liquibase Quality Checks](https://www.liquibase.com/quality-checks) for enforcing database schema changes best practices.
+
+### Continuous Delivery/Deployment
+
+- [Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) with an [approval step review](https://docs.github.com/en/actions/managing-workflow-runs/reviewing-deployments) prior to [deployments](https://docs.github.com/en/actions/deployment/about-deployments)
+- [azure/login action](https://github.com/marketplace/actions/azure-login) for [OIDC (OpenID Connect)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) functionality.
+- [Canary or Blue-Green deployments](https://github.com/Azure-Samples/aks-bluegreen-canary) in an AKS (Azure Kubernetes) Cluster.
+
+## CI/CD Diagram
+
 ```mermaid
 stateDiagram
     state Developer-Workflow {
@@ -62,83 +64,33 @@ stateDiagram
     Deploy --> [ProdInstance1]: Blue
     Deploy --> [ProdInstance2]: Green
 ```
-
-## Building and Testing
-[Maven](https://maven.apache.org/) is used as the project management for Building and Testing the application.
-To build the application, you can run:
-```
-mvn clean package
-```
-It will generate a JAR file in the `target` folder with the following format `salesmanager-x.x.x-SNAPSHOT.jar`. </br>
-To run the application, you can deploy the JAR file. For example:
-```
-java -jar target/salesmanager-0.0.6-SNAPSHOT.jar
-```
-
-# How to Demo
-For easy demos without the need to stand up a Postgres database, a lightweight local [H2 database](https://www.h2database.com/html/main.html) (PostgreSQL Mode) is setup by default in the `src/main/resources/application.properties` file. </br>
-You can run the `./build_and_run_app.sh` helper shell script and interact with the web app on `localhost:8086`.
-> You can easily use a [GitHub codespaces](https://docs.github.com/en/enterprise-cloud@latest/codespaces) with this repository. To set up your codespace, simply go to this repo [main page](https://github.com/octodemo/java-springboot-demo) --> Click **Code** --> Codespaces '+'. </br>
-
-
-# Running the CI workflow
-1. In order to run the workflow, you will need to [fork](https://docs.github.com/en/enterprise-cloud@latest/get-started/quickstart/fork-a-repo) this repo. </br>
-2. Then, make sure to save the following environment variables in your repository secrets so you can successfully run the Database schema mirgations scripts (using [Liquibase](https://www.liquibase.com/) as the schema migration tool) on application startup and when running the tests. </br>
-
-**Repository Secrets**
-`LIQUIBASE_COMMAND_URL`
-`LIQUIBASE_COMMAND_USERNAME`
-`LIQUIBASE_COMMAND_PASSWORD`
-
-### If you are going to use the same [dockerised service container](https://hub.docker.com/_/postgres) in the CI job for dev, then the default values should be: </br>
-`LIQUIBASE_COMMAND_URL` = `jdbc:postgresql://postgres:5432/postgres` </br>
-`LIQUIBASE_COMMAND_USERNAME` = `postgres` </br>
-`LIQUIBASE_COMMAND_PASSWORD` = `postgres`
-
-# Gitgraph Diagram - Developer Workflow
+## GitFlow Diagram
 ```mermaid
-%%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'showBranches': true}} }%%
-      gitGraph
-        commit
-        branch hotfix
-        checkout hotfix
-        commit
-        branch develop
-        checkout develop
-        commit id:"ash" tag:"abc"
-        branch featureB
-        checkout featureB
-        commit type:HIGHLIGHT
-        checkout main
-        checkout hotfix
-        commit type:NORMAL
-        checkout develop
-        commit type:REVERSE
-        checkout featureB
-        commit
-        checkout main
-        merge hotfix
-        checkout featureB
-        commit
-        checkout develop
-        branch featureA
-        commit
-        checkout develop
-        merge hotfix
-        checkout featureA
-        commit
-        checkout featureB
-        commit
-        checkout develop
-        merge featureA
-        branch release
-        checkout release
-        commit
-        checkout main
-        commit
-        checkout release
-        merge main
-        checkout develop
-        merge release
+graph TB
+  A[Local Branch] -->|pull request| B((Main Branch))
+  B --> C{GitHub Actions Workflow}
+  C -->|Build| D[GitHub Artifacts/Container Registry]
+  C -->|Infrastructure Build| E[K8s Configuration]
+  D --> F{GitHub Actions Test Job}
+  E --> F
+  F -->|tests pass| G[Unit Tests]
+  G -->|tests pass| H[Merge to Main Branch]
+  H --> I[Deployment Approval]
+  I --> J[Canary Deployment]
+  J -->|monitoring| K{Decision Point}
+  K -->|rollback| L[Revert Commit]
+  K -->|promote| M[Full Deployment]
+  style A fill:#f9d,stroke:#333,stroke-width:4px
+  style B fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style C fill:#ff9,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style D fill:#9f6,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5
+  style E fill:#9f6,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style F fill:#cfc,stroke:#333,stroke-width:2px
+  style G fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style H fill:#f6c,stroke:#333,stroke-width:2px
+  style I fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style J fill:#cf6,stroke:#333,stroke-width:2px
+  style K fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+  style L fill:#f6c,stroke:#333,stroke-width:2px
+  style M fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
 ```
-

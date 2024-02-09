@@ -6,17 +6,17 @@
     <!--  create a sales table with id, Item name, amount, quantity, and date. Auto increment id. -->
       <changeSet id="1" author="jim">
          <createTable tableName="sales">
-               <column name="id" type="int" autoIncrement="true">
-                  <constraints primaryKey="true" nullable="false" />
-               </column>
-               <column name="item" type="varchar(100)" />
-               <column name="amount" type="double" />
-               <column name="quantity" type="int" />
-               <column name="date" type="date" />
+            <column name="serial_number" type="varchar(255)">
+               <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="item" type="varchar(100)" />
+            <column name="amount" type="double" />
+            <column name="quantity" type="int" />
+            <column name="date" type="date" defaultValueComputed="CURRENT_DATE"/>
          </createTable>
       </changeSet>
       <!--  create a changeset that loads a csv file. -->
-      <changeSet id="3" author="TsviZ">
+      <changeSet id="2" author="TsviZ">
          <!--  load csv from relative path -->
          <loadData encoding="UTF-8"
                          file="data/sales.csv"
@@ -32,4 +32,31 @@
             <sql>TRUNCATE TABLE sales</sql>
          </rollback>
       </changeSet>
+
+      <changeSet id="3" author="TsviZ">
+         <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="true">
+               <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(255)">
+               <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+               <constraints nullable="false"/>
+            </column>
+         </createTable>
+      </changeSet>
+
+      <changeSet id="4" author="TsviZ">
+         <insert tableName="user">
+            <column name="username" value="tsvi123" />
+            <column name="password" value="$2a$12$xxRADrmwvvcK8/i8Syvh3eKTRqdabnx5DPqj0zGczniy0ug8q8mwi" />
+         </insert>
+         <rollback>
+            <delete tableName="user">
+               <where>username = 'tsvi123'</where>
+            </delete>
+         </rollback>
+      </changeSet>
+
 </databaseChangeLog>
