@@ -36,23 +36,24 @@ The pipeline is optimized using various tools. See the `.github/workflows/ci.yml
 stateDiagram
     state Developer-Workflow {
     Commits --> PR: Developers Commit new changes in a Pull Request
-    PR --> Build: Security Scans, Build & Unit Test Suite
+    PR --> Build: Build & Unit Test Suite
     }
     
     state Continuous-Integration {
-        state GitHub-Advanced-Security {
-        Build --> PR: Feedback of failed tests - back to dev
+        state Security-Scans {
+        Build --> App: CodeQL Analysis
+        Build --> Database: Liquibase Quality Checks
+        Build --> Package: Compile
+        }
         Build --> JunitTests: Storing Artifacts
-        JunitTests --> Publish: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
         state Parallel-Testing {
         JunitTests --> JunitTest1: Each test runs in \na containerized environment
         JunitTests --> JunitTest2
         JunitTests --> JunitTest3
         JunitTests --> JunitTest4
-        JunitTests --> JunitTest5
         JunitTests --> JunitTest..N
         }
-      }
+        JunitTests --> Publish: If CI passes, \nmerging to main branch \nand publishing Containerised\n App to GitHub\n Container Registry
     }
 
     state Continuous-Delivery {
