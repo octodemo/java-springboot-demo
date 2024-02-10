@@ -65,7 +65,28 @@ stateDiagram
     Deploy --> [ProdInstance1]: Blue
     Deploy --> [ProdInstance2]: Green
 ```
-## App flow
+## App deployment flow - in this diagram
+- User sends a request to the Load Balancer
+- Load Balancer routes the request to the Kubernetes Service
+- Kubernetes Service routes the request to the Spring Boot App
+- Spring Boot App queries the Database
+- Database returns data to the Spring Boot App
+- Spring Boot App checks the Feature Flag
+- Feature Flag returns the flag status to the Spring Boot App
+- Spring Boot App checks the Redis Cache
+- Redis Cache returns the session data to the Spring Boot App
+- Spring Boot App returns the response to the User
+- App Startup deploys the Database
+- Canary Deployment spins up new pods
+- Rollback triggers a Canary Deployment
+- Canary Deployment deploys the previous stable Docker image
+- Canary Deployment reverts database changes
+- Promote deploys to all pods
+- Monitoring alerts the Ops Team
+- Ops Team fixes issues
+- Rollback/Canary Deployment deploys the fix
+- New Pods verifies the fix
+- Monitoring verifies the fix
 
 ```mermaid
 graph LR
@@ -84,8 +105,11 @@ graph LR
     J[Rollback] -->|Triggers Canary Deployment| K[Canary Deployment]
     K -->|Deploys Previous Stable Docker Image| L[New Pods]
     K -->|Reverts Database Changes| M[Database Deployment]
-    K[Promote] -->|Deploys to All Pods| C
-    L[Monitoring] -->|Alerts| A
+    N[Promote] -->|Deploys to All Pods| C
+    O[Monitoring] -->|Alerts| P[Ops Team]
+    P -->|Fixes Issues| Q[Rollback/Canary Deployment]
+    Q -->|Deploys Fix| R[New Pods]
+    R -->|Verifies Fix| S[Monitoring]
     style A fill:#f9d,stroke:#333,stroke-width:4px
     style B fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
     style C fill:#ff9,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
@@ -98,6 +122,13 @@ graph LR
     style J fill:#cf6,stroke:#333,stroke-width:2px
     style K fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
     style L fill:#f6c,stroke:#333,stroke-width:2px
+    style M fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style N fill:#cf6,stroke:#333,stroke-width:2px
+    style O fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style P fill:#f6c,stroke:#333,stroke-width:2px
+    style Q fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style R fill:#cf6,stroke:#333,stroke-width:2px
+    style S fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
 ```
 ## GitFlow Diagram
 ```mermaid
