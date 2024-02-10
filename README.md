@@ -65,6 +65,40 @@ stateDiagram
     Deploy --> [ProdInstance1]: Blue
     Deploy --> [ProdInstance2]: Green
 ```
+## App flow
+
+```mermaid
+graph LR
+    A[User] -->|Sends Request| B[Load Balancer]
+    B -->|Routes Request| C[Kubernetes Service]
+    C -->|Routes to Pod| D[Spring Boot App]
+    D -->|Queries| E[Database]
+    E -->|Returns Data| D
+    D -->|Checks| F[Feature Flag]
+    F -->|Returns Flag Status| D
+    D -->|Checks| G[Redis Cache]
+    G -->|Returns Session Data| D
+    D -->|Returns Response| A
+    H[App Startup] -->|Deploys Database| E
+    I[Canary Deployment] -->|Spins Up New Pods| C
+    J[Rollback] -->|Triggers Canary Deployment| K[Canary Deployment]
+    K -->|Deploys Previous Stable Docker Image| L[New Pods]
+    K -->|Reverts Database Changes| M[Database Deployment]
+    K[Promote] -->|Deploys to All Pods| C
+    L[Monitoring] -->|Alerts| A
+    style A fill:#f9d,stroke:#333,stroke-width:4px
+    style B fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style C fill:#ff9,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style D fill:#9f6,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5
+    style E fill:#9f6,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style F fill:#cfc,stroke:#333,stroke-width:2px
+    style G fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style H fill:#f6c,stroke:#333,stroke-width:2px
+    style I fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style J fill:#cf6,stroke:#333,stroke-width:2px
+    style K fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+    style L fill:#f6c,stroke:#333,stroke-width:2px
+```
 ## GitFlow Diagram
 ```mermaid
 graph TB
