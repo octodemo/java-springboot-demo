@@ -211,6 +211,27 @@ jobs:
           name: Test Results
           path: ./target/surefire-reports # path to the test results
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
+  
+  publish-test-results:
+    needs: unit-parallel-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download test results
+        uses: actions/download-artifact@v2
+        with:
+          name: Test Results
+          path: test_results
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always() # this ensures that the results are reported even if the test step fails
+        with:
+          reporter: 'junit'
+          name: 'JUnit Test Results'
+          path: 'test_results/*.xml'
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
