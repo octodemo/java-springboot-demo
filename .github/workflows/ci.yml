@@ -87,7 +87,7 @@ jobs:
       # runnning code scanning with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       # first step is to initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
           # debug: true # uncomment this line to enable debugging for CodeQL analysis step
@@ -102,11 +102,11 @@ jobs:
       # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
       
       # performing Code Quality Analysis with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
       - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
@@ -226,12 +226,12 @@ jobs:
           path: test_results
 
       - name: Publish Test Results
-        uses: dorny/test-reporter@v1
-        if: always() # this ensures that the results are reported even if the test step fails
+        uses: dorny/test-reporter@v1.8.0
+        if: success() || failure()
         with:
-          reporter: 'junit'
-          name: 'JUnit Test Results'
-          path: 'test_results/*.xml'
+          reporter: java-junit
+          name: JUnit Test Results
+          path: test_results/*.xml
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
