@@ -190,7 +190,7 @@ jobs:
         id: split-tests
         name: Split tests
         with:
-          glob: src/test/**/**/**.java # glob pattern to match the test files
+          glob: test_results/*.xml # path to the junit test results with wildcards to match all the files
           split-total: ${{ env.total-runners }} # total number of github-hosted runners
           split-index: ${{ matrix.runner-index }} # current runner index
           junit-path: test_results/*xml # path to the junit test results with wildcards to match all the files
