@@ -58,12 +58,12 @@ public class JUnit5ExampleTest11 {
       // print a comment about the value of enableSearchFeature
       System.out.println("\n\n");
       System.out.println("--------------------------------------------------------------------------------");
-      System.out.println("Expected value of enableSearchFeature: false");
+      System.out.println("Expected value of enableSearchFeature: true");
       System.out.println("Actual value of enableSearchFeature: " + appController.getEnableSearchFeature());
       System.out.println("--------------------------------------------------------------------------------");
 
-      // assert that the value of enableSearchFeature is false
-      assertEquals(false, appController.getEnableSearchFeature());
+      // assert that the value of enableSearchFeature is true
+      assertEquals(true, appController.getEnableSearchFeature());
 
       System.out.println("\n\nTest11-2 Successful!\n\n");
     }

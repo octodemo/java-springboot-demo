@@ -9,16 +9,16 @@ v1:
       userName: postgresadmin
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "196"
+      tag: "199"
     resources:
       limits:
         cpu: "1"
         memory: 512Mi
       requests:
-        cpu: 250m
+        cpu: 125m
         memory: 128Mi
 v2:
-  replicas: 2
+  replicas: 3
   springAppContainer:
     env:
       changelogVersion: changelog_version-3.3.xml
@@ -28,13 +28,13 @@ v2:
       userName: postgresadmin
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "197"
+      tag: "198"
     resources:
       limits:
         cpu: "1"
         memory: 512Mi
       requests:
-        cpu: 250m
+        cpu: 125m
         memory: 128Mi
 kubernetesClusterDomain: cluster.local
 postgresConfig:

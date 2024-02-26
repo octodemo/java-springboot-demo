@@ -20,22 +20,29 @@ spec:
       containers:
       - env:
         - name: DB_URL
-          value: {{ quote .Values.v1.springAppContainer.env.dbUrl }}
+          value: {{ .Values.v1.springAppContainer.env.dbUrl }}
         - name: USER_NAME
-          value: {{ quote .Values.v1.springAppContainer.env.userName }}
+          value: {{ .Values.v1.springAppContainer.env.userName }}
         - name: PASSWORD
-          value: {{ quote .Values.v1.springAppContainer.env.password }}
+          value: {{ .Values.v1.springAppContainer.env.password }}
         - name: CHANGELOG_VERSION
-          value: {{ quote .Values.v1.springAppContainer.env.changelogVersion }}
+          value: {{ .Values.v1.springAppContainer.env.changelogVersion }}
         - name: REDIS_HOST
-          value: {{ quote .Values.v1.springAppContainer.env.redisHost }}
+          value: {{ .Values.v1.springAppContainer.env.redisHost }}
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
+          value: {{ .Values.kubernetesClusterDomain }}
         image: {{ .Values.v1.springAppContainer.image.repository }}:{{ .Values.v1.springAppContainer.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: spring-app-container
         ports:
         - containerPort: 8086
-        resources: {{- toYaml .Values.v1.springAppContainer.resources | nindent 10 }}
+        resources:
+          limits:
+            cpu: {{ .Values.v1.springAppContainer.resources.limits.cpu }}
+            memory: {{ .Values.v1.springAppContainer.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.v1.springAppContainer.resources.requests.cpu }}
+            memory: {{ .Values.v1.springAppContainer.resources.requests.memory }}
       imagePullSecrets:
       - name: your-registry-secret
