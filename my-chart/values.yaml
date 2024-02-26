@@ -12,11 +12,11 @@ v1:
       tag: "196"
     resources:
       limits:
-        cpu: "0.5"
-        memory: 256Mi
+        cpu: "1"
+        memory: 512Mi
       requests:
-        cpu: 125m
-        memory: 64Mi
+        cpu: 250m
+        memory: 128Mi
 v2:
   replicas: 4
   springAppContainer:
@@ -31,11 +31,11 @@ v2:
       tag: "197"
     resources:
       limits:
-        cpu: "0.5"
-        memory: 256Mi
+        cpu: "1"
+        memory: 512Mi
       requests:
-        cpu: 125m
-        memory: 64Mi
+        cpu: 250m
+        memory: 128Mi
 kubernetesClusterDomain: cluster.local
 postgresConfig:
   POSTGRES_DB: postgresdb
