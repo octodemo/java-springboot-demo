@@ -1,5 +1,5 @@
 v1:
-  replicas: 2
+  replicas: 1
   springAppContainer:
     env:
       changelogVersion: changelog_version-3.3.xml
@@ -18,7 +18,7 @@ v1:
         cpu: 250m
         memory: 128Mi
 v2:
-  replicas: 4
+  replicas: 2
   springAppContainer:
     env:
       changelogVersion: changelog_version-3.3.xml
