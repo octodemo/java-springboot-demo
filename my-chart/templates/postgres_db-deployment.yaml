@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-database-service
+  labels:
+  {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.postgresDatabaseService.type }}
+  selector:
+    app: postgres-database
+  {{- include "my-chart.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.postgresDatabaseService.ports | toYaml | nindent 2 }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "my-chart.fullname" . }}-postgres-pv-volume
+  labels:
+    app: postgres-database
+    type: local
+  {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /mnt/data
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "my-chart.fullname" . }}-postgres-pv-claim
+  labels:
+    app: postgres-database
+  {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc.postgresPvClaim.storageRequest | quote }}
+  storageClassName: {{ .Values.pvc.postgresPvClaim.storageClass | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "my-chart.fullname" . }}-postgres-config
+  labels:
+    app: postgres
+  {{- include "my-chart.labels" . | nindent 4 }}
+data:
+  POSTGRES_DB: {{ .Values.postgresConfig.POSTGRES_DB | quote }}
+  POSTGRES_PASSWORD: {{ .Values.postgresConfig.POSTGRES_PASSWORD | quote }}
+  POSTGRES_USER: {{ .Values.postgresConfig.POSTGRES_USER | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-chart.fullname" . }}-postgres-database-deployment
+  labels:
+  {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.postgresDatabaseDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: postgres-database
+    {{- include "my-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: postgres-database
+      {{- include "my-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "my-chart.fullname" . }}-postgres-config
+        image: {{ .Values.postgresDatabaseDeployment.postgresDatabaseContainer.image.repository
+          }}:{{ .Values.postgresDatabaseDeployment.postgresDatabaseContainer.image.tag |
+          default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.postgresDatabaseDeployment.postgresDatabaseContainer.imagePullPolicy
+          }}
+        name: postgres-database-container
+        ports:
+        - containerPort: 5432
+        resources: {{- toYaml .Values.postgresDatabaseDeployment.postgresDatabaseContainer.resources
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgredb
+      volumes:
+      - emptyDir: {}
+        name: postgredb

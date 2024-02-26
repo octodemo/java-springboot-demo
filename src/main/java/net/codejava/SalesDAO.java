@@ -1,10 +1,6 @@
 package net.codejava;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.data.domain.Page; // Import the Page class from the correct package
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable; // Import the Pageable class from the correct package
@@ -123,25 +118,10 @@ public class SalesDAO {
 		return new PageImpl<>(sales, pageable, total);
 	}
 
-	@RequestMapping("/export")
-	public void exportCSV(String query, String filename) throws IOException {
-		// create an instance of FileWriter
-		FileWriter writer = new FileWriter(filename);
-		// create an instance of BufferedWriter
-		BufferedWriter bw = new BufferedWriter(writer);
-		// write the csv header
-		bw.write("serialNumber,item,quantity,amount");
-		bw.newLine();
-		// write the csv body
-		List<Sale> listSale = search(query);
-		for (Sale sale : listSale) {
-			bw.write(sale.getSerialNumber() + "," + sale.getItem() + "," + sale.getQuantity() + "," + sale.getAmount());
-			bw.newLine();
-		}
-		// print a message
-		System.out.println("CSV file was created successfully.");
-		// close the BufferedWriter and FileWriter
-		bw.close();
-		writer.close();
+	// a method to returns a list of all sales in a jdbctemplate query to use as a csv output
+	public List<Sale> listAll() {
+		String sql = "SELECT * FROM sales ORDER BY serial_number ASC";
+		List<Sale> listSale = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sale.class));
+		return listSale;
 	}
 }

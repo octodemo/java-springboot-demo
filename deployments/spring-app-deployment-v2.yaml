@@ -29,5 +29,12 @@ spec:
               value: changelog_version-3.3.xml
             - name: REDIS_HOST
               value: redis-database-service
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
+              cpu: "0.25"
+              memory: "128Mi"
       imagePullSecrets:
         - name: your-registry-secret

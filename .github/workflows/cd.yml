@@ -86,10 +86,40 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           admin: 'false'
           use-kubelogin: 'true'
+      
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
 
-      # Deploys application based on given manifest file
       - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
         run: |
-          kubectl apply -f deployments/
+          # Get the commit message of the commit that triggered the workflow
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.after }})
+          
+          # Check if the app deployment exists
+          if kubectl get deployments app-release; then
+            # If the commit message starts with [v1], it's an update for v1
+            if [[ "$COMMIT_MESSAGE" == \[v1\]* ]]; then
+              echo "Update is for v1. Not setting v2.image.tag."
+              # Update the app without changing the v2 image
+              helm upgrade --install app-release ./my-chart
+            else
+              # If the commit message does not start with [v1], it's an update for v2
+              echo "Update is for v2. Setting v2.image.tag to: ${{ inputs.image_tag }}."
+              # Update the app and change the v2 image to inputs.image_tag
+              helm upgrade --install app-release ./my-chart --set v2.image.tag=${{ inputs.image_tag }}
+            fi
+          else
+            # If the app deployment does not exist
+            echo "App deployment does not exist. Setting v2.image.tag to: ${{ inputs.image_tag }}."
+            # Set v2.image.tag to inputs.image_tag regardless of the commit message
+            helm upgrade --install app-release ./my-chart --set v2.image.tag=${{ inputs.image_tag }}
+          fi
+          
+          # Wait for 30 seconds
           sleep 30
+          
+          # Get the status of the deployments
           kubectl get deployments

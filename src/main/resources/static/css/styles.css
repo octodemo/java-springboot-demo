@@ -58,7 +58,30 @@ tr:nth-child(even) {
 }
 
 .button:hover {
-    background-color: #1976D2;
+    background-color: var(--button-color, #007bff);
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modern-button {
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: var(--button-color, #007bff);
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    text-decoration: none;
+}
+
+.modern-button:hover {
+    color: #fff;
+    background-color: var(--button-hover-color, #0056b3);
+    border-color: #004499;
 }

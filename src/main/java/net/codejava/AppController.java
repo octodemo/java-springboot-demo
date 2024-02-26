@@ -2,6 +2,7 @@ package net.codejava;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.security.Principal;
 import java.time.LocalDate;
 
@@ -187,13 +191,21 @@ public class AppController {
 	}
 
 	@RequestMapping("/export")
-	public String exportCSV(@ModelAttribute("q") String query, Model model) {
-		try {
-			dao.exportCSV(query, "export.csv");
-			return "redirect:/";
-		} catch (Exception e) {
-			model.addAttribute("error", e.getMessage());
-			return "error";
+	public void exportToCSV(HttpServletResponse response) throws IOException {
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=sales.csv");
+		List<Sale> listSale = dao.listAll();
+		// create a writer
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
+		// write header line
+		writer.write("Serial Number, Date, Amount, Item Name");
+		writer.newLine();
+		// write data lines
+		for (Sale sale : listSale) {
+			String line = String.format("%s, %s, %s, %s", sale.getSerialNumber(), sale.getDate(), sale.getAmount(), sale.getItem());
+			writer.write(line);
+			writer.newLine();
 		}
-	}
+		writer.flush();
+}
 }

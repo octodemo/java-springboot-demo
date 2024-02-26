@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-chart.fullname" . }}-v1
+  labels:
+  {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.v1.replicas }}
+  selector:
+    matchLabels:
+      app: spring-app
+    {{- include "my-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: spring-app
+        version: v1
+      {{- include "my-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: DB_URL
+          value: {{ quote .Values.v1.springAppContainer.env.dbUrl }}
+        - name: USER_NAME
+          value: {{ quote .Values.v1.springAppContainer.env.userName }}
+        - name: PASSWORD
+          value: {{ quote .Values.v1.springAppContainer.env.password }}
+        - name: CHANGELOG_VERSION
+          value: {{ quote .Values.v1.springAppContainer.env.changelogVersion }}
+        - name: REDIS_HOST
+          value: {{ quote .Values.v1.springAppContainer.env.redisHost }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.v1.springAppContainer.image.repository }}:{{ .Values.v1.springAppContainer.image.tag
+          | default .Chart.AppVersion }}
+        name: spring-app-container
+        ports:
+        - containerPort: 8086
+        resources: {{- toYaml .Values.v1.springAppContainer.resources | nindent 10 }}
+      imagePullSecrets:
+      - name: your-registry-secret

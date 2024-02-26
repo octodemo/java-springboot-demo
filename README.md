@@ -65,28 +65,54 @@ stateDiagram
     Deploy --> [ProdInstance1]: Blue
     Deploy --> [ProdInstance2]: Green
 ```
+## Blue-Green Deployment Strategy Diagram
+
+```mermaid
+sequenceDiagram
+    participant C as Commit
+    participant G as GitHub Actions
+    participant H as Helm
+    participant K as Kubernetes
+    C->>G: Developer pushes a commit
+    G->>G: GitHub Actions extracts the commit message
+    Note over G: GitHub Actions checks if the commit message starts with [v1]
+    alt Commit message starts with [v1]
+        G->>H: GitHub Actions tells Helm to update the app without changing the v2 image
+        Note over G: The v2 image remains the same
+    else Commit message does not start with [v1]
+        G->>H: GitHub Actions tells Helm to update the app and change the v2 image
+        Note over G: The v2 image is updated to the new version
+    end
+    H->>K: Helm deploys or updates the Kubernetes resources
+    G->>K: GitHub Actions checks the status of the deployments
+```
 ## App deployment flow - in this diagram
-- User sends a request to the Load Balancer
-- Load Balancer routes the request to the Kubernetes Service
-- Kubernetes Service routes the request to the Spring Boot App
-- Spring Boot App queries the Database
-- Database returns data to the Spring Boot App
-- Spring Boot App checks the Feature Flag
-- Feature Flag returns the flag status to the Spring Boot App
-- Spring Boot App checks the Redis Cache
-- Redis Cache returns the session data to the Spring Boot App
-- Spring Boot App returns the response to the User
-- App Startup deploys the Database
-- Canary Deployment spins up new pods
-- Rollback triggers a Canary Deployment
-- Canary Deployment deploys the previous stable Docker image
-- Canary Deployment reverts database changes
-- Promote deploys to all pods
-- Monitoring alerts the Ops Team
-- Ops Team fixes issues
-- Rollback/Canary Deployment deploys the fix
-- New Pods verifies the fix
-- Monitoring verifies the fix
+## User Request Flow
+1. User sends a request to the Load Balancer.
+2. Load Balancer routes the request to the Kubernetes Service.
+3. Kubernetes Service routes the request to the Spring Boot App.
+4. Spring Boot App queries the Database.
+5. Database returns data to the Spring Boot App.
+6. Spring Boot App checks the Feature Flag.
+7. Feature Flag returns the flag status to the Spring Boot App.
+8. Spring Boot App checks the Redis Cache.
+9. Redis Cache returns the session data to the Spring Boot App.
+10. Spring Boot App returns the response to the User.
+
+## Deployment Process
+1. App Startup deploys the Database.
+2. Canary Deployment spins up new pods.
+3. Rollback triggers a Canary Deployment.
+4. Canary Deployment deploys the previous stable Docker image.
+5. Canary Deployment reverts database changes.
+6. Promote deploys to all pods.
+
+## Monitoring and Issue Resolution
+1. Monitoring alerts the Ops Team.
+2. Ops Team fixes issues.
+3. Rollback/Canary Deployment deploys the fix.
+4. New Pods verifies the fix.
+5. Monitoring verifies the fix.
 
 ```mermaid
 graph LR
@@ -130,6 +156,7 @@ graph LR
     style R fill:#cf6,stroke:#333,stroke-width:2px
     style S fill:#6cf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
 ```
+
 ## GitFlow Diagram
 ```mermaid
 graph TB
