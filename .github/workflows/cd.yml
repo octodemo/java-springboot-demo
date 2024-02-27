@@ -93,6 +93,8 @@ jobs:
       
       - name: Install Helm
         uses: azure/setup-helm@v1
+        with:
+          version: v3.12.2
 
       - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
         run: ./deploy.sh ${{ inputs.image_tag }} ${{ inputs.debug}}
