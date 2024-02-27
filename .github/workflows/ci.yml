@@ -5,9 +5,14 @@ on:
   # manual trigger
   workflow_dispatch:
     inputs:
-      debug_enabled:
+      ssh_debug_enabled:
         type: boolean
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        description: 'Run the build/test with ssh debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+      debug_deployment:
+        type: boolean
+        description: 'Run the pipeline with debug deployment enabled'
         required: false
         default: false
 
@@ -181,7 +186,7 @@ jobs:
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_debug_enabled }}
 
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
@@ -300,4 +305,5 @@ jobs:
     with:
       # with tag from the build-and-publish-docker-image job in the output_tags step
       image_tag: "${{ needs.build-and-publish-docker-image.outputs.image_tag }}"
+      debug: "${{ github.event.inputs.debug_deployment }}"
     secrets: inherit
