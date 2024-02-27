@@ -95,4 +95,4 @@ jobs:
         uses: azure/setup-helm@v1
 
       - name: Deploy to Kubernetes [PRODUCTION ENVIRONMENT]
-        run: ./deploy.sh "${{ inputs.image_tag }}" "${{ inputs.debug}}"
+        run: ./deploy.sh ${{ inputs.image_tag }} ${{ inputs.debug}}

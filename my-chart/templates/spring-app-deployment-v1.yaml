@@ -31,8 +31,7 @@ spec:
           value: {{ .Values.v1.springAppContainer.env.redisHost }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ .Values.kubernetesClusterDomain }}
-        image: {{ .Values.v1.springAppContainer.image.repository }}:{{ .Values.v1.springAppContainer.image.tag
-          | default .Chart.AppVersion }}
+        image: {{ .Values.v1.springAppContainer.image.repository }}:{{ .Values.v1.springAppContainer.image.tag }}
         imagePullPolicy: Always
         name: spring-app-container
         ports:

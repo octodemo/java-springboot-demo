@@ -10,7 +10,7 @@ IMAGE_TAG=$(echo "${1}" | cut -d ":" -f 2)
 DEBUG=${2:-0}
 
 # Check if the app deployment exists
-if kubectl get deployments app-release-my-chart-v1 && kubectl get deployments app-release-my-chart-v2; then
+if kubectl get deployments app-release-my-chart-v1 2>/dev/null && kubectl get deployments app-release-my-chart-v2 2>/dev/null; then
     # Get the current v1 and v2 image tags from the app deployment in the cluster
     CURRENT_V1_IMAGE_TAG=$(kubectl get pods -l app=spring-app -o json | jq -r '.items[] | select(.metadata.name | contains("v1")) | .spec.containers[0].image' | cut -d ":" -f 2 | head -n 1)
     CURRENT_V2_IMAGE_TAG=$(kubectl get pods -l app=spring-app -o json | jq -r '.items[] | select(.metadata.name | contains("v2")) | .spec.containers[0].image' | cut -d ":" -f 2 | head -n 1)

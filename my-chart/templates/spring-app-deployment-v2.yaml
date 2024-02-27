@@ -29,8 +29,7 @@ spec:
           value: {{ .Values.v2.springAppContainer.env.changelogVersion }}
         - name: REDIS_HOST
           value: {{ .Values.v2.springAppContainer.env.redisHost }}
-        image: {{ .Values.v2.springAppContainer.image.repository }}:{{ .Values.v2.springAppContainer.image.tag
-          | default .Chart.AppVersion }}
+        image: {{ .Values.v2.springAppContainer.image.repository }}:{{ .Values.v2.springAppContainer.image.tag }}
         imagePullPolicy: Always
         name: spring-app-container
         ports:
