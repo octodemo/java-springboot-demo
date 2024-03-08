@@ -207,5 +207,12 @@ public class AppController {
 			writer.newLine();
 		}
 		writer.flush();
-}
+	}
+
+	@RequestMapping("/high-quantity-items")
+	public String getHighQuantityItems(@RequestParam int threshold, Model model) {
+		List<Sale> highQuantityItems = dao.getItemsWithHighestQuantity(threshold);
+		model.addAttribute("highQuantityItems", highQuantityItems);
+		return "high_quantity_items"; // This should be the name of your view file
+	}
 }

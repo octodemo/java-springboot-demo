@@ -94,6 +94,35 @@
                             <a class="button" th:href="@{'/clear/' + ${sale.serialNumber}}" onclick="return confirm('Clear: This action is irreversible. Are you sure you want to clear the sale record?')" style="color: #ff7f7f;">Clear</a>
                         </td>
                     </tr>
+                </tbody>    
+            </table>
+        </div>
+    </div>
+    <div>
+        <form action="/high-quantity-items" method="get">
+            <label for="threshold">Set threshold for high quantity items:</label>
+            <input type="number" id="threshold" name="threshold" min="0" />
+            <button type="submit">Set Threshold</button>
+        </form>
+    </div>
+    <div class="quantity-table" th:if="${highQuantityItems}">
+            <h2>High Quantity Items</h2>
+            <table style="width: 35%" border="1" cellpadding="10" class="main-table">
+                <thead>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sale : ${highQuantityItems}">
+                        <td th:text="${sale.serialNumber}">serial Number</td>
+                        <td th:text="${sale.item}">Item Name</td>
+                        <td th:text="${sale.quantity}">Quantity</td>
+                        <td th:text="${sale.amount}">Amount</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

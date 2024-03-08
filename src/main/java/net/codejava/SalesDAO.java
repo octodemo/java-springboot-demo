@@ -124,4 +124,10 @@ public class SalesDAO {
 		List<Sale> listSale = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sale.class));
 		return listSale;
 	}
+
+	public List<Sale> getItemsWithHighestQuantity(int threshold) {
+		String sql = "SELECT * FROM sales WHERE quantity >= ?";
+		List<Sale> listSale = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sale.class), threshold);
+		return listSale;
+	}
 }
