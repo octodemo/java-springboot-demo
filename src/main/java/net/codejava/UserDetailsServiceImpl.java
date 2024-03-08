@@ -17,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private RoleRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

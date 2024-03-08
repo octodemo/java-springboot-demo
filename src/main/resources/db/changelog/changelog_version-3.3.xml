@@ -59,4 +59,26 @@
          </rollback>
       </changeSet>
 
+      <changeSet id="5" author="TsviZ">
+         <createTable tableName="role">
+            <column name="id" type="bigint" autoIncrement="true">
+               <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+               <constraints nullable="false"/>
+            </column>
+         </createTable>
+      </changeSet>
+
+      <changeSet id="6" author="TsviZ">
+         <insert tableName="role">
+            <column name="name" value="ROLE_USER" />
+         </insert>
+         <rollback>
+            <delete tableName="role">
+               <where>name = 'ROLE_USER'</where>
+            </delete>
+         </rollback>
+      </changeSet>
+      
 </databaseChangeLog>

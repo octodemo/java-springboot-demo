@@ -83,4 +83,19 @@ public class Sale {
 	public String toString() {
 		return "Sale [serial_number=" + serialNumber + ", item=" + item + ", quantity=" + quantity + ", amount=" + amount + ", date=" + date + "]";
 	}
+
+	public float calculateTotalAmount(float pricePerItem) {
+		return this.quantity * pricePerItem;
+	}
+
+	public boolean isRecentSale(int days) {
+		Date now = new Date();
+		long millisInADay = 24 * 60 * 60 * 1000;
+		return (now.getTime() - this.date.getTime()) / millisInADay <= days;
+	}
+
+	public void updateSale(int quantity, float amount) {
+		this.quantity = quantity;
+		this.amount = amount;
+	}
 }
