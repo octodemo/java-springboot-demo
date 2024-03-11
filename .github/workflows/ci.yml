@@ -96,9 +96,6 @@ jobs:
         with:
           languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
           config: |
-            disable-default-queries: true
-            packs:
-              - security-extended
             query-filters:
               - exclude:
                   tags: [ 'cwe-078' ]
