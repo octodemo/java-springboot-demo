@@ -52,9 +52,18 @@ function upgrade_release() {
     # The --install flag ensures that the release will be installed if it does not exist
     # The --debug flag enables verbose output for debugging
     # The --set flag sets the specified values on the command line
+    trap 'catch_errors' ERR
+    catch_errors() {
+    echo "Error occurred during deployment. Rolled back to version: $(helm history app-release --max 1 --output json | jq -r '.[0].app_version')"
+    exit 1
+    }
     helm upgrade --install --atomic app-release ./my-chart ${set_flag} ${debug_flag}
     kubectl rollout status deployment/app-release-my-chart-v1
     kubectl rollout status deployment/app-release-my-chart-v2
+    echo "Current deployment status:"
+    kubectl get deployments
+    echo "Current releases history:"
+    helm history app-release
 }
 
 validate_input "${1}"
