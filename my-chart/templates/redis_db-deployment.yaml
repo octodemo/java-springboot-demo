@@ -55,3 +55,4 @@ spec:
         - containerPort: 6379
         resources: {{- toYaml .Values.redisDatabaseDeployment.redisDatabaseContainer.resources
           | nindent 10 }}
+
