@@ -1,7 +1,7 @@
 let themeColors;
 if (window.enableSearchFeature) {
     themeColors = {
-        '--h1-color': '#2196F3',
+        '--h1-color': window.searchFeatureColor || '#4CAF50',
         '--th-bg-color': '#2196F3',
         '--a-color': '#2196F3',
         '--tr-bg-color': '#c2e0fb',
