@@ -41,7 +41,7 @@ public class SalesDAO {
 	}
 
 	public Sale get(String serialNumber) {
-		String sql = "SELECT * FROM SALES WHERE serial_number = ?";
+		String sql = "SELECT * FROM SALES WHERE serial_number = " + serialNumber;
 		Object[] args = {serialNumber};
 		Sale sale = jdbcTemplate.queryForObject(sql, args, BeanPropertyRowMapper.newInstance(Sale.class));
 		return sale;
