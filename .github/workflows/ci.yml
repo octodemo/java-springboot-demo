@@ -5,14 +5,9 @@ on:
   # manual trigger
   workflow_dispatch:
     inputs:
-      ssh_debug_enabled:
+      debug_enabled:
         type: boolean
-        description: 'Run the build/test with ssh debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        required: false
-        default: false
-      debug_deployment:
-        type: boolean
-        description: 'Run the pipeline with debug deployment enabled'
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
 
@@ -66,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java' ]
+        language: [ 'java', 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
@@ -92,7 +87,7 @@ jobs:
       # runnning code scanning with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       # first step is to initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
           # debug: true # uncomment this line to enable debugging for CodeQL analysis step
@@ -107,11 +102,11 @@ jobs:
       # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@v2
       
       # performing Code Quality Analysis with CodeQL. Link to the documentation - https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
       - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
@@ -186,7 +181,7 @@ jobs:
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_debug_enabled }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
@@ -195,7 +190,7 @@ jobs:
         id: split-tests
         name: Split tests
         with:
-          glob: src/test/**/**/*.java # glob pattern to match the test files
+          glob: src/test/**/**/**.java # glob pattern to match the test files
           split-total: ${{ env.total-runners }} # total number of github-hosted runners
           split-index: ${{ matrix.runner-index }} # current runner index
           junit-path: test_results/*xml # path to the junit test results with wildcards to match all the files
@@ -216,27 +211,6 @@ jobs:
           name: Test Results
           path: ./target/surefire-reports # path to the test results
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
-  
-  publish-test-results:
-    needs: unit-parallel-tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Download test results
-        uses: actions/download-artifact@v2
-        with:
-          name: Test Results
-          path: test_results
-
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v1.8.0
-        if: success() || failure()
-        with:
-          reporter: java-junit
-          name: JUnit Test Results
-          path: test_results/*.xml
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
@@ -305,5 +279,4 @@ jobs:
     with:
       # with tag from the build-and-publish-docker-image job in the output_tags step
       image_tag: "${{ needs.build-and-publish-docker-image.outputs.image_tag }}"
-      debug: "${{ github.event.inputs.debug_deployment }}"
     secrets: inherit
