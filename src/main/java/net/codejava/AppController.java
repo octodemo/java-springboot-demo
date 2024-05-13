@@ -11,11 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-// import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,20 +30,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.data.domain.PageRequest; // Add this import statement
-import org.springframework.data.domain.Page; // Add this import statement
-// import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.dao.DuplicateKeyException;
 import java.util.Date;
 import javax.servlet.http.HttpSession;
-// improt MultipartFile class
 import org.springframework.web.multipart.MultipartFile;
-// import portMaooing class
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-// bufferedReader
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -50,22 +46,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @EnableJpaRepositories(basePackages = "net.codejava")
 @Controller
 @Transactional
 public class AppController {
 
-	/**
-	 *
-	 */
 	@Autowired
 	private SalesDAO dao;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	// private static final Logger logger = Logger.getLogger(AppController.class.getName());
-
 	@Value("${enableSearchFeature}")
     private boolean enableSearchFeature;
 
@@ -74,9 +67,9 @@ public class AppController {
 	}
 	
 	private String handleSale(Sale sale, HttpSession session, RedirectAttributes redirectAttributes, Runnable action) {
-		sale.setEditing(true); // set isEditing to true
+		sale.setEditing(true);
 		action.run();
-		sale.setEditing(false); // set isEditing to false after action is performed successfully
+		sale.setEditing(false);
 	
 		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
 		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
@@ -91,10 +84,10 @@ public class AppController {
 	public String viewHomePage(Model model , Principal principal, @RequestParam(defaultValue = "0") int page, HttpSession session) {
 		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
 		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
-			session.setAttribute("lastSearchQuery", null); // set lastSearchQuery to null
+			session.setAttribute("lastSearchQuery", null);
 		}
 		
-		int pageSize = 20; // number of records per page
+		int pageSize = 20;
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Sale> salePage = dao.findAll(pageable);
 
@@ -125,20 +118,28 @@ public class AppController {
 		return mav;
 	}
 
-	@RequestMapping("/search")
-	public String search(@ModelAttribute("q") String query, Model model, HttpSession session) {
+	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public String search(@RequestParam("q") String query, Model model, HttpSession session) {
 		List<Sale> listSale = dao.search(query);
 		model.addAttribute("listSale", listSale);
 
 		boolean enableSearchFeature = true;
 		model.addAttribute("enableSearchFeature", enableSearchFeature);
-		session.setAttribute("lastSearchQuery", query); // save the last search query in the session
-		return "search";
+		session.setAttribute("lastSearchQuery", query);
+		
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(listSale);
+			return json;
+		} catch (IOException e) {
+			return "[]";
+		}
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@ModelAttribute("sale") Sale sale, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-		boolean originalEnableSearchFeature = this.enableSearchFeature; // store the original value
+		boolean originalEnableSearchFeature = this.enableSearchFeature;
 
 		try {
 			if (sale.getDate() == null) {
@@ -147,13 +148,13 @@ public class AppController {
 			dao.save(sale);
 			sale.setEditing(false);
 		} catch (DuplicateKeyException e) {
-			sale.setSerialNumber(null); // clear the serial number
-			model.addAttribute("sale", sale); // add the sale object to the model
+			sale.setSerialNumber(null);
+			model.addAttribute("sale", sale);
 			model.addAttribute("errorMessage", e.getMessage());
 
-			model.addAttribute("enableSearchFeature", originalEnableSearchFeature); // use the original value
+			model.addAttribute("enableSearchFeature", originalEnableSearchFeature);
 
-			return "new_form"; // return the form view
+			return "new_form";
 		}
 
 		return "redirect:/";
@@ -169,7 +170,6 @@ public class AppController {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		// Authenticate the user
 		Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
 		try {
 			auth = authenticationManager.authenticate(auth);
@@ -179,7 +179,6 @@ public class AppController {
 			return "login";
 		}
 
-		// User is authenticated, redirect to landing page
 		return "redirect:/";
 	}
 	
@@ -205,12 +204,9 @@ public class AppController {
 		response.setContentType("text/csv");
 		response.setHeader("Content-Disposition", "attachment; filename=sales.csv");
 		List<Sale> listSale = dao.listAll();
-		// create a writer
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
-		// write header line
 		writer.write("Serial Number, Date, Amount, Item Name");
 		writer.newLine();
-		// write data lines
 		for (Sale sale : listSale) {
 			String line = String.format("%s, %s, %s, %s", sale.getSerialNumber(), sale.getDate(), sale.getAmount(), sale.getItem());
 			writer.write(line);
@@ -222,16 +218,13 @@ public class AppController {
 	@PostMapping("/import")
 	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 		try {
-			// Parse the file
 			BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
 			
-			// Validate the header
-			String line = reader.readLine();  // Read the first line
+			String line = reader.readLine();
 			if (line == null || !line.equals("Serial Number,Item Name,Amount,Quantity,Date")) {
 				throw new IllegalArgumentException("Invalid header. Expected 'Serial Number,Item Name,Amount,Quantity,Date'");
 			}
 
-			// Validate the rest of the file
 			while ((line = reader.readLine()) != null) {
 				String[] fields = line.split(",");
 				if (fields.length != 5) {
@@ -239,17 +232,15 @@ public class AppController {
 				}
 			}
 
-			// If the file format is valid, convert it to a list of Sale objects
 			List<Sale> sales = new ArrayList<>();
-			reader = new BufferedReader(new InputStreamReader(file.getInputStream())); // Reset the reader
-			reader.readLine(); // Skip the header
+			reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+			reader.readLine();
 			while ((line = reader.readLine()) != null) {
 				String[] fields = line.split(",");
 				Sale sale = new Sale();
 				sale.setSerialNumber(fields[0].trim());
 				sale.setItem(fields[1].trim());
 
-				// Convert LocalDate to Date
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 				LocalDate date = LocalDate.parse(fields[4].trim(), formatter);
 				Date sqlDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -260,7 +251,6 @@ public class AppController {
 				sales.add(sale);
 			}
 
-			// If the file format is valid, call the upload method
 			dao.saveAll(sales);
 			redirectAttributes.addFlashAttribute("message", "Successfully saved the list of Sale objects to the database");
 			System.out.println("Successfully saved the list of Sale objects to the database");
