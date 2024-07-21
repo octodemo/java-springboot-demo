@@ -155,10 +155,13 @@ jobs:
     steps:
       - name: Checkout repository # checkout the repository
         uses: actions/checkout@v3.0.2
-      - name: Set up Node.js # setting up the node.js environment
-        uses: actions/setup-node@v2.4.1
-        with:
-          node-version: '16'
+      - name: Install Node.js
+        run: |
+          apk update
+          apk add --no-cache nodejs=14 npm
+          # Verify installation
+          node -v
+          npm -v
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
