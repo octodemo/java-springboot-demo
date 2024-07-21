@@ -127,7 +127,7 @@ jobs:
       - build
       - runner-indexes
     container:
-      image: ghcr.io/tsviz/mvn_jq_curl_node18:1 # using the custom container image with maven, jq, curl, and node 18
+      image: ghcr.io/tsviz/mvn_jq_curl_node18:2 # using the custom container image with maven, jq, curl, and node 18
     services:
       # postgres service container
       postgres: # service name - postgres. This name is used to access the service container from the job container as the host name.
