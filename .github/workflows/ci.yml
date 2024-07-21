@@ -165,6 +165,8 @@ jobs:
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - run: |
+          # Install JQ on the container
+          apt-get update && apt-get install -y jq
           # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
           curl \
             -H "Accept: application/vnd.github+json" \
