@@ -155,11 +155,13 @@ jobs:
     steps:
       - name: Checkout repository # checkout the repository
         uses: actions/checkout@v3.0.2
-      - name: Install Node.js
+      - name: Install Node.js using NVM
         run: |
-          apk update
-          apk add --no-cache nodejs=14 npm
-          # Verify installation
+          wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 14
+          nvm use 14
           node -v
           npm -v
       # caching the maven packages to speed up the build process. 
