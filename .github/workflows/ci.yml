@@ -127,7 +127,7 @@ jobs:
       - build
       - runner-indexes
     container:
-      image: mrkostin/maven:3.6.0-alpine-git-curl-jq # ruinning the job in a container - mrkostin/maven:3.6.0-alpine-git-curl-jq
+      image: ghcr.io/tsviz/tsviz_docker_image:1
     services:
       # postgres service container
       postgres: # service name - postgres. This name is used to access the service container from the job container as the host name.
@@ -155,15 +155,6 @@ jobs:
     steps:
       - name: Checkout repository # checkout the repository
         uses: actions/checkout@v3.0.2
-      - name: Install Node.js using NVM
-        run: |
-          wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install 14
-          nvm use 14
-          node -v
-          npm -v
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
