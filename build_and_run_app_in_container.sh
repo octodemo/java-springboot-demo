@@ -25,7 +25,8 @@ trap cleanup EXIT
 
 set -e # Exit immediately if a command exits with a non-zero status.
 # Getting local ip address from ifconfig 
-LOCAL_IP=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}')
+# LOCAL_IP=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}')
+LOCAL_IP=192.168.64.1
 # Run a postgresql container with a volume to persist data
 docker run -d -p 5432:5432 --name postgres_container -e POSTGRES_PASSWORD=Password123 -v postgresql-data:/var/lib/postgresql/data postgres
 # [Optional] Run any previous migrations and tag the latest version with Liquibase
