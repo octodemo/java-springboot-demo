@@ -123,6 +123,8 @@ jobs:
     # unit-parallel-tests job will run on ubuntu-latest github-hosted runner
     name: UNIT-PARALLEL-TESTS
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.set_timestamp.outputs.artifact_name }} # Output the artifact name
     needs: # needs build job and runner-indexes job to be completed before running the unit-parallel-tests job
       - build
       - runner-indexes
@@ -153,6 +155,11 @@ jobs:
       matrix: # defining the matrix strategy to run the job in parallel using x number of github-hosted runners defined in the env total_runners above
         runner-index: ${{ fromjson(needs.runner-indexes.outputs.json) }} # using the runner-indexes job output to define the matrix strategy
     steps:
+      - name: Set timestamp
+        id: set_timestamp
+        run: | 
+          echo "TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+          echo "::set-output name=artifact_name::test-results-${{ env.TIMESTAMP }}"
       - name: Checkout repository # checkout the repository
         uses: actions/checkout@v3.0.2
       # caching the maven packages to speed up the build process. 
@@ -211,9 +218,6 @@ jobs:
             mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086 -Dspring.redis.host=redis -Dspring.redis.port=6379 -Dspring.redis.mode=standalone
           done
       
-      - name: Set timestamp
-        run: echo "TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV # setting the timestamp for the test results
-      
       - uses: actions/upload-artifact@v4 # upload the test results as an artifact
         with:
           name: test-results-${{ env.TIMESTAMP }} # naming the artifact with the timestamp
@@ -230,7 +234,7 @@ jobs:
       - name: Download test results
         uses: actions/download-artifact@v2
         with:
-          name: Test Results
+          name: test-results-${{ needs.unit-parallel-tests.outputs.artifact-name }}
           path: test_results
 
       - name: Publish Test Results
@@ -239,7 +243,7 @@ jobs:
         with:
           reporter: java-junit
           name: JUnit Test Results
-          path: test_results/*.xml
+          path: test_results-${{ needs.unit-parallel-tests.outputs.artifact-name }}/*.xml
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
