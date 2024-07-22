@@ -1,5 +1,5 @@
 v1:
-  replicas: 4
+  replicas: 2
   springAppContainer:
     env:
       changelogVersion: changelog_version-3.3.xml
@@ -10,7 +10,7 @@ v1:
       searchFeatureEnabled: "false"
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "9999"
+      tag: "269"
     resources:
       limits:
         cpu: "1"
@@ -19,7 +19,7 @@ v1:
         cpu: 125m
         memory: 128Mi
 v2:
-  replicas: 0
+  replicas: 2
   springAppContainer:
     env:
       changelogVersion: changelog_version-3.3.xml
@@ -30,7 +30,7 @@ v2:
       searchFeatureFlag: "true"
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "9999"
+      tag: "269"
     resources:
       limits:
         cpu: "1"
