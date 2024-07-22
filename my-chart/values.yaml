@@ -10,7 +10,7 @@ v1:
       searchFeatureEnabled: "false"
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "269"
+      tag: "273"
     resources:
       limits:
         cpu: "1"
@@ -30,7 +30,7 @@ v2:
       searchFeatureFlag: "true"
     image:
       repository: ghcr.io/octodemo/java-springboot-demo
-      tag: "269"
+      tag: "274"
     resources:
       limits:
         cpu: "1"
