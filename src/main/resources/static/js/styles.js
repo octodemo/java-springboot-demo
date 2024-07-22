@@ -38,7 +38,7 @@ function addStyles() {
 addStyles();
 
 let themeColors;
-if (window.enableSearchFeature) {
+if (!window.enableSearchFeature) { // Swapped the condition to check for not enabled
     themeColors = {
         '--h1-color': '#2196F3',
         '--th-bg-color': '#2196F3',
