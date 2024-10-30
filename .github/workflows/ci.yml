@@ -188,8 +188,6 @@ jobs:
               "https://api.github.com/repos/${{ github.repository }}/actions/runs/${LAST_SUCCESSFUL_RUN_ID}/artifacts" | \
               jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name | startswith("testresults-")) | .id')
 
-            echo "ARTIFACT_IDS=$ARTIFACT_IDS" >> $GITHUB_ENV
-
             mkdir -p test_results
 
             for ARTIFACT_ID in $ARTIFACT_IDS; do
