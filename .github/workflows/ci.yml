@@ -167,7 +167,7 @@ jobs:
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
       
       - name: Install unzip
-        run: sudo apt-get install -y unzip
+        run: apt-get install -y unzip
       
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - name: Download and unzip all test results artifacts
