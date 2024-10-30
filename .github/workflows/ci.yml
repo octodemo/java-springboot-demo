@@ -196,7 +196,7 @@ jobs:
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
-      - uses: scruplelesswizard/split-tests@v1-alpha.1
+      - uses: scruplelesswizard/split-tests@4f1ca766cb93923ca216e02f1aefed20944e313f
         id: split-tests
         name: Split tests
         with:
