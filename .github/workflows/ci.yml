@@ -75,7 +75,7 @@ jobs:
     # defining steps for the job as explained above 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+        uses: actions/checkout@v4.2.2 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
         uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
@@ -156,7 +156,7 @@ jobs:
         runner-index: ${{ fromjson(needs.runner-indexes.outputs.json) }} # using the runner-indexes job output to define the matrix strategy
     steps:
       - name: Checkout repository # checkout the repository
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v4.2.2
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
@@ -167,14 +167,17 @@ jobs:
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - run: |
-          # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
-          curl \
+          # Download the latest test results artifact number using GitHub API
+          LATEST_ARTIFACT_NUMBER=$(curl \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name == "Test Results") | .id' > artifacts_list.txt
-
-          LATEST_ARTIFACT_NUMBER=$(cut -d: -f 2 artifacts_list.txt | sort -n | tail -n 1)
+            https://api.github.com/repos/${{ github.repository }}/actions/artifacts | \
+            jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name == "Test Results") | .id' | \
+            sort -n | tail -n 1)
+      
+          # Save the artifact number to the environment file
+          echo "LATEST_ARTIFACT_NUMBER=${LATEST_ARTIFACT_NUMBER}" >> $GITHUB_ENV
           
           curl \
               -H "Accept: application/vnd.github+json" \
@@ -193,7 +196,7 @@ jobs:
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
-      - uses: chaosaffe/split-tests@v1-alpha.1
+      - uses: scruplelesswizard/split-tests@v1-alpha.1
         id: split-tests
         name: Split tests
         with:
@@ -224,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: List Artifacts
         id: list-artifacts
@@ -273,7 +276,7 @@ jobs:
     # 6. push the docker image to the GitHub Container Registry
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
       - uses: actions/download-artifact@v4.1.8
         with:
           name: jar-artifact
@@ -290,7 +293,7 @@ jobs:
       
       - name: Build and push Docker image
         id: build_image
-        uses: docker/build-push-action@v4 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
+        uses: docker/build-push-action@v6.9.0 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry

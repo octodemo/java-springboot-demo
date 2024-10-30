@@ -38,7 +38,7 @@ jobs:
     environment: STAGE
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
       
       - name: Deploy to Kubernetes [STAGING ENVIRONMENT]
         run: |
@@ -67,7 +67,7 @@ jobs:
     needs: [staging-end2end-tests]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
       
       - name: 'Az CLI Login via OIDC'
         uses: azure/login@v1.4.6
@@ -78,13 +78,13 @@ jobs:
       
       # Use kubelogin to configure your kubeconfig for Azure auth
       - name: Set up kubelogin for non-interactive login
-        uses: azure/use-kubelogin@v1
+        uses: azure/use-kubelogin@v1.2
         with:
           kubelogin-version: 'v0.0.25'
 
       # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
       - name: Get K8s context
-        uses: azure/aks-set-context@v3
+        uses: azure/aks-set-context@v4.0.1
         with:
           resource-group: ${{ env.RESOURCE_GROUP }}
           cluster-name: ${{ env.CLUSTER_NAME }}
@@ -92,7 +92,7 @@ jobs:
           use-kubelogin: 'true'
       
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v4.2.0
         with:
           version: v3.12.2
 
