@@ -116,7 +116,7 @@ jobs:
         with:
           category: "/language:java"
           # category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
-      - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
+      - uses: actions/upload-artifact@v4.4.3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
         with:   
           name: jar-artifact # naming the artifact jar file/s path
           path: target/ # actual relative path to the artifact in the container - target/
