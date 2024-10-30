@@ -188,6 +188,23 @@ jobs:
 
           mkdir test_results
           unzip my_artifact.zip -d test_results 2> /dev/null || true
+      - name: Ensure junit-path exists and that all xml files are readable in path 'test_results/**/*xml' with this syntax
+        run: |
+          if [ ! -d "test_results" ]; then
+            echo "test_results directory does not exist"
+            exit 1
+          fi
+          if ! ls test_results/surefire-reports/*xml 1> /dev/null 2>&1; then
+            echo "No xml files found in test_results directory"
+            exit 1
+          fi
+          if ! ls -l test_results/surefire-reports/*xml 1> /dev/null 2>&1; then
+            echo "Not all xml files in test_results directory are readable"
+            exit 1
+          fi
+
+          echo "All xml files in test_results directory are readable"
+          ls -l test_results/surefire-reports/*xml
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3.19
