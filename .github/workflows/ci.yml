@@ -166,8 +166,9 @@ jobs:
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
       
-      - name: Install unzip
-        run: apt update && sudo apt install -y unzip
+      - name: action-zip
+        uses: montudor/action-zip@v1.0.0
+      
       
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - name: Download and unzip all test results artifacts
