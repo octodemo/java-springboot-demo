@@ -129,7 +129,7 @@ jobs:
       - build
       - runner-indexes
     container:
-      image: ghcr.io/tsviz/tsvi-spring-test:v1.0.0 # using the base maven:3.8.7-openjdk-18 image + jq + curl + nodejs 18
+      image: ghcr.io/tsviz/tsvi-spring-test:v2.0.0 # using the base maven:3.8.7-openjdk-18 image + jq + curl + nodejs 18
     services:
       # postgres service container
       postgres: # service name - postgres. This name is used to access the service container from the job container as the host name.
@@ -165,11 +165,7 @@ jobs:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
-      
-      - name: action-zip
-        uses: montudor/action-zip@v1.0.0
-      
-      
+
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - name: Download and unzip all test results artifacts
         run: |
