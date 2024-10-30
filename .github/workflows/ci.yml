@@ -65,12 +65,12 @@ jobs:
     # defining strategy for the job - matrix strategy for codeQL analysis
     strategy:
       fail-fast: false
-      matrix:
-        language: [ 'java' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+      # matrix:
+      #   language: [ 'java' ]
+      #   # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+      #   # Use only 'java' to analyze code written in Java, Kotlin or both
+      #   # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
+      #   # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
     
     # defining steps for the job as explained above 
     steps:
@@ -94,7 +94,8 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
+          languages: java
+          # languages: ${{ matrix.language }} # defining the language for the CodeQL analysis
           # debug: true # uncomment this line to enable debugging for CodeQL analysis step
         # If you wish to specify custom queries, you can do so here or in a config file.
         # By default, queries listed here will override any specified in a config file.
@@ -113,7 +114,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
+          category: "/language:java"
+          # category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
       - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
         with:   
           name: jar-artifact # naming the artifact jar file/s path
