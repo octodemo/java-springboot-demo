@@ -190,15 +190,19 @@ jobs:
 
             mkdir -p test_results
 
+            echo "Downloading artifacts for run ID: $LAST_SUCCESSFUL_RUN_ID"
+
             for ARTIFACT_ID in $ARTIFACT_IDS; do
               curl \
                 -H "Accept: application/vnd.github+json" \
                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
                 -L -o my_artifact.zip \
-                https://api.github.com/repos/${{ github.repository }}/actions/artifacts/"${ARTIFACT_ID}"/zip
+                "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${ARTIFACT_ID}/zip"
 
               unzip my_artifact.zip -d test_results 2> /dev/null || true
+              echo "Contents of test_results directory for artifact ID: $ARTIFACT_ID"
+              ls -l test_results
               rm my_artifact.zip
             done
 
