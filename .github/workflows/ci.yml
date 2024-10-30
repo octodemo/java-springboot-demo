@@ -260,7 +260,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v2
         with:
           name: jar-artifact
           path: target/
