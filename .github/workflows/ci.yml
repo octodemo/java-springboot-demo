@@ -165,6 +165,10 @@ jobs:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
+      
+      - name: Install unzip
+        run: sudo apt-get install -y unzip
+      
       # In this step, we are downloading the latest artifact from the build job and storing it in the container
       - name: Download and unzip all test results artifacts
         run: |
@@ -202,7 +206,7 @@ jobs:
 
               echo "Contents of my_artifact.zip for artifact ID: $ARTIFACT_ID"
               unzip -l my_artifact.zip
-              
+
               unzip my_artifact.zip -d test_results 2> /dev/null || true
               echo "Contents of test_results directory for artifact ID: $ARTIFACT_ID"
               ls -l test_results
