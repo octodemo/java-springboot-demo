@@ -200,6 +200,9 @@ jobs:
                 -L -o my_artifact.zip \
                 "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${ARTIFACT_ID}/zip"
 
+              echo "Contents of my_artifact.zip for artifact ID: $ARTIFACT_ID"
+              unzip -l my_artifact.zip
+              
               unzip my_artifact.zip -d test_results 2> /dev/null || true
               echo "Contents of test_results directory for artifact ID: $ARTIFACT_ID"
               ls -l test_results
