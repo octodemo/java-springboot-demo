@@ -220,7 +220,7 @@ jobs:
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
   
   publish-test-results:
-    needs: unit-parallel-tests
+    needs: [build, unit-parallel-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
