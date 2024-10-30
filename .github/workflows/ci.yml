@@ -215,7 +215,7 @@ jobs:
       
       - uses: actions/upload-artifact@v4.4.3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
         with:
-          name: Test Results
+          name: testresults-${{ github.run_id }}-split-${{ matrix.runner-index }} # naming the artifact with the test results
           path: ./target/surefire-reports # path to the test results
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
   
@@ -226,11 +226,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download test results
-        uses: actions/download-artifact@v4.1.8
-        with:
-          name: Test Results
-          path: test_results
+      - name: List Artifacts
+        id: list-artifacts
+        run: |
+          curl -s -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+               -H 'Accept: application/vnd.github.v3+json' \
+               https://api.github.com/repos/octodemo/java-springboot-demo/actions/runs/${{ github.run_id }}/artifacts > artifacts.json
+          cat artifacts.json
+
+      - name: Download Artifacts
+        run: |
+          mkdir -p test_results
+          for url in $(jq -r '.artifacts[] | select(.name | startswith("testresults-")) | .archive_download_url' artifacts.json); do
+              artifact_name=$(echo $url | awk -F/ '{print $NF}' | awk -F? '{print $1}')
+              curl -s -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} -L -o test_results/testresults.zip $url
+              unzip -o test_results/testresults.zip -d test_results
+              rm test_results/testresults.zip
+          done
 
       - name: Publish Test Results
         uses: dorny/test-reporter@v1.8.0
