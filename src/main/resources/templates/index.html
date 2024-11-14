@@ -3,35 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <style>
-        body {
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
-            padding: 0 15px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 50px;
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .clear {
-            color: #f44336;
-        }
-    </style>
     <script th:inline="javascript">
         /*<![CDATA[*/
         window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ 'default';
@@ -51,14 +22,23 @@
         <h1>Inventory Records</h1>
         <a href="/new" class="modern-button">Enter New Product</a>
         <a href="/export" class="modern-button">Export to CSV</a>
+        <form id="uploadForm" style="display: none;">
+            <input type="file" id="csvFile" name="file" accept=".csv">
+            <button type="submit" id="submitBtn">Submit</button>
+        </form>
+        <label for="csvFile" class="modern-button">Import from CSV</label>
+        <div id="errorMessage" style="color: red;"></div>
+        <script src="js/upload_csv.js"></script>
+        <script src="js/search.js"></script>
         <br><br>
         <div id="searchFeature">
-            <form action="/search" method="get">
-            <label for="search">Search for item:</label>
-            <input type="text" id="search" name="q" />
-            <button type="submit">Search</button>
+            <form id="searchForm" action="/search" method="get">
+                <label for="search">Search for item:</label>
+                <input type="text" id="search" name="q" />
+                <button type="submit">Search</button>
             </form>
         </div>
+        <div id="searchResults"></div>
         <br />
         <div>
             <a th:if="${currentPage > 0}" th:href="@{/?(page=${currentPage - 1})}">Previous</a>
@@ -67,7 +47,7 @@
         </div>
         <br />
         <form th:action="@{/logout}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
             <input type="submit" value="Logout" />
         </form>
         <br />

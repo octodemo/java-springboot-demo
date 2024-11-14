@@ -62,17 +62,18 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'java', 'javascript' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+      
+      #   # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+      #   # Use only 'java' to analyze code written in Java, Kotlin or both
+      #   # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
+      #   # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
     
     # defining steps for the job as explained above 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+        uses: actions/checkout@v4.2.2 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
-        uses: actions/cache@v3 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+        uses: actions/cache@v4.1.2 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
           path: ~/.m2/repository # path to the directory where maven packages are stored - /root/.m2 in the container
           key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
@@ -109,7 +110,9 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}" # defining the language for the CodeQL analysis
-      - uses: actions/upload-artifact@v3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
+      
+      - uses: actions/upload-artifact@v4.4.3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
+        if: matrix.language == 'java' # upload the artifact only for the java language
         with:   
           name: jar-artifact # naming the artifact jar file/s path
           path: target/ # actual relative path to the artifact in the container - target/
@@ -122,7 +125,7 @@ jobs:
       - build
       - runner-indexes
     container:
-      image: mrkostin/maven:3.6.0-alpine-git-curl-jq # ruinning the job in a container - mrkostin/maven:3.6.0-alpine-git-curl-jq
+      image: ghcr.io/tsviz/tsvi-spring-test:v2.0.0 # using the base maven:3.8.7-openjdk-18 image + jq + curl + nodejs 18
     services:
       # postgres service container
       postgres: # service name - postgres. This name is used to access the service container from the job container as the host name.
@@ -149,52 +152,94 @@ jobs:
         runner-index: ${{ fromjson(needs.runner-indexes.outputs.json) }} # using the runner-indexes job output to define the matrix strategy
     steps:
       - name: Checkout repository # checkout the repository
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v4.2.2
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
-        uses: actions/cache@v3 # using the actions/cache@v3 action to cache the maven packages
+        uses: actions/cache@v4.1.2 # defining the cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
           restore-keys: ${{ runner.os }}-junit- # key for restoring the cache if no exact match is found
-      # In this step, we are downloading the latest artifact from the build job and storing it in the container
-      - run: |
-          # Download the latest tests results artifact number from the GitHub API using jq to parse the JSON response
-          curl \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name == "Test Results") | .id' > artifacts_list.txt
 
-          LATEST_ARTIFACT_NUMBER=$(cut -d: -f 2 artifacts_list.txt | sort -n | tail -n 1)
-          
-          curl \
+      # In this step, we are downloading the latest artifact from the build job and storing it in the container
+      - name: Download and unzip all test results artifacts
+        run: |
+            # Fetch the last successful workflow run ID
+            LAST_SUCCESSFUL_RUN_ID=$(curl \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              -L -o my_artifact.zip \
-              https://api.github.com/repos/${{ github.repository }}/actions/artifacts/"${LATEST_ARTIFACT_NUMBER}"/zip
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?status=success&per_page=1" | \
+              jq -r '.workflow_runs[0].id')
 
-          mkdir test_results
-          unzip my_artifact.zip -d test_results 2> /dev/null || true
+            if [ -z "$LAST_SUCCESSFUL_RUN_ID" ]; then
+              echo "No successful runs found."
+              exit 1
+            fi
+            
+            ARTIFACT_IDS=$(curl \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${LAST_SUCCESSFUL_RUN_ID}/artifacts" | \
+              jq -r '.artifacts | sort_by(.created_at) | .[] | select(.name | startswith("testresults-")) | .id')
+
+            mkdir -p test_results
+
+            echo "Downloading artifacts for run ID: $LAST_SUCCESSFUL_RUN_ID"
+
+            for ARTIFACT_ID in $ARTIFACT_IDS; do
+              curl \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                -L -o my_artifact.zip \
+                "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${ARTIFACT_ID}/zip"
+
+              echo "Contents of my_artifact.zip for artifact ID: $ARTIFACT_ID"
+              unzip -l my_artifact.zip
+
+              unzip my_artifact.zip -d test_results 2> /dev/null || true
+              echo "Contents of test_results directory for artifact ID: $ARTIFACT_ID"
+              ls -l test_results
+              rm my_artifact.zip
+            done
+
+      - name: Ensure junit-path exists and that all xml files are readable in path 'test_results/**/*xml' with this syntax
+        run: |
+          if [ ! -d "test_results" ]; then
+            echo "test_results directory does not exist"
+            exit 1
+          fi
+          if ! ls test_results/*xml 1> /dev/null 2>&1; then
+            echo "No xml files found in test_results directory"
+            exit 1
+          fi
+          if ! ls -l test_results/*xml 1> /dev/null 2>&1; then
+            echo "Not all xml files in test_results directory are readable"
+            exit 1
+          fi
+
+          echo "All xml files in test_results directory are readable"
+          ls -l test_results/*xml
 
       - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        uses: mxschmitt/action-tmate@v3.19
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_debug_enabled }}
 
       # split-tests action - splits the tests into x number of groups 
       # based on the total number of github-hosted runners and junit previous test results by time and line count. 
       # Link to the action - https://github.com/marketplace/actions/split-tests
-      - uses: chaosaffe/split-tests@v1-alpha.1
+      - uses: scruplelesswizard/split-tests@4f1ca766cb93923ca216e02f1aefed20944e313f
         id: split-tests
         name: Split tests
         with:
           glob: src/test/**/**/**.java # glob pattern to match the test files
           split-total: ${{ env.total-runners }} # total number of github-hosted runners
           split-index: ${{ matrix.runner-index }} # current runner index
-          junit-path: test_results/*xml # path to the junit test results with wildcards to match all the files
-          line-count: true # split the tests based on the junit test results by line count
+          junit-path: test_results/**/*xml # path to the junit test results with wildcards to match all the files
+          # line-count: true # split the tests based on the junit test results by line count
       # run the tests in parallel looping through the test-suite output from the split-tests action
       - run: 'echo "This runner will execute the following tests: ${{ steps.split-tests.outputs.test-suite }}"'
       - run: |
@@ -206,11 +251,45 @@ jobs:
             mvn -Dtest=$(basename $file | sed -e "s/.java/,/" | tr -d '\r\n') -e test -Dspring.datasource.url=${{ secrets.LIQUIBASE_COMMAND_URL }} -Dspring.datasource.username=${{ secrets.LIQUIBASE_COMMAND_USERNAME }} -Dspring.datasource.password=${{ secrets.LIQUIBASE_COMMAND_PASSWORD }} -Dspring.liquibase.change-log=classpath:db/changelog/changelog_version-3.3.xml -Dserver.port=8086 -Dspring.redis.host=redis -Dspring.redis.port=6379 -Dspring.redis.mode=standalone
           done
       
-      - uses: actions/upload-artifact@v3 # upload the test results as an artifact
+      - uses: actions/upload-artifact@v4.4.3 # uploading the artifact to the GitHub Artifacts. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
         with:
-          name: Test Results
+          name: testresults-${{ github.run_id }}-split-${{ matrix.runner-index }} # naming the artifact with the test results
           path: ./target/surefire-reports # path to the test results
           retention-days: 90 # retention period for the artifact in days. Link to the documentation - https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#about-workflow-artifact-retention
+
+  
+  publish-test-results:
+    needs: [build, unit-parallel-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: List Artifacts
+        id: list-artifacts
+        run: |
+          curl -s -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+               -H 'Accept: application/vnd.github.v3+json' \
+               https://api.github.com/repos/octodemo/java-springboot-demo/actions/runs/${{ github.run_id }}/artifacts > artifacts.json
+          cat artifacts.json
+
+      - name: Download Artifacts
+        run: |
+          mkdir -p test_results
+          for url in $(jq -r '.artifacts[] | select(.name | startswith("testresults-")) | .archive_download_url' artifacts.json); do
+              artifact_name=$(echo $url | awk -F/ '{print $NF}' | awk -F? '{print $1}')
+              curl -s -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} -L -o test_results/testresults.zip $url
+              unzip -o test_results/testresults.zip -d test_results
+              rm test_results/testresults.zip
+          done
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1.8.0
+        if: success() || failure()
+        with:
+          reporter: java-junit
+          name: JUnit Test Results
+          path: test_results/*.xml
 
   build-and-publish-docker-image: # job to build the docker image and publish it to the GitHub Container Registry
     runs-on: ubuntu-latest # using the latest ubuntu runner
@@ -233,8 +312,8 @@ jobs:
     # 6. push the docker image to the GitHub Container Registry
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - uses: actions/download-artifact@v1
+        uses: actions/checkout@v4.2.2
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: jar-artifact
           path: target/
@@ -242,7 +321,7 @@ jobs:
       # build the docker image using the Dockerfile in the root of the repository 
       # and tag it with the current run number from the github action workflow run
       - name: Log in to the GH Container Registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # using the docker login action from the github marketplace - github.com/marketplace/actions/docker-login
+        uses: docker/login-action@v3.3.0 # using the docker login action from the github marketplace - github.com/marketplace/actions/docker-login
         with:
           registry: ${{ env.REGISTRY }} # using the registry environment variable
           username: ${{ github.actor }} # using the github.actor context
@@ -250,7 +329,7 @@ jobs:
       
       - name: Build and push Docker image
         id: build_image
-        uses: docker/build-push-action@v4 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
+        uses: docker/build-push-action@v6.9.0 # using the docker build and push action from the github marketplace - github.com/marketplace/actions/build-and-push-docker-images
         with: 
           context: . # using the current directory as the context
           push: true # push the docker image to the registry

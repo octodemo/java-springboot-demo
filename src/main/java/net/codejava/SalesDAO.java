@@ -95,4 +95,23 @@ public class SalesDAO {
 		List<Sale> listSale = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sale.class));
 		return listSale;
 	}
+
+	// save all sales in a list
+	public void saveAll(List<Sale> sales) {
+		if (sales == null) {
+			throw new IllegalArgumentException("List of sales cannot be null");
+		}
+
+		if (jdbcTemplate == null) {
+			throw new IllegalStateException("JdbcTemplate cannot be null");
+		}
+
+		SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate);
+		insertActor.withTableName("sales").usingColumns("serial_number", "item", "quantity", "amount", "date");
+
+		for (Sale sale : sales) {
+			BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
+			insertActor.execute(param);
+		}
+	}
 }
