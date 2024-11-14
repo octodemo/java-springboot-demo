@@ -89,7 +89,7 @@ public class SalesDAO {
 		return new PageImpl<>(sales, pageable, total);
 	}
 
-	// a method to returns a list of all sales in a jdbctemplate query to use as a csv output
+	// a method to returns a list of all sales in a jdbctemplate query to use as a csv output 
 	public List<Sale> listAll() {
 		String sql = "SELECT * FROM sales ORDER BY serial_number ASC";
 		List<Sale> listSale = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Sale.class));
