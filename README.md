@@ -187,3 +187,20 @@ graph TB
   style L fill:#f6c,stroke:#333,stroke-width:2px
   style M fill:#6fc,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
 ```
+
+## Test Suite
+
+The application now includes a comprehensive test suite to ensure the robustness and reliability of the codebase. The test suite is organized into separate files, each targeting specific components of the application. Below is an overview of the test files and their purposes:
+
+- `AppControllerTest.java`: Tests for the `AppController` class, covering various methods and their expected behaviors.
+- `SaleServiceTest.java`: Tests for the `SaleService` class, ensuring the correct functionality of service methods.
+- `SalesDAOTest.java`: Tests for the `SalesDAO` class, verifying data access operations.
+- `UserDetailsServiceImplTest.java`: Tests for the `UserDetailsServiceImpl` class, checking user details service methods.
+- `SecurityConfigTest.java`: Tests for the `SecurityConfig` class, validating security configuration.
+- `SessionConfigTest.java`: Tests for the `SessionConfig` class, ensuring session configuration correctness.
+- `SalesManagerTest.java`: Tests for the `SalesManager` class, covering sales management operations.
+- `UserRepositoryTest.java`: Tests for the `UserRepository` class, verifying user repository methods.
+- `SaleTest.java`: Tests for the `Sale` class, ensuring the correctness of sale-related operations.
+- `UserTest.java`: Tests for the `User` class, validating user-related operations.
+
+The test suite is integrated into the CI/CD pipeline, ensuring that all tests are executed as part of the build process. This helps in identifying and addressing issues early in the development cycle, leading to a more stable and reliable application.
