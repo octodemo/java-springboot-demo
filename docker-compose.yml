@@ -30,7 +30,7 @@ services:
   app:
     networks:
       - tsvi_network
-    build: 
+    build:
       context: .
       dockerfile: ./Dockerfile
     ports:
@@ -40,13 +40,14 @@ services:
       - database
       - redis
     restart: on-failure
-    environment: 
+    environment:
       - USER_NAME=postgres
       - DB_URL=jdbc:postgresql://database:5432/postgres
       - PASSWORD=postgres
       - CHANGELOG_VERSION=changelog_version-3.3.xml
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - SEARCH_FEATURE_FLAG=${SEARCH_FEATURE_FLAG:-true}
 
 volumes:
   postgresql-data:
