@@ -77,7 +77,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2 # cache maven packages step - caching maven packages to speed up the build process. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
-        uses: actions/cache@v4.1.2 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+        uses: actions/cache@v4.2.2 # defining cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
           path: ~/.m2/repository # path to the directory where maven packages are stored - /root/.m2 in the container
           key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
@@ -160,7 +160,7 @@ jobs:
       # caching the maven packages to speed up the build process. 
       # Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       - name: Cache Maven packages
-        uses: actions/cache@v4.1.2 # defining the cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+        uses: actions/cache@v4.2.2 # defining the cache key and restore keys for the cache step. Link to the documentation - https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
         with:
           path: /root/.m2 # path to cache
           key: ${{ runner.os }}-junit-${{ hashFiles('**/pom.xml') }} # key for restoring and saving the cache
