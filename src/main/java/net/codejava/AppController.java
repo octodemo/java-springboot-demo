@@ -168,12 +168,17 @@ public class AppController {
 	public String loginPost(HttpServletRequest request, Model model) {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		boolean rememberMe = "on".equals(request.getParameter("rememberMe"));
 
 		// Authenticate the user
 		Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
 		try {
 			auth = authenticationManager.authenticate(auth);
 			SecurityContextHolder.getContext().setAuthentication(auth);
+
+			if (rememberMe) {
+				// Logic for handling "Remember Me" can be added here if needed
+			}
 		} catch (BadCredentialsException e) {
 			model.addAttribute("error", "Invalid username or password.");
 			return "login";

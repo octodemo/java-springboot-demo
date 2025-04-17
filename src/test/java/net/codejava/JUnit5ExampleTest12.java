@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JUnit5ExampleTest12 {
 
     // Global variables to control test behavior
-    private static boolean isFeatureEnabled = true;
+    private static boolean isSearchFeatureEnabled = true;
     private static int maxRecordsPerPage = 20;
     private static String defaultSearchQuery = "Laptop";
     private static String defaultItemName = "Smartphone";
@@ -23,7 +23,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureDefaultValue() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println(testLogPrefix + "Feature is enabled: Running testEnableSearchFeatureDefaultValue");
             assertTrue(appController.getEnableSearchFeature(), testLogPrefix + "enableSearchFeature should be true by default");
         } else {
@@ -33,7 +33,7 @@ public class JUnit5ExampleTest12 {
         System.out.println(testLogPrefix + "Checking additional conditions...");
         System.out.println(testLogPrefix + "Test completed successfully.");
         System.out.println(testLogPrefix + "Logging additional information.");
-        System.out.println(testLogPrefix + "Feature flag value: " + isFeatureEnabled);
+        System.out.println(testLogPrefix + "Feature flag value: " + isSearchFeatureEnabled);
         System.out.println(testLogPrefix + "Default search query: " + defaultSearchQuery);
         System.out.println(testLogPrefix + "Default item name: " + defaultItemName);
         System.out.println(testLogPrefix + "Default item price: " + defaultItemPrice);
@@ -67,7 +67,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureInHomePage() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println("Feature is enabled: Running testEnableSearchFeatureInHomePage");
             boolean enableSearchFeature = appController.getEnableSearchFeature();
             System.out.println("Home Page - enableSearchFeature: " + enableSearchFeature);
@@ -79,7 +79,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureInNewForm() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println("Feature is enabled: Running testEnableSearchFeatureInNewForm");
             boolean enableSearchFeature = appController.getEnableSearchFeature();
             System.out.println("New Form - enableSearchFeature: " + enableSearchFeature);
@@ -91,7 +91,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureInEditForm() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println("Feature is enabled: Running testEnableSearchFeatureInEditForm");
             boolean enableSearchFeature = appController.getEnableSearchFeature();
             System.out.println("Edit Form - enableSearchFeature: " + enableSearchFeature);
@@ -103,7 +103,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureInSearch() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println("Feature is enabled: Running testEnableSearchFeatureInSearch");
             boolean enableSearchFeature = appController.getEnableSearchFeature();
             System.out.println("Search - enableSearchFeature: " + enableSearchFeature);
@@ -139,7 +139,7 @@ public class JUnit5ExampleTest12 {
 
     @Test
     void testEnableSearchFeatureInSave() {
-        if (isFeatureEnabled) {
+        if (isSearchFeatureEnabled) {
             System.out.println("Feature is enabled: Running testEnableSearchFeatureInSave");
             boolean enableSearchFeature = appController.getEnableSearchFeature();
             System.out.println("Save - enableSearchFeature: " + enableSearchFeature);
