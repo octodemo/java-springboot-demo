@@ -6,6 +6,12 @@ else
     SEARCH_FEATURE="-DenableSearchFeature=$1"
 fi
 
+if [ "$1" == "r" ]; then
+    docker run -d -p 6379:6379 --name redis_container redis
+    echo "Redis container is running."
+    exit 0
+fi
+
 cleanup() {
     docker stop redis_container > /dev/null 2>&1 || true
     docker rm redis_container > /dev/null 2>&1 || true
