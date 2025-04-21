@@ -165,26 +165,29 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String loginPost(HttpServletRequest request, Model model) {
+	public String loginPost(HttpServletRequest request, HttpServletResponse response, Model model) {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		boolean rememberMe = "on".equals(request.getParameter("rememberMe"));
 
-		// Authenticate the user
 		Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
 		try {
 			auth = authenticationManager.authenticate(auth);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 
 			if (rememberMe) {
-				// Logic for handling "Remember Me" can be added here if needed
+				 // Set a cookie for "Remember Me"
+				javax.servlet.http.Cookie rememberMeCookie = new javax.servlet.http.Cookie("rememberMe", username);
+				rememberMeCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+				rememberMeCookie.setHttpOnly(true);
+				rememberMeCookie.setPath("/");
+				response.addCookie(rememberMeCookie);
 			}
 		} catch (BadCredentialsException e) {
 			model.addAttribute("error", "Invalid username or password.");
 			return "login";
 		}
 
-		// User is authenticated, redirect to landing page
 		return "redirect:/";
 	}
 	
