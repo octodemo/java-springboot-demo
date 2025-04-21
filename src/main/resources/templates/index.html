@@ -21,7 +21,6 @@
     <div align="center" th:if="${listSale}">
         <h1>Inventory Records</h1>
         <a href="/new" class="modern-button">Enter New Product</a>
-        <a href="/export" class="modern-button">Export to CSV</a>
         <form id="uploadForm" style="display: none;">
             <input type="file" id="csvFile" name="file" accept=".csv">
             <button type="submit" id="submitBtn">Submit</button>
@@ -47,7 +46,6 @@
         </div>
         <br />
         <form th:action="@{/logout}" method="post">
-            <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
             <input type="submit" value="Logout" />
         </form>
         <br />

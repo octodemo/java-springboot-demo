@@ -200,25 +200,6 @@ public class AppController {
 		return handleSale(sale, session, redirectAttributes, () -> dao.clearRecord(serialNumber));
 	}
 
-	@RequestMapping("/export")
-	public void exportToCSV(HttpServletResponse response) throws IOException {
-		response.setContentType("text/csv");
-		response.setHeader("Content-Disposition", "attachment; filename=sales.csv");
-		List<Sale> listSale = dao.listAll();
-		// create a writer
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
-		// write header line
-		writer.write("Serial Number, Date, Amount, Item Name");
-		writer.newLine();
-		// write data lines
-		for (Sale sale : listSale) {
-			String line = String.format("%s, %s, %s, %s", sale.getSerialNumber(), sale.getDate(), sale.getAmount(), sale.getItem());
-			writer.write(line);
-			writer.newLine();
-		}
-		writer.flush();
-	}
-
 	@PostMapping("/import")
 	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 		try {
