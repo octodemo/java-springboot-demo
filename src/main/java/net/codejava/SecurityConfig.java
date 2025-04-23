@@ -44,7 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .logout()
                 .logoutUrl("/logout") // This is the URL to send the user to once they have logged out
                 .invalidateHttpSession(true)
-                .permitAll();
+                .permitAll()
+                .and()
+            .rememberMe()
+                .key("uniqueAndSecret")
+                .tokenValiditySeconds(7 * 24 * 60 * 60); // 7 days
     }
 
     @Bean

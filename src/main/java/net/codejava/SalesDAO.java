@@ -30,6 +30,11 @@ public class SalesDAO {
 		return listSale;
 	}
 
+	public List<Sale> listAll() {
+		String sql = "SELECT * FROM sales ORDER BY serial_number ASC";
+		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Sale.class));
+	}
+
 	public void save(Sale sale) throws DuplicateKeyException {
 		try {
 			System.out.println(sale); // log the Sale object
