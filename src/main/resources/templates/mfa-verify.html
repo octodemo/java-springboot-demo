@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <title>Verify Multi-Factor Authentication</title>
+    <style>
+        .mfa-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .mfa-title {
+            margin-bottom: 20px;
+        }
+        .mfa-instructions {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .verify-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .verify-button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mfa-container">
+        <h1 class="mfa-title">Two-Factor Authentication</h1>
+        
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+        
+        <div class="mfa-instructions">
+            <p>Please enter the 6-digit verification code from your authenticator app to complete the login.</p>
+        </div>
+        
+        <form method="post" action="/mfa/verify">
+            <input type="text" name="code" placeholder="Enter 6-digit code" class="input-field" required autofocus />
+            <button type="submit" class="verify-button">Verify</button>
+        </form>
+    </div>
+</body>
+</html>

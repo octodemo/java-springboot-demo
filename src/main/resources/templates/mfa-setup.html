@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <title>Setup Multi-Factor Authentication</title>
+    <style>
+        .mfa-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .manual-entry {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: center;
+        }
+        .instructions {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 30px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mfa-container">
+        <h1>Setup Multi-Factor Authentication</h1>
+        
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+        
+        <div class="instructions">
+            <p>To secure your account, please set up multi-factor authentication by following these steps:</p>
+            <ol>
+                <li>Download and install an authenticator app like Google Authenticator, Microsoft Authenticator, or Authy on your mobile device.</li>
+                <li>Open the app and scan the QR code below, or enter the secret key manually.</li>
+                <li>Enter the 6-digit code displayed in your authenticator app to verify and complete the setup.</li>
+            </ol>
+        </div>
+        
+        <div class="qr-code">
+            <img th:src="${qrCodeImage}" alt="QR Code"/>
+        </div>
+        
+        <div class="manual-entry">
+            <p>If you can't scan the QR code, enter this key manually:</p>
+            <strong th:text="${secret}"></strong>
+        </div>
+        
+        <form method="post" action="/mfa/setup">
+            <div class="input-group">
+                <label for="code">Verification Code:</label>
+                <input type="text" id="code" name="code" placeholder="Enter 6-digit code" required/>
+            </div>
+            <button type="submit">Verify and Enable</button>
+        </form>
+    </div>
+</body>
+</html>

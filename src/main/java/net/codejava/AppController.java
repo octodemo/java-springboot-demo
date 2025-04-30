@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,6 @@ import java.time.LocalDate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.PageRequest; // Add this import statement
 import org.springframework.data.domain.Page; // Add this import statement
@@ -65,6 +65,9 @@ public class AppController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+    private UserRepository userRepository;
+	
 	// private static final Logger logger = Logger.getLogger(AppController.class.getName());
 
 	@Value("${enableSearchFeature}")
@@ -72,6 +75,18 @@ public class AppController {
 
 	public boolean getEnableSearchFeature() {
 		return this.enableSearchFeature;
+	}
+	
+	// Add MFA status to all pages that need it
+	private void addUserInfoToModel(Model model, Principal principal) {
+		if (principal != null) {
+			String username = principal.getName();
+			User user = userRepository.findByUsername(username);
+			if (user != null) {
+				model.addAttribute("mfaEnabled", user.isMfaEnabled());
+				model.addAttribute("username", username);
+			}
+		}
 	}
 	
 	private String handleSale(Sale sale, HttpSession session, RedirectAttributes redirectAttributes, Runnable action) {
@@ -89,7 +104,7 @@ public class AppController {
 	}
 	
 	@RequestMapping("/")
-	public String viewHomePage(Model model , Principal principal, @RequestParam(defaultValue = "0") int page, HttpSession session) {
+	public String viewHomePage(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, HttpSession session) {
 		String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
 		if (lastSearchQuery != null && !lastSearchQuery.isEmpty()) {
 			session.setAttribute("lastSearchQuery", null); // set lastSearchQuery to null
@@ -103,37 +118,67 @@ public class AppController {
 		model.addAttribute("listSale", salePage.getContent());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", salePage.getTotalPages());
+		
+		// Add user info including MFA status
+		addUserInfoToModel(model, principal);
+		
 		return "index";
 	}
 
 	@RequestMapping("/new")
-	public ModelAndView showNewForm() {
+	public ModelAndView showNewForm(Principal principal) {
 		ModelAndView mav = new ModelAndView("new_form");
 		Sale sale = new Sale();
 		mav.addObject("sale", sale);
 		mav.addObject("currentDate", LocalDate.now());
 		mav.addObject("enableSearchFeature", enableSearchFeature);
+		
+		// Add user info including MFA status
+		if (principal != null) {
+			String username = principal.getName();
+			User user = userRepository.findByUsername(username);
+			if (user != null) {
+				mav.addObject("mfaEnabled", user.isMfaEnabled());
+				mav.addObject("username", username);
+			}
+		}
+		
 		return mav;
 	}
 
 	@RequestMapping("/edit/{serialNumber}")
-	public ModelAndView showEditForm(@PathVariable(name = "serialNumber") String serialNumber) {
+	public ModelAndView showEditForm(@PathVariable(name = "serialNumber") String serialNumber, Principal principal) {
 		ModelAndView mav = new ModelAndView("edit_form");
 		Sale sale = dao.get(serialNumber);
 		sale.setEditing(true);
 		mav.addObject("sale", sale);
 		mav.addObject("enableSearchFeature", enableSearchFeature);
+		
+		// Add user info including MFA status
+		if (principal != null) {
+			String username = principal.getName();
+			User user = userRepository.findByUsername(username);
+			if (user != null) {
+				mav.addObject("mfaEnabled", user.isMfaEnabled());
+				mav.addObject("username", username);
+			}
+		}
+		
 		return mav;
 	}
 
 	@RequestMapping("/search")
-	public String search(@ModelAttribute("q") String query, Model model, HttpSession session) {
+	public String search(@ModelAttribute("q") String query, Model model, HttpSession session, Principal principal) {
 		List<Sale> listSale = dao.search(query);
 		model.addAttribute("listSale", listSale);
 
 		boolean enableSearchFeature = true;
 		model.addAttribute("enableSearchFeature", enableSearchFeature);
 		session.setAttribute("lastSearchQuery", query); // save the last search query in the session
+		
+		// Add user info including MFA status
+		addUserInfoToModel(model, principal);
+		
 		return "search";
 	}
 	

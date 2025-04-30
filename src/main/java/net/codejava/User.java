@@ -15,6 +15,10 @@ public class User {
 
     private String username;
     private String password;
+    
+    // MFA related fields
+    private String mfaSecret;
+    private boolean mfaEnabled = false;
 
     // getters and setters methods
     // getter for id
@@ -45,5 +49,22 @@ public class User {
     // setter for password{
     public void setPassword(String password){
         this.password = password;
+    }
+    
+    // MFA getters and setters
+    public String getMfaSecret() {
+        return mfaSecret;
+    }
+    
+    public void setMfaSecret(String mfaSecret) {
+        this.mfaSecret = mfaSecret;
+    }
+    
+    public boolean isMfaEnabled() {
+        return mfaEnabled;
+    }
+    
+    public void setMfaEnabled(boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
     }
 }
