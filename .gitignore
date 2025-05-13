@@ -5,3 +5,4 @@ nohup.out
 split_tests.sh
 *.db
 test_deployment.sh
+.env
