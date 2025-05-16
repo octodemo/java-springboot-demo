@@ -13,9 +13,9 @@ cleanup() {
 }
 
 # Trap the EXIT signal to perform cleanup
-trap cleanup EXIT
+# trap cleanup EXIT
 
 set -e # Exit immediately if a command exits with a non-zero status.
 mvn clean package -Dmaven.test.skip=true
-docker run -d -p 6379:6379 --name redis_container redis
+docker run -d -p 6379:6379 --name redis_container redis || true
 java $SEARCH_FEATURE -jar target/salesmanager-*-SNAPSHOT.jar --spring.redis.host=localhost --spring.redis.port=6379 --spring.redis.mode=standalone --server.port=8086 --spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
