@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Sales Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    
+    <!-- Environment-specific CSS Variables -->
+    <style th:if="${enableSearchFeature == true}">
+        :root {
+            /* GREEN ENVIRONMENT - Feature Release */
+            --primary-color-1: #10b981; /* Green */
+            --primary-color-2: #065f46; /* Dark Green */
+            --gradient-1: #10b981;
+            --gradient-2: #059669;
+            --accent-color: #34d399;
+            --environment-bg: linear-gradient(120deg, #d1fae5 0%, #a7f3d0 100%);
+            --container-bg: rgba(255,255,255,0.95);
+            --environment-name: 'GREEN';
+            --environment-subtitle: 'Feature Environment';
+            --env-badge-bg: #10b981;
+            --env-badge-color: #ffffff;
+        }
+    </style>
+    
+    <style th:if="${enableSearchFeature == false}">
+        :root {
+            /* BLUE ENVIRONMENT - Stable Release */
+            --primary-color-1: #3b82f6; /* Blue */
+            --primary-color-2: #1e40af; /* Dark Blue */
+            --gradient-1: #3b82f6;
+            --gradient-2: #2563eb;
+            --accent-color: #60a5fa;
+            --environment-bg: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%);
+            --container-bg: rgba(255,255,255,0.95);
+            --environment-name: 'BLUE';
+            --environment-subtitle: 'Stable Environment';
+            --env-badge-bg: #3b82f6;
+            --env-badge-color: #ffffff;
+        }
+    </style>
+    
+    <!-- Common Styles -->
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Fira Code', Arial, sans-serif;
+            background: var(--environment-bg);
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        
+        /* Environment Badge */
+        .environment-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--env-badge-bg);
+            color: var(--env-badge-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .environment-badge::before {
+            content: var(--environment-name);
+        }
+        
+        .environment-badge::after {
+            content: var(--environment-subtitle);
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+        
+        .modern-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(44,62,80,0.12);
+            padding: 40px 32px;
+            position: relative;
+            border: 2px solid var(--primary-color-1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color-2);
+            margin-bottom: 28px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .modern-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, var(--gradient-1) 0%, var(--gradient-2) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 26px;
+            margin: 8px 6px;
+            font-size: 1.08rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        
+        .modern-button:hover {
+            background: linear-gradient(90deg, var(--gradient-2) 0%, var(--gradient-1) 100%);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+            transform: translateY(-1px);
+        }
+        
+        .modern-button:active {
+            transform: translateY(0);
+        }
+        
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.08);
+            margin: 24px 0;
+        }
+        
+        .modern-table th {
+            background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 100%);
+            color: #fff;
+            padding: 18px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .modern-table td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        .modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(44,62,80,0.12);
+            padding: 40px 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #22223b;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Environment Badge -->
+    <div class="environment-badge">
+        <i class="fas fa-server" th:if="${enableSearchFeature == true}"></i>
+        <i class="fas fa-shield-alt" th:if="${enableSearchFeature == false}"></i>
+    </div>
+    
+    <div class="modern-container">
+        <div th:replace="${content}"></div>
+    </div>
+</body>
+</html>

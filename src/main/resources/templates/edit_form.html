@@ -1,74 +1,57 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::content})}">
 <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
     <title>Edit Sale</title>
-    <style>
-        body {
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
-            padding: 0 15px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 50px;
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.15);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .clear {
-            color: #f44336;
-        }
-    </style>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ false;
-        /*]]>*/
-    </script>
-    <script src="/js/styles.js"></script>
 </head>
 <body>
-    <h1>Edit Record</h1>
-    <div align="center">
-        <button onclick="window.location.href='/';">Go back to inventory table</button>
-        <form action="#" th:action="@{/update}" th:object="${sale}" method="post">
-            <div align="center">
-            <table style="width: 35%" border="1" cellpadding="10">
-                <tr>
-                    <td>Serial Number:</td>
-                    <td><input type="text" th:field="*{serialNumber}" readonly="readonly"/></td>
-                </tr>            
-                <tr>
-                    <td>Item Name:</td>
-                    <td><input type="text" th:field="*{item}" th:value="${sale != null ? sale.item : ''}" required minlength="3" maxlength="50" title="Item name must be between 2 and 50 characters long." /></td>
-                </tr>
-                <tr>
-                    <td>Quantity:</td>
-                    <td><input type="text" th:field="*{quantity}" th:value="${sale != null ? sale.quantity : ''}" pattern="[0-9]*" title="Please enter an integer" required /></td>
-                </tr>
-                <tr>
-                    <td>Amount (USD):</td>
-                    <td><input type="text" th:field="*{amount}" th:value="${sale != null ? sale.amount : ''}" pattern="^([1-9][0-9]{0,5}|500000)(\.[0-9]{1,2})?$" title="Please enter an amount up to 500,000, including up to two decimal places" /></td>
-                </tr>                          
-                <tr>
-                    <td colspan="2"><button type="submit">Save</button> </td>
-                </tr>
-            </table>
-        </form>
+    <div th:fragment="content">
+        <h1><i class="fas fa-edit"></i> Edit Record</h1>
+        
+        <div class="form-container">
+            <form th:action="@{/update}" th:object="${sale}" method="post">
+                <div class="form-group">
+                    <label for="serialNumber">Serial Number:</label>
+                    <input type="text" id="serialNumber" th:field="*{serialNumber}" readonly="readonly" 
+                           style="background-color: #f5f5f5; cursor: not-allowed;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="item">Item Name:</label>
+                    <input type="text" id="item" th:field="*{item}" 
+                           th:value="${sale != null ? sale.item : ''}" 
+                           required minlength="3" maxlength="50" 
+                           title="Item name must be between 3 and 50 characters long.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="text" id="quantity" th:field="*{quantity}" 
+                           th:value="${sale != null ? sale.quantity : ''}" 
+                           pattern="[0-9]*" 
+                           title="Please enter an integer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Amount (USD):</label>
+                    <input type="text" id="amount" th:field="*{amount}" 
+                           th:value="${sale != null ? sale.amount : ''}" 
+                           pattern="^([1-9][0-9]{0,5}|500000)(\.[0-9]{1,2})?$" 
+                           title="Please enter an amount up to 500,000, including up to two decimal places">
+                </div>
+                
+                <div class="actions">
+                    <a href="/" class="modern-button">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                    <button type="submit" class="modern-button">
+                        <i class="fas fa-save"></i>
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -1,233 +1,132 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <style>
-        body {
-            font-family: 'Inter', 'Segoe UI', 'Fira Code', Arial, sans-serif;
-            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-            margin: 0;
-            padding: 0;
-        }
-        .modern-container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: rgba(255,255,255,0.95);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(44,62,80,0.12);
-            padding: 40px 32px;
-            position: relative;
-        }
-        h1 {
-            font-size: 2.5rem;
-            color: #22223b;
-            margin-bottom: 28px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-        .modern-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 26px;
-            margin: 8px 6px;
-            font-size: 1.08rem;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-            box-shadow: 0 2px 12px rgba(67,206,162,0.10);
-        }
-        .modern-button:hover {
-            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
-            box-shadow: 0 6px 24px rgba(67,206,162,0.18);
-            transform: translateY(-2px) scale(1.04);
-        }
-        .main-table {
-            overflow-x: auto;
-            margin-top: 28px;
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: #f7fafc;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(44,62,80,0.06);
-            overflow: hidden;
-        }
-        th, td {
-            padding: 16px 18px;
-            text-align: left;
-        }
-        th {
-            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-            color: #fff;
-            font-weight: 700;
-            border: none;
-        }
-        tr {
-            transition: background 0.2s;
-        }
-        tr:nth-child(even) {
-            background: #e9f5ff;
-        }
-        tr:hover {
-            background: #d1e7f7;
-        }
-        .actions .button {
-            margin-right: 8px;
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 1rem;
-            border: none;
-            color: #fff;
-            background: #43cea2;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .actions .button:hover {
-            background: #185a9d;
-            transform: scale(1.05);
-        }
-        .actions .button[style*="color: red"] {
-            background: #e53e3e;
-            color: #fff !important;
-            font-weight: bold;
-        }
-        .actions .button[style*="color: #ff7f7f"] {
-            background: #f6ad55;
-            color: #fff !important;
-            font-weight: bold;
-        }
-        #searchFeature {
-            margin: 32px 0;
-            display: flex;
-            justify-content: center;
-        }
-        #searchForm {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            background: #fff;
-            border-radius: 32px;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-            padding: 10px 24px;
-        }
-        #searchForm label {
-            font-weight: 600;
-            color: #185a9d;
-        }
-        #searchForm input[type="text"] {
-            flex: 1;
-            padding: 10px 16px;
-            border-radius: 24px;
-            border: 1px solid #43cea2;
-            font-size: 1rem;
-            background: #f7fafc;
-            transition: border 0.2s;
-        }
-        #searchForm input[type="text"]:focus {
-            border: 1.5px solid #185a9d;
-            outline: none;
-        }
-        .fab {
-            position: fixed;
-            right: 32px;
-            bottom: 32px;
-            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-            color: #fff;
-            border-radius: 50%;
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 24px rgba(44,62,80,0.18);
-            cursor: pointer;
-            z-index: 100;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .fab:hover {
-            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
-            transform: scale(1.08);
-        }
-        @media (max-width: 600px) {
-            .modern-container {
-                padding: 12px 4px;
+    <title>Sales Manager</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page-specific styles -->
+        <style>
+            .button {
+                padding: 8px 16px;
+                margin: 4px 8px 4px 0;
+                background: #22223b;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 0.9rem;
+                font-weight: 500;
+                transition: background 0.2s;
             }
-            table, th, td {
-                font-size: 0.92rem;
+            .button:hover {
+                background: #333;
             }
-            #searchForm {
-                flex-direction: column;
-                gap: 8px;
-                padding: 10px 8px;
+            #searchFeature {
+                margin: 22px 0;
+                padding: 24px;
+                background: rgba(255,255,255,0.8);
+                border-radius: 16px;
+                box-shadow: 0 4px 16px rgba(44,62,80,0.06);
+            }
+            #searchFeature label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #22223b;
+            }
+            #searchFeature input[type="text"] {
+                width: 100%;
+                padding: 12px 16px;
+                margin: 8px 0 16px;
+                border: 2px solid #e1e5e9;
+                border-radius: 12px;
+                font-size: 1rem;
+                transition: border-color 0.2s;
+                box-sizing: border-box;
+            }
+            #searchFeature input[type="text"]:focus {
+                outline: none;
+                border-color: var(--accent-color);
             }
             .fab {
-                right: 12px;
-                bottom: 12px;
-                width: 48px;
-                height: 48px;
-                font-size: 1.4rem;
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 62px;
+                height: 62px;
+                background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+                z-index: 1000;
             }
-        }
-    </style>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        window.enableSearchFeature = /*[[${enableSearchFeature}]]*/ 'default';
-        /*]]>*/
-    </script>
-    <script>
-        window.onload = function() {
-            if (!window.enableSearchFeature) {
-                document.getElementById('searchFeature').style.display = 'none';
+            .fab:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             }
-        };
-    </script>
-    <script src="js/styles.js"></script>
-</head>
-</body>
-    <div class="modern-container" th:if="${listSale}">
+            .fab i {
+                font-size: 1.6rem;
+                color: #fff;
+            }
+            @media (max-width: 768px) {
+                .fab {
+                    bottom: 20px;
+                    right: 20px;
+                    width: 56px;
+                    height: 56px;
+                }
+                .fab i {
+                    font-size: 1.4rem;
+                }
+            }
+        </style>
+
         <h1><i class="fas fa-boxes"></i> Inventory Records</h1>
+        
         <div style="margin-bottom: 22px; display: flex; gap: 12px; flex-wrap: wrap;">
             <a href="/new" class="modern-button"><i class="fas fa-plus"></i> Enter New Product</a>
             <a href="/export" class="modern-button"><i class="fas fa-file-export"></i> Export to CSV</a>
             <label for="csvFile" class="modern-button"><i class="fas fa-file-import"></i> Import from CSV</label>
         </div>
+        
         <form id="uploadForm" style="display: none;">
             <input type="file" id="csvFile" name="file" accept=".csv">
             <button type="submit" id="submitBtn" class="modern-button"><i class="fas fa-upload"></i> Submit</button>
         </form>
+        
         <div id="errorMessage" style="color: #e53e3e; font-weight: 500;"></div>
         <script src="js/upload_csv.js"></script>
         <script src="js/search.js"></script>
-        <div id="searchFeature">
+        
+        <!-- Search Feature - Only show in GREEN environment -->
+        <div id="searchFeature" th:if="${enableSearchFeature == true}">
             <form id="searchForm" action="/search" method="get">
                 <label for="search">Search for item:</label>
                 <input type="text" id="search" name="q" />
                 <button type="submit" class="modern-button"><i class="fas fa-search"></i> Search</button>
             </form>
         </div>
+        
         <div id="searchResults"></div>
+        
         <div style="margin: 22px 0; display: flex; justify-content: center; align-items: center; gap: 22px;">
             <a th:if="${currentPage > 0}" th:href="@{/?(page=${currentPage - 1})}" class="modern-button" style="background: #43cea2;"><i class="fas fa-arrow-left"></i> Previous</a>
             <span style="font-weight: 600; color: #185a9d;" th:text="${currentPage + 1}"></span> / <span style="font-weight: 600; color: #185a9d;" th:text="${totalPages}"></span>
             <a th:if="${currentPage < totalPages - 1}" th:href="@{/?(page=${currentPage + 1})}" class="modern-button" style="background: #43cea2;">Next <i class="fas fa-arrow-right"></i></a>
         </div>
+        
         <form th:action="@{/logout}" method="post" style="margin-bottom: 22px;">
             <input type="submit" value="Logout" class="modern-button" style="background: #e53e3e;" />
         </form>
+        
         <div class="main-table">
-            <table>
+            <table class="modern-table">
                 <thead>
                     <tr>
                         <th><i class="fas fa-hashtag"></i> Serial Number</th>
@@ -252,6 +151,7 @@
                 </tbody>
             </table>
         </div>
+        
         <div class="fab" title="Add New Product" onclick="window.location.href='/new'">
             <i class="fas fa-plus"></i>
         </div>

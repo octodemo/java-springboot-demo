@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Navigation Fragment -->
+<div th:fragment="navigation">
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <a href="/" class="modern-button">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="/new" class="modern-button">
+                <i class="fas fa-plus"></i>
+                Add New Sale
+            </a>
+            <a href="/search" class="modern-button">
+                <i class="fas fa-search"></i>
+                Search
+            </a>
+        </div>
+    </nav>
+</div>
+
+<!-- Action Buttons Fragment -->
+<div th:fragment="action-buttons">
+    <div class="actions">
+        <a href="/" class="modern-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to List
+        </a>
+        <button type="submit" class="modern-button">
+            <i class="fas fa-save"></i>
+            Save
+        </button>
+    </div>
+</div>
+
+<!-- Table Header Fragment for Sales -->
+<thead th:fragment="sales-table-header">
+    <tr>
+        <th>ID</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+
+<!-- Empty State Fragment -->
+<div th:fragment="empty-state">
+    <div class="empty-state">
+        <i class="fas fa-inbox fa-3x" style="color: #ccc; margin-bottom: 16px;"></i>
+        <h3>No items found</h3>
+        <p>Get started by adding your first sale record.</p>
+        <a href="/new" class="modern-button">
+            <i class="fas fa-plus"></i>
+            Add New Sale
+        </a>
+    </div>
+</div>
+
+<style>
+    .main-navigation {
+        margin-bottom: 32px;
+        padding: 24px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(44,62,80,0.06);
+    }
+    
+    .nav-container {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+        color: #666;
+    }
+    
+    .empty-state h3 {
+        margin: 16px 0 8px;
+        color: #22223b;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+        }
+        
+        .actions {
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .modern-container {
+            margin: 20px;
+            padding: 24px 20px;
+        }
+    }
+</style>
+
+</html>
