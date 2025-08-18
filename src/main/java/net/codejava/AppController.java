@@ -66,7 +66,7 @@ public class AppController {
 	
 	// private static final Logger logger = Logger.getLogger(AppController.class.getName());
 
-	@Value("${enableSearchFeature}")
+	@Value("${enableSearchFeature:true}")
     private boolean enableSearchFeature;
 
 	public boolean getEnableSearchFeature() {
@@ -109,6 +109,7 @@ public class AppController {
 	public ModelAndView showNewForm() {
 		ModelAndView mav = new ModelAndView("new_form");
 		Sale sale = new Sale();
+		sale.setEditing(false); // Initialize isEditing field for new records
 		mav.addObject("sale", sale);
 		mav.addObject("currentDate", LocalDate.now());
 		mav.addObject("enableSearchFeature", enableSearchFeature);
@@ -257,6 +258,7 @@ public class AppController {
 
 				sale.setAmount((float) Double.parseDouble(fields[2].trim()));
 				sale.setQuantity(Integer.parseInt(fields[3].trim()));
+				sale.setEditing(false); // Initialize isEditing field
 				sales.add(sale);
 			}
 

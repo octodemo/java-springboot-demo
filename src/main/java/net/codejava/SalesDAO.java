@@ -50,12 +50,12 @@ public class SalesDAO {
 				throw new DuplicateKeyException("A record with the same serial number already exists.");
 			}
 	
-			// If no such record exists, insert the new record
-			SimpleJdbcInsert insertActor = 
-				new SimpleJdbcInsert(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
+		// If no such record exists, insert the new record
+		SimpleJdbcInsert insertActor = 
+			new SimpleJdbcInsert(jdbcTemplate != null ? jdbcTemplate : new JdbcTemplate());
 			insertActor.withTableName("sales").usingColumns("serial_number", "item", "quantity", "amount", "date");
 			BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(sale);
-	
+
 			insertActor.execute(param);
 		} catch (DuplicateKeyException e) {
 			throw e; // rethrow the exception to be handled by the caller

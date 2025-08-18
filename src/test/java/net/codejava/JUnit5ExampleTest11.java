@@ -2,12 +2,19 @@ package net.codejava;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Calendar;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+    "enableSearchFeature=true",
+    "spring.datasource.url=jdbc:h2:mem:testdb;Mode=PostgreSQL",
+    "spring.jpa.hibernate.ddl-auto=create-drop"
+})
 public class JUnit5ExampleTest11 {
 
     @Autowired
@@ -28,6 +35,7 @@ public class JUnit5ExampleTest11 {
       String serialNumber = String.valueOf(System.currentTimeMillis());
 
       Sale sale = new Sale(serialNumber, "Laptop", 1, 1500.00f, sqlDate);
+      sale.setEditing(false); // Set the isEditing field to false for the test
       salesDAO.save(sale);
 
       // list all the records

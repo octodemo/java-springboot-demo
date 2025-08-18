@@ -3,6 +3,7 @@ package net.codejava;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -15,6 +16,8 @@ public class Sale {
 	private String item;
 	private int quantity;
 	private float amount;
+	
+	@Transient // UI state field - not persisted to database
 	private boolean isEditing;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
