@@ -1,15 +1,83 @@
-# Java Demo App
+# Java Spring Boot Demo App - Inventory Records Manager
+
+## Application UI Examples
+
+### Blue/Green Deployment with Feature Flags
+
+The application demonstrates both **Blue/Green deployment** strategies and **Feature Flag** implementations through a modern, responsive web interface.
+
+#### Green Environment (Feature Enabled)
+<details>
+<summary>🟢 Click to view Green Environment Screenshot</summary>
+
+![Green Environment - With Search Feature](docs/images/green_env.png)
+*Green-themed UI with search functionality enabled, export/import features, and enhanced user experience*
+
+**Features visible:**
+- Search functionality with search box and button
+- Export to CSV and Import from CSV buttons  
+- Green color scheme indicating feature environment
+- Full inventory management capabilities
+</details>
+
+#### Blue Environment (Stable)
+<details>
+<summary>🔵 Click to view Blue Environment Screenshot</summary>
+
+![Blue Environment - Stable Version](docs/images/blue_env.png) 
+*Blue-themed stable environment with core inventory management features*
+
+**Features visible:**
+- No search functionality (feature disabled)
+- Export/Import capabilities maintained
+- Blue color scheme indicating stable environment  
+- Core inventory operations available
+</details>
+
+## About This Application
+
+This **Inventory Records Manager** is a comprehensive Spring Boot web application that demonstrates modern software development practices including:
+
+- **🚀 Deployment Strategies**: Blue/Green deployments with zero-downtime releases
+- **🎯 Feature Management**: Runtime feature toggles and gradual rollouts  
+- **🏗️ Cloud-Native Architecture**: Kubernetes-ready with Helm charts
+- **🔄 CI/CD Pipeline**: Automated testing, security scanning, and deployment
+- **📊 Monitoring & Observability**: Health checks, metrics, and resource monitoring
+
+### Key Features
+
+- **Inventory Management**: Add, edit, delete, and search inventory items
+- **Export/Import**: CSV data export and import functionality
+- **User Authentication**: Secure login and session management
+- **Responsive Design**: Modern UI that works across devices
+- **Feature Flags**: Dynamic feature enabling/disabling without deployments
+- **Database Integration**: PostgreSQL with Liquibase migrations
+- **Caching**: Redis integration for improved performance
 
 ## Overview
 
-This is a simple Sales Manager Java App that stores sales items in a table presented in a web app. This demo repo is designed to help understand some of **CI/CD** ([Continuous Integration](https://docs.github.com/en/enterprise-cloud@latest/actions/automating-builds-and-tests/about-continuous-integration)/[Continuous Delivery](https://docs.github.com/en/enterprise-cloud@latest/actions/deployment/about-deployments/about-continuous-deployment)) principles and best practices.
+This is a comprehensive Sales Manager Java App that stores inventory items in a PostgreSQL database and presents them through a modern web interface. This demo repository is designed to help understand **CI/CD** ([Continuous Integration](https://docs.github.com/en/enterprise-cloud@latest/actions/automating-builds-and-tests/about-continuous-integration)/[Continuous Delivery](https://docs.github.com/en/enterprise-cloud@latest/actions/deployment/about-deployments/about-continuous-deployment)) principles, deployment strategies, and modern DevOps practices.
 
 ## Technology Stack
 
-- **Language:** Java (Spring Boot framework)
-- **Design Patterns:** MVC (Model View Controller) and OOP (Object Oriented Programming)
-- **Database:** [PostreSQL 10.4](https://www.postgresql.org/docs/10/release-10-4.html) (compatible with other versions)
-- **CI/CD Pipeline:** [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions)
+- **Backend:** Java 17+ with Spring Boot 2.7+
+- **Frontend:** Thymeleaf templates with Bootstrap 5 and modern CSS
+- **Database:** [PostgreSQL 10.4+](https://www.postgresql.org/docs/10/release-10-4.html) with Liquibase migrations
+- **Caching:** Redis for session management and performance optimization
+- **Container Platform:** Docker & Kubernetes with Helm charts
+- **Monitoring:** Spring Boot Actuator with health checks and metrics
+- **Security:** Spring Security with authentication and authorization
+- **Design Patterns:** MVC (Model View Controller), Repository Pattern, and OOP
+- **CI/CD Pipeline:** [GitHub Actions](https://docs.github.com/en/enterprise-cloud@latest/actions) with automated testing and deployment
+
+### Architecture Components
+
+- **Application Server**: Spring Boot with embedded Tomcat
+- **Database Layer**: PostgreSQL with connection pooling
+- **Caching Layer**: Redis cluster for improved performance  
+- **Load Balancer**: Kubernetes Services with traffic distribution
+- **Feature Management**: Runtime configuration via ConfigMaps
+- **Deployment Strategy**: Blue/Green with Helm-based releases
 
 ## CI/CD Pipeline
 
