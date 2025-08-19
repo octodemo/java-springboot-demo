@@ -1,0 +1,38 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "my-chart.fullname" . }}-spring-app-pdb
+  labels:
+    {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: spring-app
+      {{- include "my-chart.selectorLabels" . | nindent 6 }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "my-chart.fullname" . }}-postgres-pdb
+  labels:
+    {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: postgres-database
+      {{- include "my-chart.selectorLabels" . | nindent 6 }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "my-chart.fullname" . }}-redis-pdb
+  labels:
+    {{- include "my-chart.labels" . | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis-database
+      {{- include "my-chart.selectorLabels" . | nindent 6 }}
