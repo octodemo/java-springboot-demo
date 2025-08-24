@@ -1,19 +1,21 @@
 package net.codejava;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Calendar;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.Calendar;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-    "enableSearchFeature=true",
-    "spring.datasource.url=jdbc:h2:mem:testdb;Mode=PostgreSQL",
-    "spring.jpa.hibernate.ddl-auto=create-drop"
+        "enableSearchFeature=true",
+        "spring.datasource.url=jdbc:h2:mem:testdb;Mode=PostgreSQL",
+        "spring.jpa.hibernate.ddl-auto=create-drop"
 })
 public class JUnit5ExampleTest11 {
 
@@ -26,53 +28,53 @@ public class JUnit5ExampleTest11 {
 
     @Test
     void testInsert() {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(2021, Calendar.FEBRUARY, 1);
-      java.util.Date utilDate = calendar.getTime();
-      java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2021, Calendar.FEBRUARY, 1);
+        java.util.Date utilDate = calendar.getTime();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-      // Generate a unique serial number based on the current timestamp
-      String serialNumber = String.valueOf(System.currentTimeMillis());
+        // Generate a unique serial number based on the current timestamp
+        String serialNumber = String.valueOf(System.currentTimeMillis());
 
-      Sale sale = new Sale(serialNumber, "Laptop", 1, 1500.00f, sqlDate);
-      sale.setEditing(false); // Set the isEditing field to false for the test
-      salesDAO.save(sale);
+        Sale sale = new Sale(serialNumber, "Laptop", 1, 1500.00f, sqlDate);
+        sale.setEditing(false); // Set the isEditing field to false for the test
+        salesDAO.save(sale);
 
-      // list all the records
-      List<Sale> listSale = salesDAO.list(10, 0);
+        // list all the records
+        List<Sale> listSale = salesDAO.list(10, 0);
 
-      // Find the sale with the matching serial number
-      Sale insertedSale = listSale.stream()
-        .filter(s -> s.getSerialNumber().equals(serialNumber))
-        .findFirst()
-        .orElse(null);
+        // Find the sale with the matching serial number
+        Sale insertedSale = listSale.stream()
+                .filter(s -> s.getSerialNumber().equals(serialNumber))
+                .findFirst()
+                .orElse(null);
 
-      System.out.println("\n\n");
-      System.out.println("--------------------------------------------------------------------------------");
-      System.out.println("Expected value of item: Laptop");
-      System.out.println("Actual value of item: " + insertedSale.getItem());
-      System.out.println("--------------------------------------------------------------------------------");
-      assertNotNull(insertedSale, "Inserted sale not found");
-      assertEquals("Laptop", insertedSale.getItem(), "Item name does not match");
+        System.out.println("\n\n");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Expected value of item: Laptop");
+        System.out.println("Actual value of item: " + insertedSale.getItem());
+        System.out.println("--------------------------------------------------------------------------------");
+        assertNotNull(insertedSale, "Inserted sale not found");
+        assertEquals("Laptop", insertedSale.getItem(), "Item name does not match");
 
-      // clean up the database
-      salesDAO.delete(serialNumber);
-      System.out.println("\n\nTest11-1 Successful!\n\n");
+        // clean up the database
+        salesDAO.delete(serialNumber);
+        System.out.println("\n\nTest11-1 Successful!\n\n");
     }
 
     // test the variable enableSearchFeature in AppController.java
     @Test
     void testEnableSearchFeature() {
-      // print a comment about the value of enableSearchFeature
-      System.out.println("\n\n");
-      System.out.println("--------------------------------------------------------------------------------");
-      System.out.println("Expected value of enableSearchFeature: true");
-      System.out.println("Actual value of enableSearchFeature: " + appController.getEnableSearchFeature());
-      System.out.println("--------------------------------------------------------------------------------");
+        // print a comment about the value of enableSearchFeature
+        System.out.println("\n\n");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Expected value of enableSearchFeature: true");
+        System.out.println("Actual value of enableSearchFeature: " + appController.getEnableSearchFeature());
+        System.out.println("--------------------------------------------------------------------------------");
 
-      // assert that the value of enableSearchFeature is true
-      assertEquals(true, appController.getEnableSearchFeature());
+        // assert that the value of enableSearchFeature is true
+        assertEquals(true, appController.getEnableSearchFeature());
 
-      System.out.println("\n\nTest11-2 Successful!\n\n");
+        System.out.println("\n\nTest11-2 Successful!\n\n");
     }
-  }
+}
