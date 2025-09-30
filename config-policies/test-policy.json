@@ -1,0 +1,189 @@
+{
+  "version": "2.0.0-demo",
+  "generatedAt": "2025-09-16T00:00:00Z",
+  "description": "Demo policy config aligned to engine schema with expanded customRules to intentionally trigger more violations in sample Helm templates.",
+  "organization": {
+    "name": "octodemo",
+    "environment": "development",
+    "compliance": ["cis-1.24"],
+    "team": "platform-engineering",
+    "owner": "platform-eng@octodemo.example"
+  },
+  "global": {
+    "enforcement": "advisory",
+    "autoFix": true,
+    "excludedNamespaces": ["kube-system", "kube-public", "kube-node-lease", "scratch"]
+  },
+  "categories": {
+    "security": { "enabled": true, "enforcement": "advisory", "autoFix": true },
+    "compliance": { "enabled": true, "enforcement": "advisory", "autoFix": true },
+    "performance": { "enabled": true, "enforcement": "advisory", "autoFix": true },
+    "operations": { "enabled": true, "enforcement": "advisory", "autoFix": true },
+    "cost": { "enabled": true, "enforcement": "advisory", "autoFix": false }
+  },
+  "customRules": [
+    {
+      "id": "demo-sec-allow-priv-escalation",
+      "name": "Disallow Privilege Escalation",
+      "description": "Containers must set allowPrivilegeEscalation=false",
+      "severity": "high",
+      "category": "security",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].securityContext.allowPrivilegeEscalation", "operator": "equals", "value": false, "description": "allowPrivilegeEscalation must be false" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Container allows privilege escalation.", "autoFix": true, "fixAction": "add_default_security_context" }
+      ]
+    },
+    {
+      "id": "demo-sec-readonly-rootfs",
+      "name": "Require ReadOnly RootFS",
+      "description": "Containers should have readOnlyRootFilesystem=true for immutability",
+      "severity": "medium",
+      "category": "security",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].securityContext.readOnlyRootFilesystem", "operator": "equals", "value": true, "description": "readOnlyRootFilesystem must be true" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Container root filesystem is writable.", "autoFix": true, "fixAction": "add_default_security_context" }
+      ]
+    },
+    {
+      "id": "demo-ops-required-annotations",
+      "name": "Require Owner and Support Annotations",
+      "description": "Deployment must specify owner and support contact annotations",
+      "severity": "low",
+      "category": "operations",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "metadata.annotations.owner", "operator": "exists", "value": true, "description": "owner annotation required" },
+        { "field": "metadata.annotations.support", "operator": "exists", "value": true, "description": "support annotation required" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Missing owner/support annotations for deployment." }
+      ]
+    },
+    {
+      "id": "demo-ops-standard-labels",
+      "name": "Require Standard Labels",
+      "description": "Enforce presence of app.kubernetes.io/name and app.kubernetes.io/part-of labels",
+      "severity": "low",
+      "category": "operations",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "metadata.labels.app.kubernetes.io/name", "operator": "exists", "value": true, "description": "Standard name label" },
+        { "field": "metadata.labels.app.kubernetes.io/part-of", "operator": "exists", "value": true, "description": "Part-of label" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Missing one or more standard labels." }
+      ]
+    },
+    {
+      "id": "demo-perf-require-requests",
+      "name": "Require Resource Requests",
+      "description": "All containers must define CPU & memory requests",
+      "severity": "medium",
+      "category": "performance",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].resources.requests.cpu", "operator": "exists", "value": true },
+        { "field": "spec.template.spec.containers[*].resources.requests.memory", "operator": "exists", "value": true }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Missing resource requests.", "autoFix": true, "fixAction": "add_default_resource_limits" }
+      ]
+    },
+    {
+      "id": "demo-comp-image-pull-policy",
+      "name": "Enforce imagePullPolicy Always",
+      "description": "imagePullPolicy should be Always for stateless deployments (demo)",
+      "severity": "low",
+      "category": "compliance",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].imagePullPolicy", "operator": "equals", "value": "Always" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "imagePullPolicy not set to Always." }
+      ]
+    },
+    {
+      "id": "demo-comp-no-latest",
+      "name": "Disallow Latest Tag",
+      "description": "Images must not use latest tag",
+      "severity": "medium",
+      "category": "compliance",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].image", "operator": "not_contains", "value": ":latest" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Image uses latest tag; pin a version." }
+      ]
+    },
+    {
+      "id": "demo-cost-cpu-limit-upper-bound",
+      "name": "CPU Limit Upper Bound",
+      "description": "Discourage CPU limits greater than 1500m (demo cost control)",
+      "severity": "low",
+      "category": "cost",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].resources.limits.cpu", "operator": "less_than", "value": "1500m" }
+      ],
+      "actions": [
+        { "type": "warn", "message": "CPU limit exceeds recommended demo threshold." }
+      ]
+    },
+    {
+      "id": "demo-ops-health-probes",
+      "name": "Require Both Probes",
+      "description": "Deployment containers must define liveness & readiness probes",
+      "severity": "medium",
+      "category": "operations",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].livenessProbe", "operator": "exists", "value": true },
+        { "field": "spec.template.spec.containers[*].readinessProbe", "operator": "exists", "value": true }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Missing one or more health probes.", "autoFix": true, "fixAction": "add_default_health_checks" }
+      ]
+    },
+    {
+      "id": "demo-sec-non-root",
+      "name": "Require runAsNonRoot",
+      "description": "Containers must specify runAsNonRoot true",
+      "severity": "high",
+      "category": "security",
+      "enabled": true,
+      "scope": "deployment",
+      "conditions": [
+        { "field": "spec.template.spec.containers[*].securityContext.runAsNonRoot", "operator": "equals", "value": true }
+      ],
+      "actions": [
+        { "type": "warn", "message": "Container not enforcing runAsNonRoot.", "autoFix": true, "fixAction": "set_non_root_user" }
+      ]
+    }
+  ],
+  "ruleOverrides": {
+    "demo-comp-no-latest": { "enabled": false, "severity": "low" }
+  },
+  "notifications": {
+    "email": {
+      "recipients": ["platform-eng@octodemo.example"],
+      "severityLevels": ["high", "critical"]
+    }
+  }
+}
