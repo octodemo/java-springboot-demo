@@ -155,7 +155,7 @@
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>4.23.0</version>
+				<version>5.0.1</version>
 				<configuration>
 					<checksSettingsFile>src/main/resources/liquibase.checks-settings.conf</checksSettingsFile>
 					<propertyFile>${liquibase.propertyFile}</propertyFile>
