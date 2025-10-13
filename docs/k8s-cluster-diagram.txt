@@ -1,0 +1,103 @@
+KUBERNETES CLUSTER ANALYSIS & ASCII DIAGRAM
+===========================================
+
+CLUSTER OVERVIEW:
+- Platform: Docker Desktop (Single Node)
+- Version: v1.32.2
+- Control Plane: https://127.0.0.1:6443
+- Node: docker-desktop (192.168.65.3)
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                          KUBERNETES CLUSTER (Docker Desktop)                        │
+│                                   192.168.65.3                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                ┌───────────────────────┼───────────────────────┐
+                │                       │                       │
+        ┌───────────────┐       ┌───────────────┐       ┌───────────────┐
+        │  CONTROL PLANE │       │  KUBE-SYSTEM  │       │   DEFAULT NS   │
+        │               │       │   NAMESPACE   │       │   NAMESPACE    │
+        └───────────────┘       └───────────────┘       └───────────────┘
+                │                       │                       │
+    ┌───────────────────────┐          │               ┌───────────────────┐
+    │ • kube-apiserver      │          │               │ MY-CHART APP      │
+    │ • etcd               │          │               │ (Helm Release)    │
+    │ • kube-controller-mgr│          │               └───────────────────┘
+    │ • kube-scheduler     │          │                       │
+    └───────────────────────┘          │               ┌───────────────────┐
+                                       │               │  APPLICATION TIER │
+                               ┌───────────────┐       │                   │
+                               │ • CoreDNS x2  │       │ ┌───────────────┐ │
+                               │ • kube-proxy  │       │ │  APP v1 x2    │ │
+                               │ • storage-    │       │ │  (Pods)       │ │
+                               │   provisioner │       │ └───────────────┘ │
+                               │ • vpnkit-ctrl │       │ ┌───────────────┐ │
+                               └───────────────┘       │ │  APP v2 x2    │ │
+                                                       │ │  (Pods)       │ │
+                                                       │ └───────────────┘ │
+                                                       └───────────────────┘
+                                                               │
+                                                       ┌───────────────────┐
+                                                       │  DATABASE TIER    │
+                                                       │                   │
+                                                       │ ┌───────────────┐ │
+                                                       │ │ PostgreSQL    │ │
+                                                       │ │ (1 Pod)       │ │
+                                                       │ │ + PV (1Gi)    │ │
+                                                       │ └───────────────┘ │
+                                                       │ ┌───────────────┐ │
+                                                       │ │ Redis         │ │
+                                                       │ │ (1 Pod)       │ │
+                                                       │ └───────────────┘ │
+                                                       └───────────────────┘
+
+NETWORK & SERVICES:
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                  SERVICE MESH                                        │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────────────────┐ │
+│  │ LoadBalancer    │    │ ClusterIP        │    │ ClusterIP                       │ │
+│  │ spring-app-svc  │    │ postgres-db-svc  │    │ redis-db-svc                    │ │
+│  │ Port: 80        │    │ Port: 5432       │    │ Port: 6379                      │ │
+│  │ External: :31730│    │ IP: 10.109.103.  │    │ IP: 10.99.26.127                │ │
+│  │ External: local │    │    168           │    │                                 │ │
+│  └─────────────────┘    └──────────────────┘    └─────────────────────────────────┘ │
+│          │                       │                            │                    │
+│          ▼                       ▼                            ▼                    │
+│    ┌──────────┐            ┌──────────┐                ┌──────────┐               │
+│    │ App v1   │            │PostgreSQL│                │ Redis    │               │
+│    │ App v2   │            │ Database │                │ Database │               │
+│    │ (4 Pods) │            │ (1 Pod)  │                │ (1 Pod)  │               │
+│    └──────────┘            └──────────┘                └──────────┘               │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+STORAGE:
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Persistent Volume: app-release-my-chart-postgres-pv-volume                          │
+│ • Capacity: 1Gi                                                                    │
+│ • Access Mode: ReadWriteOnce (RWO)                                                 │
+│ • Reclaim Policy: Retain                                                           │
+│ • Storage Class: manual                                                            │
+│ • Status: Bound to postgres PVC                                                    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+POD DISTRIBUTION BY IP RANGES:
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Control Plane Network (Host): 192.168.65.3                                         │
+│ • kube-apiserver, etcd, controller-manager, scheduler, kube-proxy                  │
+│                                                                                     │
+│ Pod Network: 10.1.2.x                                                              │
+│ • 10.1.2.160-169: Application and system pods                                      │
+│ • Load balanced across single node                                                 │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+CLUSTER HEALTH STATUS:
+✅ All pods: Running (15/15)
+✅ All deployments: Ready 
+✅ All services: Active
+✅ Storage: Bound and accessible
+✅ DNS: CoreDNS operational (2 replicas)
+⚠️  Single node setup (no HA)
+⚠️  No metrics server (resource monitoring limited)
+ℹ️  No ingress controller detected
