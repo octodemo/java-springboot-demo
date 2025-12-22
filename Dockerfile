@@ -1,4 +1,4 @@
-FROM openjdk:21-slim-buster
+FROM openjdk:21-slim
 ENV DB_URL=jdbcConnectionString
 ENV REDIS_HOST=redis
 ENV USER_NAME=postgres
