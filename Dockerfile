@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM eclipse-temurin:21-jre-jammy
 ENV DB_URL=jdbcConnectionString
 ENV REDIS_HOST=redis
 ENV USER_NAME=postgres
